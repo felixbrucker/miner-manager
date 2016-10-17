@@ -128,8 +128,6 @@ function startMiner() {
               stats.entries[entry.id].type=entry.type;
               stats.entries[entry.id].text=entry.binPath+" "+minerString;
 
-              console.log(stats);
-
               timers[entry.id]=setInterval(function () {
                 getMinerStats(entry.id,entry.port,entry.type);
               }, 5000);
@@ -216,6 +214,7 @@ function stopMining(req, res, next) {
 function stopMiner() {
   shouldExit=true;
   Object.keys(miner).forEach(function (key) {
+    console.log(key);
     clearInterval(timers[key]);
     kill(miner[key].pid);
     stats.entries[key]=null;
