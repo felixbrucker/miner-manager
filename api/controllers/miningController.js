@@ -149,7 +149,7 @@ function startMiner() {
               if (entry.writeMinerLog)
                 miner_logs[entry.id].write(data.toString());
             });
-            (function (entry){
+            (function (entry,minerString){
               miner[entry.id].on('exit', function(){
                 restartMinerOnExit(entry,minerString);
               });
@@ -173,8 +173,7 @@ function startMiner() {
 
 function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
-    stats.entries[entry.id]=null;
-    delete stats.entries[entry.id];
+    stats.entries[entry.id]={};
     const spawn = require('cross-spawn');
     console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
     if (entry.shell)
@@ -195,7 +194,7 @@ function restartMinerOnExit(entry,minerString){
       if (entry.writeMinerLog)
         miner_logs[entry.id].write(data.toString());
     });
-    (function (entry){
+    (function (entry,minerString){
       miner[entry.id].on('exit', function(){
         restartMinerOnExit(entry,minerString);
       });
