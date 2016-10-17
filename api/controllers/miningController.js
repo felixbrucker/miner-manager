@@ -92,7 +92,7 @@ function startMinerWrapper(){
 function startMiner() {
   if (validateSettings()) {
     if (stats.running!==true){
-
+      stats.running=true;
       const spawn = require('cross-spawn');
       configModule.config.entries.forEach(function (entry,index,array) {
         if (entry.enabled){
@@ -123,6 +123,8 @@ function startMiner() {
               stats.entries[entry.id]={};
             stats.entries[entry.id].type=entry.type;
             stats.entries[entry.id].text=entry.binPath+" "+minerString;
+
+            console.log(stats);
 
             timers[entry.id]=setInterval(function () {
                 getMinerStats(entry.id,entry.port,entry.type);
