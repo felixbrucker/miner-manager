@@ -70,7 +70,7 @@
                 //gen unique id
                 vm.newCustomMiner.id=Date.now();
                 //add to array
-                vm.config.custom.entries.push(JSON.parse(JSON.stringify(vm.newCustomMiner)));
+                vm.config.entries.push(JSON.parse(JSON.stringify(vm.newCustomMiner)));
                 //clear variables
                 vm.newCustomMiner.id=null;
                 vm.newCustomMiner.enabled=true;
