@@ -226,7 +226,7 @@ function stopMiner() {
     delete miner_logs[key];
   });
   stats.running=false;
-  shouldExit=false;
+  setTimeout(function(){shouldExit=false;},3000);
 }
 
 function asyncSleep(param, callback) {
