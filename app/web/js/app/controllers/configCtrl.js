@@ -21,7 +21,8 @@
         vm.config = {
             rigName: null,
             autostart:null,
-            entries:[]
+            entries:[],
+            types:[]
         };
         vm.waiting = null;
         vm.updating=null;
@@ -109,6 +110,7 @@
                 vm.config.rigName = response.data.rigName;
                 vm.config.autostart = response.data.autostart;
                 vm.config.entries=response.data.entries;
+                vm.config.types=response.data.types;
             }, function errorCallback(response) {
                 console.log(response);
             });
