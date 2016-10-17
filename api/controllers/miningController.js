@@ -142,7 +142,9 @@ function startMiner() {
                   fs.unlinkSync(filename);
                 });
                 miner[entry.id].stdout.on('data', function (data) {
+                  console.log("a");
                   if (entry.writeMinerLog) {
+                    console.log("b");
                     miner_logs[entry.id].write(data.toString());
                   }
                 });
