@@ -153,7 +153,7 @@ function startMiner() {
               miner[entry.id].on('exit', function(){
                 restartMinerOnExit(entry,minerString);
               });
-            }(entry));
+            }(entry,minerString));
           }else{
             console.log(colors.red("miner already running"));
             return false;
@@ -173,6 +173,7 @@ function startMiner() {
 
 function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
+    console.log(entry);
     const spawn = require('cross-spawn');
     console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
     if (entry.shell)
@@ -249,7 +250,6 @@ function restartMiner(){
 
 
 function getMinerStats(id,port,type) {
-console.log(port);
   switch(type){
     case "cpuminer-opt":
     case "ccminer":
