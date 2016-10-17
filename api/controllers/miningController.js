@@ -14,14 +14,14 @@ var configModule = require(__basedir + 'api/modules/configModule');
 
 var stats = {
   running:null,
-  entries:[],
+  entries:{},
   rigName:null
 };
 
 
 global.miner = {};
 var shouldExit=false;
-var timers=[];
+var timers={};
 
 
 var kill = function (pid, signal, callback) {
@@ -72,13 +72,15 @@ function startMining(req, res, next) {
 }
 
 function validateSettings() {
-  for(var i = 0; i < configModule.config.entries.length; i++) {
-    var entry=configModule.config.entries[i];
-    if(entry.enabled===true && entry.binPath!==undefined && entry.binPath!==null && entry.binPath!=="") {
-      try {
-        fs.statSync(entry.binPath);
-      } catch (err) {
-        return !(err && err.code === 'ENOENT');
+  for(var property in configModule.config.entries) {
+    if (configModule.config.entries.hasOwnProperty(property)) {
+      var entry=configModule.config.entries[property];
+      if(entry.enabled===true && entry.binPath!==undefined && entry.binPath!==null && entry.binPath!=="") {
+        try {
+          fs.statSync(entry.binPath);
+        } catch (err) {
+          return !(err && err.code === 'ENOENT');
+        }
       }
     }
   }
@@ -94,69 +96,73 @@ function startMiner() {
     if (stats.running!==true){
       stats.running=true;
       const spawn = require('cross-spawn');
-      configModule.config.entries.forEach(function (entry,index,array) {
-        if (entry.enabled){
-          if (miner[entry.id]===undefined || miner[entry.id]===null){
-            var minerString=entry.cmdline;
-            if (entry.port!==undefined&&entry.port!==null){
-              switch (entry.type){
-                case "cpuminer-opt":
-                case "ccminer":
-                  minerString+=" -b 127.0.0.1:"+entry.port;
-                  break;
-                case "claymore-eth":
-                  minerString+=" -mport "+entry.port;
-                  break;
-                case "other":
-                  break;
+      for(var property in configModule.config.entries) {
+        if (configModule.config.entries.hasOwnProperty(property)) {
+          var entry=configModule.config.entries[property];
+          if (entry.enabled){
+            if (miner[entry.id]===undefined || miner[entry.id]===null){
+              var minerString=entry.cmdline;
+              if (entry.port!==undefined&&entry.port!==null){
+                switch (entry.type){
+                  case "cpuminer-opt":
+                  case "ccminer":
+                    minerString+=" -b 127.0.0.1:"+entry.port;
+                    break;
+                  case "claymore-eth":
+                    minerString+=" -mport "+entry.port;
+                    break;
+                  case "other":
+                    break;
+                }
               }
-            }
-            if (entry.shell)
-              miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
-                shell:true,
-                detached:true
-              });
-            else
-              miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+              if (entry.shell)
+                miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+                  shell:true,
+                  detached:true
+                });
+              else
+                miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
 
-            if (stats.entries[entry.id]===undefined)
-              stats.entries[entry.id]={};
-            stats.entries[entry.id].type=entry.type;
-            stats.entries[entry.id].text=entry.binPath+" "+minerString;
+              if (stats.entries[entry.id]===undefined)
+                stats.entries[entry.id]={};
+              stats.entries[entry.id].type=entry.type;
+              stats.entries[entry.id].text=entry.binPath+" "+minerString;
 
-            console.log(stats);
+              console.log(stats);
 
-            timers[entry.id]=setInterval(function () {
+              timers[entry.id]=setInterval(function () {
                 getMinerStats(entry.id,entry.port,entry.type);
-            }, 5000);
+              }, 5000);
 
-            console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
-            miner_logs[entry.id] = rfs('miner'+entry.id+'.log', {
-              size:'50M',
-              path:'data'
-            });
-            miner_logs[entry.id].on('rotated', function(filename) {
-              fs.unlinkSync(filename);
-            });
-            miner[entry.id].stdout.on('data', function (data) {
-              if (entry.writeMinerLog) {
-                miner_logs[entry.id].write(data.toString());
-              }
-            });
-            miner[entry.id].stderr.on('data', function (data) {
-              if (entry.writeMinerLog)
-                miner_logs[entry.id].write(data.toString());
-            });
-            miner[entry.id].on('exit', function(){
-              restartMinerOnExit(entry,minerString);
-            });
-            return true;
-          }else{
-            console.log(colors.red("miner already running"));
-            return false;
+              console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
+              miner_logs[entry.id] = rfs('miner'+entry.id+'.log', {
+                size:'50M',
+                path:'data'
+              });
+              miner_logs[entry.id].on('rotated', function(filename) {
+                fs.unlinkSync(filename);
+              });
+              miner[entry.id].stdout.on('data', function (data) {
+                if (entry.writeMinerLog) {
+                  miner_logs[entry.id].write(data.toString());
+                }
+              });
+              miner[entry.id].stderr.on('data', function (data) {
+                if (entry.writeMinerLog)
+                  miner_logs[entry.id].write(data.toString());
+              });
+              miner[entry.id].on('exit', function(){
+                restartMinerOnExit(entry,minerString);
+              });
+              return true;
+            }else{
+              console.log(colors.red("miner already running"));
+              return false;
+            }
           }
         }
-      });
+      }
+
     }else{
       console.log(colors.red("miner already running"));
       return false;
