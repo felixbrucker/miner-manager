@@ -153,14 +153,12 @@ function startMiner() {
             miner[entry.id].on('exit', function(){
               restartMinerOnExit(entry,minerString);
             });
-            return true;
           }else{
             console.log(colors.red("miner already running"));
             return false;
           }
         }
       }
-
     }else{
       console.log(colors.red("miner already running"));
       return false;
