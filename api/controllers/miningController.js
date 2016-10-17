@@ -124,11 +124,13 @@ function startMiner() {
               stats.entries[entry.id]={};
             stats.entries[entry.id].type=entry.type;
             stats.entries[entry.id].text=entry.binPath+" "+minerString;
+            
+            (function (entry){
+              timers[entry.id]=setInterval(function () {
+                getMinerStats(entry.id,entry.port,entry.type);
+              }, 5000);
+            }(entry));
 
-            timers[entry.id]=setInterval(function () {
-              console.log(entry.port);
-              getMinerStats(entry.id,entry.port,entry.type);
-            }, 5000);
 
             console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
             miner_logs[entry.id] = rfs('miner'+entry.id+'.log', {
