@@ -94,7 +94,9 @@ function startMiner() {
     if (stats.running!==true){
       stats.running=true;
       const spawn = require('cross-spawn');
+      console.log(configModule.config.entries.length);
       for(var i=0;i< configModule.config.entries.length;i++) {
+        console.log(i);
         var entry=configModule.config.entries[i];
         if (entry.enabled){
           console.log(entry.id);
