@@ -199,7 +199,7 @@ function restartMinerOnExit(entry,minerString){
       miner[entry.id].on('exit', function(){
         restartMinerOnExit(entry,minerString);
       });
-    }(entry));
+    }(entry,minerString));
   }
 }
 
