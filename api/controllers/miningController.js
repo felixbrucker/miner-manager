@@ -94,14 +94,10 @@ function startMiner() {
     if (stats.running!==true){
       stats.running=true;
       const spawn = require('cross-spawn');
-      console.log(configModule.config.entries.length);
       for(var i=0;i< configModule.config.entries.length;i++) {
-        console.log(i);
         var entry=configModule.config.entries[i];
         if (entry.enabled){
-          console.log(entry.id);
           if (miner[entry.id]===undefined || miner[entry.id]===null){
-            console.log("a");
             var minerString=entry.cmdline;
             if (entry.port!==undefined&&entry.port!==null){
               switch (entry.type){
@@ -246,7 +242,7 @@ function restartMiner(){
 
 
 function getMinerStats(id,port,type) {
-
+console.log(port);
   switch(type){
     case "cpuminer-opt":
     case "ccminer":
