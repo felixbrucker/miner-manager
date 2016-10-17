@@ -118,7 +118,8 @@ function startMiner() {
                 if (entry.shell)
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
                     shell:true,
-                    detached:true
+                    detached:true,
+                    stdio:'inherit'
                   });
                 else
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
