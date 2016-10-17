@@ -97,7 +97,9 @@ function startMiner() {
       for(var i=0;i< configModule.config.entries.length;i++) {
         var entry=configModule.config.entries[i];
         if (entry.enabled){
+          console.log(entry.id);
           if (miner[entry.id]===undefined || miner[entry.id]===null){
+            console.log("a");
             var minerString=entry.cmdline;
             if (entry.port!==undefined&&entry.port!==null){
               switch (entry.type){
