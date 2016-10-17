@@ -95,7 +95,7 @@ function startMiner() {
       stats.running=true;
       const spawn = require('cross-spawn');
       for(var i=0;i< configModule.config.entries.length;i++) {
-        var entry=configModule.config.entries[i];
+        var entry=JSON.parse(JSON.stringify(configModule.config.entries[i]));
         if (entry.enabled){
           if (miner[entry.id]===undefined || miner[entry.id]===null){
             var minerString=entry.cmdline;
@@ -126,8 +126,8 @@ function startMiner() {
             stats.entries[entry.id].text=entry.binPath+" "+minerString;
 
             timers[entry.id]=setInterval(function () {
-
-              getMinerStats(JSON.parse(JSON.stringify(entry.id)),JSON.parse(JSON.stringify(entry.port)),JSON.parse(JSON.stringify(entry.type)));
+              console.log(entry.port);
+              getMinerStats(entry.id,entry.port,entry.type);
             }, 5000);
 
             console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
