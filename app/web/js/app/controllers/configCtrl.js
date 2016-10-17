@@ -90,9 +90,9 @@
          * @memberOf configCtrl
          */
         function delCustomMiner(id) {
-            vm.config.custom.entries.forEach(function (entry,index,array) {
+            vm.config.entries.forEach(function (entry,index,array) {
                 if (entry.id===id){
-                    vm.config.custom.entries.splice(index,1);
+                    vm.config.entries.splice(index,1);
                 }
             });
             vm.setConfig();
