@@ -145,7 +145,7 @@ function startMiner() {
               if (entry.writeMinerLog)
                 miner_logs[entry.id].write(data.toString());
             });
-            miner[entry.id].on('exit', restartMinerOnExit);
+            miner[entry.id].on('exit', restartMinerOnExit)(entry,minerString);
             return true;
           }else{
             console.log(colors.red("miner already running"));
