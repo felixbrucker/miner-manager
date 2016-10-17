@@ -118,8 +118,7 @@ function startMiner() {
                 if (entry.shell)
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
                     shell:true,
-                    detached:true,
-                    stdio:'pipe'
+                    detached:true
                   });
                 else
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
@@ -143,9 +142,7 @@ function startMiner() {
                   fs.unlinkSync(filename);
                 });
                 miner[entry.id].stdout.on('data', function (data) {
-                  console.log("a");
                   if (entry.writeMinerLog) {
-                    console.log("b");
                     miner_logs[entry.id].write(data.toString());
                   }
                 });

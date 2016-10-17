@@ -32,8 +32,10 @@
           <td><select name="typeSelect-{{entry.id}}" ng-options="type for type in configVm.config.types" ng-model="entry.type" required></select></td>
           <td ng-if="entry.type!=='other'"><input type="number" name="port-{{entry.id}}" ng-model="entry.port" placeholder="port to use for api"></td>
           <td ng-if="entry.type==='other'"><input type="number" name="port-{{entry.id}}" ng-model="entry.port" placeholder="port to use for api" disabled></td>
-          <td><input type="checkbox" ng-model="entry.writeMinerLog" ng-click="configVm.setConfig()"></td>
-          <td><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()"></td>
+          <td ng-if="entry.shell!==true"><input type="checkbox" ng-model="entry.writeMinerLog" ng-click="configVm.setConfig()"></td>
+          <td ng-if="entry.shell===true"><input type="checkbox" ng-model="entry.writeMinerLog" ng-click="configVm.setConfig()" disabled></td>
+          <td ng-if="entry.writeMinerLog!==true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()"></td>
+          <td ng-if="entry.writeMinerLog===true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()" disabled></td>
           <td><button type="button" class="btn btn-warning" ng-click="configVm.delCustomMiner(entry.id)">remove entry</button></td>
         </tr>
         <tr style="border-top: 1px solid lightgrey;">
@@ -43,8 +45,10 @@
           <td><select name="typeSelect-newMiner" ng-options="type for type in configVm.config.types" ng-model="configVm.newCustomMiner.type" required></select></td>
           <td ng-if="entry.type!=='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api"></td>
           <td ng-if="entry.type==='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api" disabled></td>
-          <td><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog"></td>
-          <td><input type="checkbox" ng-model="configVm.newCustomMiner.shell"></td>
+          <td ng-if="configVm.newCustomMiner.shell!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog"></td>
+          <td ng-if="configVm.newCustomMiner.shell==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog" disabled></td>
+          <td ng-if="configVm.newCustomMiner.writeMinerLog!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell"></td>
+          <td ng-if="configVm.newCustomMiner.writeMinerLog==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell" disabled></td>
           <td><button type="button" class="btn btn-success" ng-click="configVm.addCustomMiner()">add entry</button></td>
         </tr>
       </table>
