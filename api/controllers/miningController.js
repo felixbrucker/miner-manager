@@ -174,6 +174,8 @@ function startMiner() {
 function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
     stats.entries[entry.id]={};
+    stats.entries[entry.id].type=entry.type;
+    stats.entries[entry.id].text=entry.binPath+" "+minerString;
     const spawn = require('cross-spawn');
     console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
     if (entry.shell)
