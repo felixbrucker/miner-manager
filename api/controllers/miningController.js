@@ -124,7 +124,7 @@ function startMiner() {
               stats.entries[entry.id]={};
             stats.entries[entry.id].type=entry.type;
             stats.entries[entry.id].text=entry.binPath+" "+minerString;
-            
+
             (function (entry){
               timers[entry.id]=setInterval(function () {
                 getMinerStats(entry.id,entry.port,entry.type);
@@ -149,9 +149,11 @@ function startMiner() {
               if (entry.writeMinerLog)
                 miner_logs[entry.id].write(data.toString());
             });
-            miner[entry.id].on('exit', function(){
-              restartMinerOnExit(entry,minerString);
-            });
+            (function (entry){
+              miner[entry.id].on('exit', function(){
+                restartMinerOnExit(entry,minerString);
+              });
+            }(entry));
           }else{
             console.log(colors.red("miner already running"));
             return false;
@@ -191,9 +193,11 @@ function restartMinerOnExit(entry,minerString){
       if (entry.writeMinerLog)
         miner_logs[entry.id].write(data.toString());
     });
-    miner[entry.id].on('exit', function(){
-      restartMinerOnExit(entry,minerString);
-    });
+    (function (entry){
+      miner[entry.id].on('exit', function(){
+        restartMinerOnExit(entry,minerString);
+      });
+    }(entry));
   }
 }
 
