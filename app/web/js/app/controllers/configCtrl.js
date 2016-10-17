@@ -79,6 +79,7 @@
                 vm.newCustomMiner.type=null;
                 vm.newCustomMiner.port=null;
                 vm.newCustomMiner.writeMinerLog=true;
+                vm.newCustomMiner.shell=false;
                 vm.setConfig();
             }
         }
