@@ -145,7 +145,9 @@ function startMiner() {
               if (entry.writeMinerLog)
                 miner_logs[entry.id].write(data.toString());
             });
-            miner[entry.id].on('exit', restartMinerOnExit)(entry,minerString);
+            miner[entry.id].on('exit', function(){
+              restartMinerOnExit(entry,minerString);
+            });
             return true;
           }else{
             console.log(colors.red("miner already running"));
@@ -164,9 +166,7 @@ function startMiner() {
   return true;
 }
 
-function restartMinerOnExit(code,signal,entry,minerString){
-  console.log(code);
-  console.log(signal);
+function restartMinerOnExit(entry,minerString){
   console.log(entry);
   console.log(minerString);
   if (false){
