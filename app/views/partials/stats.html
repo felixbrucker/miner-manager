@@ -1,0 +1,140 @@
+<div class="col-md-8 col-md-offset-2" style="margin-bottom: 10px;">
+
+  <button type="button" class="btn btn-success" ng-show="!statsVm.current.running" ng-click="statsVm.startMiner()">Start Miner</button>
+  <button type="button" class="btn btn-danger" ng-show="statsVm.current.running" ng-click="statsVm.stopMiner()">Stop Miner</button>
+  <i ng-show="statsVm.waiting" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+  <span class="sr-only">Loading...</span>
+  <br />
+  Miner is <span ng-show="!statsVm.current.running" class="label label-danger">stopped</span>
+  <span ng-show="statsVm.current.running">
+    <span class="label label-success">running</span>
+
+      <div ng-repeat="entry in statsVm.current.entries track by $index">
+
+        <div ng-if="entry.type==='cpuminer-opt'">
+          [cpuminer-opt]<br/>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Hashrate</td>
+                <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
+              </tr>
+              <tr>
+                <td>Algorithm</td>
+                <td><span class="label label-info">{{entry.algorithm}}</span></td>
+              </tr>
+              <tr>
+                <td>Cores</td>
+                <td><span class="label label-info">{{entry.cores}}</span></td>
+              </tr>
+              <tr>
+                <td>Temperature</td>
+                <td ng-show="entry.temperature"><span class="label label-info">{{entry.temperature}} °C</span></td>
+              </tr>
+              <tr>
+                <td>Miner</td>
+                <td><span class="label label-info">{{entry.miner}}</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Accepted Shares</td>
+                <td><span class="label label-primary">{{entry.accepted}}</span></td>
+              </tr>
+              <tr>
+                <td>Rejected Shares</td>
+                <td><span class="label label-primary">{{entry.rejected}}</span></td>
+              </tr>
+              <tr>
+                <td>Accepted Shares / Min</td>
+                <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
+              </tr>
+              <tr>
+                <td>Difficulty</td>
+                <td><span class="label label-info">{{entry.difficulty}}</span></td>
+              </tr>
+              <tr>
+                <td>Uptime</td>
+                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+              </tr>
+            </table>
+          </div>
+
+        </div>
+
+        <div ng-if="entry.type==='ccminer'">
+          [ccminer]<br/>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Hashrate</td>
+                <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
+              </tr>
+              <tr>
+                <td>Algorithm</td>
+                <td><span class="label label-info">{{entry.algorithm}}</span></td>
+              </tr>
+              <tr>
+                <td>GPUs</td>
+                <td><span class="label label-info">{{entry.gpus}}</span></td>
+              </tr>
+              <tr>
+                <td>Uptime</td>
+                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Accepted Shares</td>
+                <td><span class="label label-primary">{{entry.accepted}}</span></td>
+              </tr>
+              <tr>
+                <td>Rejected Shares</td>
+                <td><span class="label label-primary">{{entry.rejected}}</span></td>
+              </tr>
+              <tr>
+                <td>Accepted Shares / Min</td>
+                <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
+              </tr>
+              <tr>
+                <td>Difficulty</td>
+                <td><span class="label label-info">{{entry.difficulty}}</span></td>
+              </tr>
+            </table>
+          </div>
+          <div class="col-md-12">
+            Miner: {{entry.miner}}
+          </div>
+
+        </div>
+
+        <div ng-if="entry.type==='claymore-eth'">
+          [claymore-eth]<br/>
+          <table class='table table-borderless'>
+            <tr>
+              <td>{{entry.text}}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div ng-if="entry.type==='other'">
+          [other]<br/>
+          <table class='table table-borderless'>
+            <tr>
+              <td>{{entry.text}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+  </span>
+
+</div>
