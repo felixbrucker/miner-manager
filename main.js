@@ -26,6 +26,6 @@ app.route('*').get(function(req, res) {
   });
 });
 
-global.listener = app.listen(process.env.PORT || 8080, function(){
+global.listener = app.listen(process.env.PORT || 8082, function(){
   console.log(colors.green('server running on port '+listener.address().port));
 });
