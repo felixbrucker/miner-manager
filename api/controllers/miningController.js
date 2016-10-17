@@ -126,7 +126,8 @@ function startMiner() {
             stats.entries[entry.id].text=entry.binPath+" "+minerString;
 
             timers[entry.id]=setInterval(function () {
-              getMinerStats(entry.id,entry.port,entry.type);
+
+              getMinerStats(JSON.parse(JSON.stringify(entry.id)),JSON.parse(JSON.stringify(entry.port)),JSON.parse(JSON.stringify(entry.type)));
             }, 5000);
 
             console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
