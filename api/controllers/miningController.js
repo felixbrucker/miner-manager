@@ -188,7 +188,9 @@ function restartMinerOnExit(entry,minerString){
       if (entry.writeMinerLog)
         miner_logs[entry.id].write(data.toString());
     });
-    miner[entry.id].on('exit', restartMinerOnExit(entry,minerString))(entry,minerString);
+    miner[entry.id].on('exit', function(){
+      restartMinerOnExit(entry,minerString);
+    });
   }
 }
 
