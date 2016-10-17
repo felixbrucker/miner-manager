@@ -173,7 +173,8 @@ function startMiner() {
 
 function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
-    console.log(entry);
+    stats.entries[entry.id]=null;
+    delete stats.entries[entry.id];
     const spawn = require('cross-spawn');
     console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
     if (entry.shell)
