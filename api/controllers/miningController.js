@@ -219,9 +219,7 @@ function stopMiner() {
     stats.entries[key]=null;
     delete stats.entries[key];
     for (var i=0;i<configModule.config.entries.length;i++){
-      console.log(key);
-      console.log(configModule.config.entries[i].id);
-      if (configModule.config.entries[i].id===key){
+      if (configModule.config.entries[i].id==key){
         console.log(colors.cyan("["+configModule.config.entries[i].type+"] ")+colors.green("miner stopped"));
         break;
       }
