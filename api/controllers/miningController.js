@@ -164,11 +164,7 @@ function startMiner() {
   return true;
 }
 
-function restartMinerOnExit(code,signal,entry,minerString){
-  console.log(code);
-  console.log(signal);
-  console.log(entry);
-  console.log(minerString);
+function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
     console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
     if (entry.shell)
