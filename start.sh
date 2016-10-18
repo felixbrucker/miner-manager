@@ -9,7 +9,7 @@ if [ ! -d "miner-manager" ]; then
   pm2 start process.json
   pm2 save
   cd ..
-  find cpuminer-opt -maxdepth 0 -empty -exec git clone https://github.com/felixbrucker/cpuminer-opt \;
+  git clone https://github.com/felixbrucker/cpuminer-opt
   cd cpuminer-opt
   cp /app/.apt/usr/include/x86_64-linux-gnu/gmp.h .
   ./build.sh
