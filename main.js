@@ -16,6 +16,7 @@ app.use(bodyParser.json({
 }));
 
 app.use(express.static(__dirname + '/app'));
+app.use(express.static(__dirname + '/data'));
 
 require(__basedir + 'api/routes')(app);
 
