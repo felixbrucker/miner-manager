@@ -10,7 +10,8 @@
     "wait.for": "^0.6.6",
     "websocket": "^1.0.23",
     "console-stamp": "^0.2.2",
-    "rotating-file-stream":"^1.0.5"
+    "rotating-file-stream":"^1.0.5",
+    "net":"^1.0.2"
   },
   "scripts": {
     "start": "node main.js"
