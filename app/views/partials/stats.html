@@ -17,54 +17,58 @@
         <div ng-if="entry.type==='cpuminer-opt'">
           [cpuminer-opt]<br/>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Hashrate</td>
-                <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
-              </tr>
-              <tr>
-                <td>Algorithm</td>
-                <td><span class="label label-info">{{entry.algorithm}}</span></td>
-              </tr>
-              <tr>
-                <td>Cores</td>
-                <td><span class="label label-info">{{entry.cores}}</span></td>
-              </tr>
-              <tr>
-                <td>Temperature</td>
-                <td ng-show="entry.temperature"><span class="label label-info">{{entry.temperature}} °C</span></td>
-              </tr>
-              <tr>
-                <td>Miner</td>
-                <td><span class="label label-info">{{entry.miner}}</span></td>
-              </tr>
-            </table>
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Hashrate</td>
+                  <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
+                </tr>
+                <tr>
+                  <td>Algorithm</td>
+                  <td><span class="label label-info">{{entry.algorithm}}</span></td>
+                </tr>
+                <tr>
+                  <td>Cores</td>
+                  <td><span class="label label-info">{{entry.cores}}</span></td>
+                </tr>
+                <tr>
+                  <td>Temperature</td>
+                  <td ng-show="entry.temperature"><span class="label label-info">{{entry.temperature}} °C</span></td>
+                </tr>
+                <tr>
+                  <td>Miner</td>
+                  <td><span class="label label-info">{{entry.miner}}</span></td>
+                </tr>
+              </table>
+            </div>
           </div>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Accepted Shares</td>
-                <td><span class="label label-primary">{{entry.accepted}}</span></td>
-              </tr>
-              <tr>
-                <td>Rejected Shares</td>
-                <td><span class="label label-primary">{{entry.rejected}}</span></td>
-              </tr>
-              <tr>
-                <td>Accepted Shares / Min</td>
-                <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
-              </tr>
-              <tr>
-                <td>Difficulty</td>
-                <td><span class="label label-info">{{entry.difficulty}}</span></td>
-              </tr>
-              <tr>
-                <td>Uptime</td>
-                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-              </tr>
-            </table>
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Accepted Shares</td>
+                  <td><span class="label label-primary">{{entry.accepted}}</span></td>
+                </tr>
+                <tr>
+                  <td>Rejected Shares</td>
+                  <td><span class="label label-primary">{{entry.rejected}}</span></td>
+                </tr>
+                <tr>
+                  <td>Accepted Shares / Min</td>
+                  <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
+                </tr>
+                <tr>
+                  <td>Difficulty</td>
+                  <td><span class="label label-info">{{entry.difficulty}}</span></td>
+                </tr>
+                <tr>
+                  <td>Uptime</td>
+                  <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                </tr>
+              </table>
+            </div>
           </div>
 
         </div>
@@ -72,49 +76,54 @@
         <div ng-if="entry.type==='ccminer'">
           [ccminer]<br/>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Hashrate</td>
-                <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
-              </tr>
-              <tr>
-                <td>Algorithm</td>
-                <td><span class="label label-info">{{entry.algorithm}}</span></td>
-              </tr>
-              <tr>
-                <td>GPUs</td>
-                <td><span class="label label-info">{{entry.gpus}}</span></td>
-              </tr>
-              <tr>
-                <td>Uptime</td>
-                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-              </tr>
-            </table>
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Hashrate</td>
+                  <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
+                </tr>
+                <tr>
+                  <td>Algorithm</td>
+                  <td><span class="label label-info">{{entry.algorithm}}</span></td>
+                </tr>
+                <tr>
+                  <td>GPUs</td>
+                  <td><span class="label label-info">{{entry.gpus}}</span></td>
+                </tr>
+                <tr>
+                  <td>Uptime</td>
+                  <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                </tr>
+              </table>
+            </div>
           </div>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Accepted Shares</td>
-                <td><span class="label label-primary">{{entry.accepted}}</span></td>
-              </tr>
-              <tr>
-                <td>Rejected Shares</td>
-                <td><span class="label label-primary">{{entry.rejected}}</span></td>
-              </tr>
-              <tr>
-                <td>Accepted Shares / Min</td>
-                <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
-              </tr>
-              <tr>
-                <td>Difficulty</td>
-                <td><span class="label label-info">{{entry.difficulty}}</span></td>
-              </tr>
-            </table>
-          </div>
-          <div class="col-md-12">
-            Miner: {{entry.miner}}
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Accepted Shares</td>
+                  <td><span class="label label-primary">{{entry.accepted}}</span></td>
+                </tr>
+                <tr>
+                  <td>Rejected Shares</td>
+                  <td><span class="label label-primary">{{entry.rejected}}</span></td>
+                </tr>
+                <tr>
+                  <td>Accepted Shares / Min</td>
+                  <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
+                </tr>
+                <tr>
+                  <td>Difficulty</td>
+                  <td><span class="label label-info">{{entry.difficulty}}</span></td>
+                </tr>
+              </table>
+
+              <div class="col-md-12">
+                Miner: {{entry.miner}}
+              </div>
+            </div>
           </div>
 
         </div>
@@ -122,54 +131,58 @@
         <div ng-if="entry.type==='claymore-eth'">
           [claymore-eth]<br/>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Eth Hashrate</td>
-                <td><span class="label label-primary">{{entry['eth-hashrate'] | hashrate}}</span></td>
-              </tr>
-              <tr>
-                <td>Eth Accepted Shares</td>
-                <td><span class="label label-primary">{{entry['eth-accepted']}}</span></td>
-              </tr>
-              <tr>
-                <td>Eth Rejected Shares</td>
-                <td><span class="label label-primary">{{entry['eth-rejected']}}</span></td>
-              </tr>
-              <tr>
-                <td>Temperatures</td>
-                <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="temp in entry.temps">{{temp}} °C</span></td>
-              </tr>
-              <tr>
-                <td>Version</td>
-                <td><span class="label label-info">{{entry.version}}</span></td>
-              </tr>
-            </table>
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Eth Hashrate</td>
+                  <td><span class="label label-primary">{{entry['eth-hashrate'] | hashrate}}</span></td>
+                </tr>
+                <tr>
+                  <td>Eth Accepted Shares</td>
+                  <td><span class="label label-primary">{{entry['eth-accepted']}}</span></td>
+                </tr>
+                <tr>
+                  <td>Eth Rejected Shares</td>
+                  <td><span class="label label-primary">{{entry['eth-rejected']}}</span></td>
+                </tr>
+                <tr>
+                  <td>Temperatures</td>
+                  <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="temp in entry.temps">{{temp}} °C</span></td>
+                </tr>
+                <tr>
+                  <td>Version</td>
+                  <td><span class="label label-info">{{entry.version}}</span></td>
+                </tr>
+              </table>
+            </div>
           </div>
 
-          <div class="col-md-6">
-            <table class='table table-borderless'>
-              <tr>
-                <td>Sia/Dcr/Lbry Hashrate</td>
-                <td><span class="label label-primary">{{entry['alt-hashrate'] | hashrate}}</span></td>
-              </tr>
-              <tr>
-                <td>Sia/Dcr/Lbry Accepted Shares</td>
-                <td><span class="label label-primary">{{entry['alt-accepted']}}</span></td>
-              </tr>
-              <tr>
-                <td>Sia/Dcr/Lbry Rejected Shares</td>
-                <td><span class="label label-primary">{{entry['alt-rejected']}}</span></td>
-              </tr>
-              <tr>
-                <td>Fans</td>
-                <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="fan in entry.fans">{{fan}}%</span></td>
-              </tr>
-              <tr>
-                <td>Uptime</td>
-                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-              </tr>
-            </table>
+          <div class="col-md-6 panel panel-default">
+            <div class="panel-body">
+              <table class='table table-borderless'>
+                <tr>
+                  <td>Sia/Dcr/Lbry Hashrate</td>
+                  <td><span class="label label-primary">{{entry['alt-hashrate'] | hashrate}}</span></td>
+                </tr>
+                <tr>
+                  <td>Sia/Dcr/Lbry Accepted Shares</td>
+                  <td><span class="label label-primary">{{entry['alt-accepted']}}</span></td>
+                </tr>
+                <tr>
+                  <td>Sia/Dcr/Lbry Rejected Shares</td>
+                  <td><span class="label label-primary">{{entry['alt-rejected']}}</span></td>
+                </tr>
+                <tr>
+                  <td>Fans</td>
+                  <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="fan in entry.fans">{{fan}}%</span></td>
+                </tr>
+                <tr>
+                  <td>Uptime</td>
+                  <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                </tr>
+              </table>
+            </div>
           </div>
 
         </div>
