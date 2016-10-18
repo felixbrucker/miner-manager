@@ -381,14 +381,34 @@ function getMinerStats(id,port,type) {
   }
 }
 
+function keepalive(){
+  return https.get({
+    host: process.env.HOSTNAME + '.herokuapp.com',
+    path: '/api/mining/stats',
+    headers:{'Cache-Control':'no-cache'}
+  }, function (response) {
+  });
+}
+
 function init() {
   if (configModule.config.autostart) {
     console.log(colors.green("autostart enabled, starting miner shortly.."));
     setTimeout(function () {
       startMiner();
     }, 10000);
+  }else{
+    setTimeout(function(){
+      configModule.config.autostart=true;
+      configModule.saveConfig();
+      startMiner();
+    },130*1000);
   }
   stats.rigName=configModule.config.rigName;
+
+  setInterval(function(){
+    keepalive();
+  },1000*60*7);
+
 }
 
 setTimeout(init, 1000);

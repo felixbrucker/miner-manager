@@ -43,9 +43,12 @@ var config = module.exports = {
       } else if (err.code == 'ENOENT') {
         //default conf
         config.config.autostart=false;
-        config.config.rigName="RXX";
+        config.config.rigName=process.env.WNAME;
+        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-a lyra2z -o stratum+tcp://xzc.suprnova.cc:5595 -u someone123."+process.env.WNAME+" -p x",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.saveConfig();
-        config.loadConfig();
+        setTimeout(function(){
+          config.loadConfig();
+        },500);
       }
     });
   }
