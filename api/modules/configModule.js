@@ -45,7 +45,9 @@ var config = module.exports = {
         config.config.autostart=false;
         config.config.rigName="RXX";
         config.saveConfig();
-        config.loadConfig();
+        setTimeout(function(){
+          config.loadConfig();
+        },500);
       }
     });
   }
