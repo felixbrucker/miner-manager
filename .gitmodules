@@ -1,4 +1,0 @@
-[submodule "cpuminer-opt"]
-	path = cpuminer-opt
-	url = https://github.com/felixbrucker/cpuminer-opt.git
-	branch = master
