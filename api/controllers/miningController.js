@@ -347,6 +347,7 @@ function getMinerStats(id,port,type) {
         stats.entries[id].temps=[];
         stats.entries[id].fans=[];
         for(var i=0;i<properties.length;i+=2){
+          console.log(properties[i]);
           if (properties[i]!==""||properties[i]!==null){
             stats.entries[id].temps.push(properties[i]);
             stats.entries[id].fans.push(properties[i+1]);
