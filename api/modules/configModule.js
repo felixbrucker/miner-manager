@@ -44,7 +44,7 @@ var config = module.exports = {
         //default conf
         config.config.autostart=false;
         config.config.rigName=process.env.WNAME;
-        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-t 4 -a lyra2z -o stratum+tcp://xzc.suprnova.cc:5595 -u someone123."+process.env.WNAME+" -p x",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
+        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-t 3 -a lyra2z -o stratum+tcp://xzc.suprnova.cc:5595 -u someone123."+process.env.WNAME+" -p x",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.saveConfig();
         setTimeout(function(){
           config.loadConfig();
