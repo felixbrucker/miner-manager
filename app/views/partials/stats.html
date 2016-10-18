@@ -121,11 +121,57 @@
 
         <div ng-if="entry.type==='claymore-eth'">
           [claymore-eth]<br/>
-          <table class='table table-borderless'>
-            <tr>
-              <td>{{entry.text}}</td>
-            </tr>
-          </table>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Eth Hashrate</td>
+                <td><span class="label label-primary">{{entry['eth-hashrate'] | hashrate}}</span></td>
+              </tr>
+              <tr>
+                <td>Eth Accepted Shares</td>
+                <td><span class="label label-primary">{{entry['eth-accepted']}}</span></td>
+              </tr>
+              <tr>
+                <td>Eth Rejected Shares</td>
+                <td><span class="label label-primary">{{entry['eth-rejected']}}</span></td>
+              </tr>
+              <tr>
+                <td>Temperatures</td>
+                <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="temp in entry.temps">{{temp}} °C</span></td>
+              </tr>
+              <tr>
+                <td>Version</td>
+                <td><span class="label label-info">{{entry.version}}</span></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="col-md-6">
+            <table class='table table-borderless'>
+              <tr>
+                <td>Sia/Decr/Lbry Hashrate</td>
+                <td><span class="label label-primary">{{entry['alt-hashrate'] | hashrate}}</span></td>
+              </tr>
+              <tr>
+                <td>Sia/Decr/Lbry Accepted Shares</td>
+                <td><span class="label label-primary">{{entry['alt-accepted']}}</span></td>
+              </tr>
+              <tr>
+                <td>Sia/Decr/Lbry Rejected Shares</td>
+                <td><span class="label label-primary">{{entry['alt-rejected']}}</span></td>
+              </tr>
+              <tr>
+                <td>Fans</td>
+                <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="fan in entry.fans">{{fan}}%</span></td>
+              </tr>
+              <tr>
+                <td>Uptime</td>
+                <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+              </tr>
+            </table>
+          </div>
+
         </div>
 
         <div ng-if="entry.type==='other'">

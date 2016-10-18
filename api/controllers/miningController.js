@@ -277,7 +277,7 @@ function getMinerStats(id,port,type) {
         connection.on('message', function (message) {
           if (message.type === 'utf8') {
             var properties = message.utf8Data.split('|');
-            var properties = properties[0].split(';');
+            properties = properties[0].split(';');
             var obj = {};
             properties.forEach(function (property) {
               var tup = property.split('=');
@@ -306,6 +306,73 @@ function getMinerStats(id,port,type) {
       client.connect('ws://127.0.0.1:'+port+'/summary', 'text');
       break;
     case "claymore-eth":
+      var net = require('net');
+      var mysocket = new net.Socket();
+
+      mysocket.on('connect', function() {
+        var req = '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}';
+        mysocket.write(req + '\n');
+        mysocket.setTimeout(1000);
+      });
+
+      mysocket.on('timeout', function() {
+        console.log(colors.red("timeout connecting to claymore-eth on port "+port));
+        mysocket.destroy();
+        stats.entries[id].uptime=null;
+        stats.entries[id]['eth-hashrate']=null;
+        stats.entries[id]['eth-accepted']=null;
+        stats.entries[id]['eth-rejected']=null;
+        stats.entries[id]['alt-hashrate']=null;
+        stats.entries[id]['alt-accepted']=null;
+        stats.entries[id]['alt-rejected']=null;
+        stats.entries[id].temps=null;
+        stats.entries[id].fans=null;
+        stats.entries[id].pools=null;
+        stats.entries[id].version=null;
+      });
+
+      mysocket.on('data', function(data) {
+        mysocket.setTimeout(0);
+        var d = JSON.parse(data);
+        stats.entries[id].uptime= d.result[1]*60;
+        var properties = d.result[2].split(';');
+        stats.entries[id]['eth-hashrate']=properties[0];
+        stats.entries[id]['eth-accepted']=properties[1];
+        stats.entries[id]['eth-rejected']=properties[2];
+        properties = d.result[4].split(';');
+        stats.entries[id]['alt-hashrate']=properties[0];
+        stats.entries[id]['alt-accepted']=properties[1];
+        stats.entries[id]['alt-rejected']=properties[2];
+        properties = d.result[6].split(';');
+        stats.entries[id].temps=[];
+        stats.entries[id].fans=[];
+        for(var i=0;i<properties.length;i+=2){
+          stats.entries[id].temps.push(properties[i]);
+          stats.entries[id].fans.push(properties[i+1]);
+        }
+        stats.entries[id].pools = d.result[7].split(';');
+        stats.entries[id].version=d.result[0];
+      });
+
+      mysocket.on('close', function() {
+      });
+
+      mysocket.on('error', function(e) {
+        console.log(colors.red("socket error: " + e.message));
+        stats.entries[id].uptime=null;
+        stats.entries[id]['eth-hashrate']=null;
+        stats.entries[id]['eth-accepted']=null;
+        stats.entries[id]['eth-rejected']=null;
+        stats.entries[id]['alt-hashrate']=null;
+        stats.entries[id]['alt-accepted']=null;
+        stats.entries[id]['alt-rejected']=null;
+        stats.entries[id].temps=null;
+        stats.entries[id].fans=null;
+        stats.entries[id].pools=null;
+        stats.entries[id].version=null;
+      });
+
+      mysocket.connect(port, "127.0.0.1");
       break;
     case "other":
       break;
