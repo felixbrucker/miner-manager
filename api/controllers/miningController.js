@@ -347,8 +347,10 @@ function getMinerStats(id,port,type) {
         stats.entries[id].temps=[];
         stats.entries[id].fans=[];
         for(var i=0;i<properties.length;i+=2){
-          stats.entries[id].temps.push(properties[i]);
-          stats.entries[id].fans.push(properties[i+1]);
+          if (properties[i]!==""||properties[i]!==null){
+            stats.entries[id].temps.push(properties[i]);
+            stats.entries[id].fans.push(properties[i+1]);
+          }
         }
         stats.entries[id].pools = d.result[7].split(';');
         stats.entries[id].version=d.result[0];
