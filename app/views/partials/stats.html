@@ -19,9 +19,9 @@
       <div ng-repeat="entry in statsVm.current.entries track by $index">
 
         <div ng-if="entry.type==='cpuminer-opt'">
-          <span style="margin-bottom: 12px;font-size:120%;">[cpuminer-opt]</span><br/>
+          <span style="font-size:120%;">[cpuminer-opt]</span><br/>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -50,7 +50,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -82,9 +82,9 @@
         </div>
 
         <div ng-if="entry.type==='ccminer'">
-          <span style="margin-bottom: 12px;font-size:120%;">[ccminer]</span><br/>
+          <span style="font-size:120%;">[ccminer]</span><br/>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -109,7 +109,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -141,9 +141,9 @@
         </div>
 
         <div ng-if="entry.type==='claymore-eth'">
-          <span style="margin-bottom: 12px;font-size:120%;">[claymore-eth]</span><br/>
+          <span style="font-size:120%;">[claymore-eth]</span><br/>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -173,7 +173,7 @@
             </div>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-6" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -206,8 +206,8 @@
         </div>
 
         <div ng-if="entry.type==='other'">
-          <span style="margin-bottom: 12px;font-size:120%;">[other]</span><br/>
-          <table class='table table-borderless'>
+          <span style="font-size:120%;">[other]</span><br/>
+          <table class='table table-borderless' style="margin-top: 10px;">
             <tr>
               <td>{{entry.text}}</td>
             </tr>
