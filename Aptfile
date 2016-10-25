@@ -6,3 +6,4 @@ libjansson-dev
 libgmp-dev
 automake
 git
+sudo
