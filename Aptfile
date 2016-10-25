@@ -2,8 +2,10 @@ build-essential
 ca-certificates
 libssl-dev
 libcurl4-openssl-dev
+libidn11-dev
+libkrb5-dev
+zlib1g-dev
 libjansson-dev
 libgmp-dev
 automake
 git
-
