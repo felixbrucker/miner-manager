@@ -9,6 +9,7 @@ if [ ! -d "miner-manager" ]; then
   pm2 start process.json
   pm2 save
   cd ..
+  # cpuminer-opt
   git clone https://github.com/felixbrucker/cpuminer-opt
   cd cpuminer-opt
   cp /app/.apt/usr/include/x86_64-linux-gnu/gmp.h .
@@ -16,6 +17,15 @@ if [ ! -d "miner-manager" ]; then
   mkdir -p ../miner-manager/bin
   cp cpuminer ../miner-manager/bin/
   git reset --hard
+  cd ..
+  # nheqminer
+  git clone https://github.com/nicehash/nheqminer.git
+  cd nheqminer/nheqminer
+  mkdir build
+  cd build
+  cmake ..
+  make
+  cp nheqminer ../miner-manager/bin/
   cd ..
   sleep infinity
 fi
