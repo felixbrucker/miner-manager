@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-apt-get update && apt-get -y upgrade
+sudo apt-get update && apt-get -y upgrade
 
 if [ ! -d "miner-manager" ]; then
   git clone --branch cloud https://github.com/felixbrucker/miner-manager
