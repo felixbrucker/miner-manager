@@ -6,5 +6,4 @@ libjansson-dev
 libgmp-dev
 automake
 git
-libboost-all-dev
-cmake
+
