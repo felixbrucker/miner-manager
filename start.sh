@@ -23,9 +23,9 @@ if [ ! -d "miner-manager" ]; then
   cd nheqminer/nheqminer
   mkdir build
   cd build
-  cmake ..
-  make
-  cp nheqminer ../miner-manager/bin/
+  #cmake ..
+  #make
+  #cp nheqminer ../miner-manager/bin/
   cd ..
   sleep infinity
 fi
