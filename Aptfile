@@ -27,7 +27,7 @@ libboost-graph-parallel1.54-dev
 libboost-graph1.54-dev  
 libboost-iostreams1.54-dev  
 libboost-locale1.54-dev  
-libboost-log.54-dev  
+libboost-log1.54-dev  
 libboost-math1.54-dev  
 libboost-mpi-python1.54-dev  
 libboost-mpi1.54-dev  
