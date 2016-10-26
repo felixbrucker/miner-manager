@@ -7,3 +7,5 @@ libgmp-dev
 automake
 git
 nano
+libboost-all-dev
+cmake
