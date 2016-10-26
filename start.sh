@@ -13,7 +13,7 @@ if [ ! -d "miner-manager" ]; then
   git clone https://github.com/felixbrucker/cpuminer-opt
   cd cpuminer-opt
   cp /app/.apt/usr/include/x86_64-linux-gnu/gmp.h .
-  ./build.sh
+  ./build-cloud.sh
   mkdir -p ../miner-manager/bin
   cp cpuminer ../miner-manager/bin/
   git reset --hard
