@@ -67,20 +67,24 @@
          */
         function addCustomMiner() {
             if (vm.newCustomMiner.binPath!==""&&vm.newCustomMiner.binPath!==null&&vm.newCustomMiner.cmdline!==""&&vm.newCustomMiner.cmdline!==null){
-                //gen unique id
-                vm.newCustomMiner.id=Date.now();
-                //add to array
-                vm.config.entries.push(JSON.parse(JSON.stringify(vm.newCustomMiner)));
-                //clear variables
-                vm.newCustomMiner.id=null;
-                vm.newCustomMiner.enabled=true;
-                vm.newCustomMiner.binPath="";
-                vm.newCustomMiner.cmdline="";
-                vm.newCustomMiner.type=null;
-                vm.newCustomMiner.port=null;
-                vm.newCustomMiner.writeMinerLog=true;
-                vm.newCustomMiner.shell=false;
-                vm.setConfig();
+                if (vm.newCustomMiner.type!=='other'&&(vm.newCustomMiner.port===null||vm.newCustomMiner.port==="")){
+                    return false;
+                }else{
+                    //gen unique id
+                    vm.newCustomMiner.id=Date.now();
+                    //add to array
+                    vm.config.entries.push(JSON.parse(JSON.stringify(vm.newCustomMiner)));
+                    //clear variables
+                    vm.newCustomMiner.id=null;
+                    vm.newCustomMiner.enabled=true;
+                    vm.newCustomMiner.binPath="";
+                    vm.newCustomMiner.cmdline="";
+                    vm.newCustomMiner.type=null;
+                    vm.newCustomMiner.port=null;
+                    vm.newCustomMiner.writeMinerLog=true;
+                    vm.newCustomMiner.shell=false;
+                    vm.setConfig();
+                }
             }
         }
 
