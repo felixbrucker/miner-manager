@@ -143,7 +143,7 @@ function startMiner() {
                 });
                 miner[entry.id].stdout.on('data', function (data) {
                   if (entry.writeMinerLog) {
-                    miner_logs[entry.id].write(data.toString());
+                    miner_logs[entry.id].write(data.toString()+"|||");
                   }
                   if(data.toString().indexOf("CUDA error")!==-1){
                     kill(miner[entry.id].pid);
