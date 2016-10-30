@@ -165,7 +165,7 @@ function startMiner() {
                   restartMinerOnExit(entry,minerString);
                 });
                 miner[entry.id].on('error', function(err) {
-                  console.log('Error: ' + err);
+                  //silently discard enoent for killing proc
                 });
 
               }(entry,minerString));
@@ -231,7 +231,7 @@ function restartMinerOnExit(entry,minerString){
         restartMinerOnExit(entry,minerString);
       });
       miner[entry.id].on('error', function(err) {
-        console.log('Error: ' + err);
+        //silently discard enoent for killing proc
       });
     }(entry,minerString));
   }
