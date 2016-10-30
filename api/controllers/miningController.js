@@ -121,11 +121,11 @@ function startMiner() {
                     shell:true,
                     detached:true,
                     cwd:path.dirname(entry.binPath)
-                  }).on('error', function( err ){ throw err });
+                  });
                 else
                   miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
                     cwd:path.dirname(entry.binPath)
-                  }).on('error', function( err ){ throw err });
+                  });
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
                 stats.entries[entry.id].type=entry.type;
@@ -163,6 +163,9 @@ function startMiner() {
 
                 miner[entry.id].on('exit', function(){
                   restartMinerOnExit(entry,minerString);
+                });
+                miner[entry.id].on('error', function(err) {
+                  console.log('Error: ' + err);
                 });
 
               }(entry,minerString));
@@ -226,6 +229,9 @@ function restartMinerOnExit(entry,minerString){
       });
       miner[entry.id].on('exit', function(){
         restartMinerOnExit(entry,minerString);
+      });
+      miner[entry.id].on('error', function(err) {
+        console.log('Error: ' + err);
       });
     }(entry,minerString));
   }
