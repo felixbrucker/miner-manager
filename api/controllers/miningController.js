@@ -4,6 +4,7 @@ const https = require('https');
 const http = require('http');
 const wait = require('wait.for');
 var fs = require('fs');
+var path = require('path');
 var colors = require('colors/safe');
 var psTree = require('ps-tree');
 var rfs    = require('rotating-file-stream');
@@ -118,10 +119,13 @@ function startMiner() {
                 if (entry.shell)
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
                     shell:true,
-                    detached:true
+                    detached:true,
+                    cwd:path.dirname(entry.binPath)
                   });
                 else
-                  miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+                  miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+                    cwd:path.dirname(entry.binPath)
+                  });
 
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
@@ -195,10 +199,13 @@ function restartMinerOnExit(entry,minerString){
       if (entry.shell)
         miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
           shell:true,
-          detached:true
+          detached:true,
+          cwd:path.dirname(entry.binPath)
         });
       else
-        miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+        miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+          cwd:path.dirname(entry.binPath)
+        });
 
       console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
       miner[entry.id].stdout.on('data', function (data) {
