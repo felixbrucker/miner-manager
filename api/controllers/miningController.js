@@ -126,7 +126,7 @@ function startMiner() {
                   miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
                     cwd:path.dirname(entry.binPath)
                   });
-
+console.log(path.dirname(entry.binPath));
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
                 stats.entries[entry.id].type=entry.type;
