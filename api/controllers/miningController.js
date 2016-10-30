@@ -117,16 +117,15 @@ function startMiner() {
 
               (function (entry,minerString){
                 if (entry.shell)
-                  miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+                  miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
                     shell:true,
                     detached:true,
                     cwd:path.dirname(entry.binPath)
                   });
                 else
-                  miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+                  miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
                     cwd:path.dirname(entry.binPath)
                   });
-console.log(path.dirname(entry.binPath));
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
                 stats.entries[entry.id].type=entry.type;
@@ -197,13 +196,13 @@ function restartMinerOnExit(entry,minerString){
       const spawn = require('cross-spawn');
       console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
       if (entry.shell)
-        miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+        miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
           shell:true,
           detached:true,
           cwd:path.dirname(entry.binPath)
         });
       else
-        miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+        miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
           cwd:path.dirname(entry.binPath)
         });
 
