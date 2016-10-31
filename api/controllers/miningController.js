@@ -148,7 +148,8 @@ function startMiner() {
                     miner_logs[entry.id].write(data.toString());
                   }
                   if(checkMinerOutputString(data.toString())){
-                    setTimeout(function(){kill(miner[entry.id].pid);},1000);
+                    miner[entry.id].kill();
+                    kill(miner[entry.id].pid);
                   }
                 });
                 miner[entry.id].stderr.on('data', function (data) {
@@ -156,7 +157,8 @@ function startMiner() {
                     miner_logs[entry.id].write(data.toString());
                   }
                   if(checkMinerOutputString(data.toString())){
-                    setTimeout(function(){kill(miner[entry.id].pid);},1000);
+                    miner[entry.id].kill();
+                    kill(miner[entry.id].pid);
                   }
                 });
 
@@ -214,7 +216,8 @@ function restartMinerOnExit(entry,minerString){
           miner_logs[entry.id].write(data.toString());
         }
         if(checkMinerOutputString(data.toString())){
-          setTimeout(function(){kill(miner[entry.id].pid);},1000);
+          miner[entry.id].kill();
+          kill(miner[entry.id].pid);
         }
       });
       miner[entry.id].stderr.on('data', function (data) {
@@ -222,7 +225,8 @@ function restartMinerOnExit(entry,minerString){
           miner_logs[entry.id].write(data.toString());
         }
         if(checkMinerOutputString(data.toString())){
-          setTimeout(function(){kill(miner[entry.id].pid);},1000);
+          miner[entry.id].kill();
+          kill(miner[entry.id].pid);
         }
       });
       miner[entry.id].on('exit', function(){
