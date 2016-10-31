@@ -117,7 +117,7 @@ function startMiner() {
                     miner_logs[entry.id].write(data.toString());
                   }
                   if(checkMinerOutputString(data.toString())){
-                    setTimeout(function(){(miner[entry.id].kill('SIGKILL');},1000);
+                    setTimeout(function(){miner[entry.id].kill('SIGKILL');},1000);
                   }
                 });
                 miner[entry.id].stderr.on('data', function (data) {
