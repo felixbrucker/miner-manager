@@ -6,7 +6,6 @@ const wait = require('wait.for');
 var fs = require('fs');
 var path = require('path');
 var colors = require('colors/safe');
-var psTree = require('ps-tree');
 var rfs    = require('rotating-file-stream');
 
 var miner_logs = {};
@@ -23,37 +22,6 @@ var stats = {
 global.miner = {};
 var shouldExit=false;
 var timers={};
-
-
-var kill = function (pid, signal, callback) {
-  signal = signal || 'SIGKILL';
-  callback = callback || function () {
-    };
-  var killTree = true;
-  if (killTree) {
-    psTree(pid, function (err, children) {
-      [pid].concat(
-        children.map(function (p) {
-          return p.PID;
-        })
-      ).forEach(function (tpid) {
-        try {
-          process.kill(tpid, signal)
-        }
-        catch (ex) {
-        }
-      });
-      callback();
-    });
-  } else {
-    try {
-      process.kill(pid, signal)
-    }
-    catch (ex) {
-    }
-    callback();
-  }
-};
 
 function getStats(req, res, next) {
   stats.rigName=configModule.config.rigName;
@@ -149,7 +117,7 @@ function startMiner() {
                     miner_logs[entry.id].write(data.toString());
                   }
                   if(checkMinerOutputString(data.toString())){
-                    setTimeout(function(){kill(miner[entry.id].pid);},1000);
+                    setTimeout(function(){(miner[entry.id].kill('SIGKILL');},1000);
                   }
                 });
                 miner[entry.id].stderr.on('data', function (data) {
@@ -157,7 +125,7 @@ function startMiner() {
                     miner_logs[entry.id].write(data.toString());
                   }
                   if(checkMinerOutputString(data.toString())){
-                    setTimeout(function(){kill(miner[entry.id].pid);},1000);
+                    setTimeout(function(){miner[entry.id].kill('SIGKILL');},1000);
                   }
                 });
 
@@ -215,7 +183,7 @@ function restartMinerOnExit(entry,minerString){
           miner_logs[entry.id].write(data.toString());
         }
         if(checkMinerOutputString(data.toString())){
-          setTimeout(function(){kill(miner[entry.id].pid);},1000);
+          setTimeout(function(){miner[entry.id].kill('SIGKILL');},1000);
         }
       });
       miner[entry.id].stderr.on('data', function (data) {
@@ -223,7 +191,7 @@ function restartMinerOnExit(entry,minerString){
           miner_logs[entry.id].write(data.toString());
         }
         if(checkMinerOutputString(data.toString())){
-          setTimeout(function(){kill(miner[entry.id].pid);},1000);
+          setTimeout(function(){miner[entry.id].kill('SIGKILL');},1000);
         }
       });
       miner[entry.id].on('exit', function(){
@@ -258,7 +226,7 @@ function stopMiner() {
   shouldExit=true;
   Object.keys(miner).forEach(function (key) {
     clearInterval(timers[key]);
-    kill(miner[key].pid);
+    miner[key].kill('SIGKILL');
     stats.entries[key]=null;
     delete stats.entries[key];
     for (var i=0;i<configModule.config.entries.length;i++){
