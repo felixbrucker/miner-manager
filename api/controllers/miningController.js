@@ -236,9 +236,7 @@ function stopMiner() {
       }
     }
     miner[key]=null;
-    miner_logs[key]=null;
     delete miner[key];
-    delete miner_logs[key];
   });
   stats.running=false;
   setTimeout(function(){shouldExit=false;},5000);
