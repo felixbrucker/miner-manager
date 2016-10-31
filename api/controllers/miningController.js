@@ -191,7 +191,6 @@ function startMiner() {
 }
 
 function restartMinerOnExit(entry,minerString){
-  console.log(shouldExit);
   if (!shouldExit){
     (function (entry,minerString){
       stats.entries[entry.id]={};
