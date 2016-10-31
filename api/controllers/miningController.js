@@ -237,7 +237,7 @@ function restartMinerOnExit(entry,minerString){
 }
 
 function checkMinerOutputString(output){
-  if (output.indexOf("CUDA error")!==-1 || output.indexOf("null (23)")!==-1 || output.indexOf("read_until")!==-1)
+  if (output.indexOf("CUDA error")!==-1 || output.indexOf("null (23)")!==-1 || output.indexOf("Retrying in")!==-1)
     return true;
   else
     return false;
