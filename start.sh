@@ -19,13 +19,8 @@ if [ ! -d "miner-manager" ]; then
   git reset --hard
   cd ..
   # nheqminer
-  git clone https://github.com/nicehash/nheqminer.git
-  cd nheqminer/nheqminer
-  mkdir build
-  cd build
-  #cmake ..
-  #make
-  #cp nheqminer ../miner-manager/bin/
-  cd ..
+  wget https://github.com/kost/nheqminer/releases/download/v0.3.6/nheqminer-linux-static-x64-autoavx
+  chmod +x nheqminer-linux-static-x64-autoavx
+  mv nheqminer-linux-static-x64-autoavx miner-manager/bin/nheqminer
   sleep infinity
 fi
