@@ -148,7 +148,7 @@ function startMiner() {
                   if (entry.writeMinerLog) {
                     miner_logs[entry.id].write(data.toString());
                   }
-                  if(data.toString().indexOf("CUDA error")!==-1 || data.toString().indexOf("null (23)")!==-1){
+                  if(checkMinerOutputString(data.toString())){
                     kill(miner[entry.id].pid);
                   }
                 });
@@ -156,7 +156,7 @@ function startMiner() {
                   if (entry.writeMinerLog){
                     miner_logs[entry.id].write(data.toString());
                   }
-                  if(data.toString().indexOf("CUDA error")!==-1 || data.toString().indexOf("null (23)")!==-1){
+                  if(checkMinerOutputString(data.toString())){
                     kill(miner[entry.id].pid);
                   }
                 });
@@ -214,7 +214,7 @@ function restartMinerOnExit(entry,minerString){
         if (entry.writeMinerLog) {
           miner_logs[entry.id].write(data.toString());
         }
-        if(data.toString().indexOf("CUDA error")!==-1 || data.toString().indexOf("null (23)")!==-1){
+        if(checkMinerOutputString(data.toString())){
           kill(miner[entry.id].pid);
         }
       });
@@ -222,7 +222,7 @@ function restartMinerOnExit(entry,minerString){
         if (entry.writeMinerLog){
           miner_logs[entry.id].write(data.toString());
         }
-        if(data.toString().indexOf("CUDA error")!==-1 || data.toString().indexOf("null (23)")!==-1){
+        if(checkMinerOutputString(data.toString())){
           kill(miner[entry.id].pid);
         }
       });
@@ -234,6 +234,13 @@ function restartMinerOnExit(entry,minerString){
       });
     }(entry,minerString));
   }
+}
+
+function checkMinerOutputString(output){
+  if (output.indexOf("CUDA error")!==-1 || output.indexOf("null (23)")!==-1 || output.indexOf("read_until")!==-1)
+    return true;
+  else
+    return false;
 }
 
 function stopMining(req, res, next) {
