@@ -212,16 +212,28 @@ function restartMinerOnExit(entry,minerString){
       stats.entries[entry.id].text=entry.binPath+" "+minerString;
       const spawn = require('cross-spawn');
       console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
-      if (entry.shell)
-        miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-          shell:true,
-          detached:true,
-          cwd:path.dirname(entry.binPath)
-        });
-      else
-        miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-          cwd:path.dirname(entry.binPath)
-        });
+      var isWin = /^win/.test(process.platform);
+      if (entry.shell){
+        if (isWin)
+          miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+            shell:true,
+            detached:true,
+            cwd:path.dirname(entry.binPath)
+          });
+        else
+          miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+            shell:true,
+            detached:true
+          });
+      }
+      else{
+        if (isWin)
+          miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+            cwd:path.dirname(entry.binPath)
+          });
+        else
+          miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+      }
 
       console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
       miner[entry.id].stdout.on('data', function (data) {
