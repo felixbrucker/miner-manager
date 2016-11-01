@@ -115,16 +115,28 @@ function startMiner() {
               }
 
               (function (entry,minerString){
-                if (entry.shell)
-                  miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-                    shell:true,
-                    detached:true,
-                    cwd:path.dirname(entry.binPath)
-                  });
-                else
-                  miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-                    cwd:path.dirname(entry.binPath)
-                  });
+                var isWin = /^win/.test(process.platform);
+                if (entry.shell){
+                  if (isWin)
+                    miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+                      shell:true,
+                      detached:true,
+                      cwd:path.dirname(entry.binPath)
+                    });
+                  else
+                    miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+                      shell:true,
+                      detached:true
+                    });
+                }
+                else{
+                  if (isWin)
+                    miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+                      cwd:path.dirname(entry.binPath)
+                    });
+                  else
+                    miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+                }
                 console.log(miner[entry.id].pid);
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
