@@ -137,7 +137,6 @@ function startMiner() {
                   else
                     miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
                 }
-                console.log(miner[entry.id].pid);
                 if (stats.entries[entry.id]===undefined)
                   stats.entries[entry.id]={};
                 stats.entries[entry.id].type=entry.type;
