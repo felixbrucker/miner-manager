@@ -57,7 +57,7 @@
 
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-md-12">
-      <button type="button" class="btn btn-success" ng-click="configVm.setConfig()">Save
+      <button type="button" class="btn btn-success" ng-click="configVm.setConfig()" ng-disabled="config.$invalid">Save
       </button>
       <i ng-show="configVm.waiting" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
       <span class="sr-only">Loading...</span>
