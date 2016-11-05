@@ -72,6 +72,9 @@
       hashrate = hashrate * 1000;
       var units = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
+      if (number<0)
+        return hashrate + ' H/s';
+      else
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
   });
@@ -82,7 +85,10 @@
       if (typeof precision === 'undefined') precision = 1;
       var units = ['I/s', 'KI/s', 'MI/s', 'GI/s', 'TI/s', 'PI/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
-      return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
+      if (number<0)
+        return hashrate + ' I/s';
+      else
+        return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
   });
   app.filter('solutionrate', function () {
@@ -92,6 +98,9 @@
       if (typeof precision === 'undefined') precision = 1;
       var units = ['Sol/s', 'KSol/s', 'MSol/s', 'GSol/s', 'TSol/s', 'PSol/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
+      if (number<0)
+        return hashrate + ' Sol/s';
+      else
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
   });
