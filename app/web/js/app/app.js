@@ -80,7 +80,6 @@
       if (isNaN(parseFloat(hashrate)) || !isFinite(hashrate)) return '';
       if (parseFloat(hashrate) === 0) return '0 I/s';
       if (typeof precision === 'undefined') precision = 1;
-      hashrate = hashrate * 1000;
       var units = ['I/s', 'KI/s', 'MI/s', 'GI/s', 'TI/s', 'PI/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
@@ -91,7 +90,6 @@
       if (isNaN(parseFloat(hashrate)) || !isFinite(hashrate)) return '';
       if (parseFloat(hashrate) === 0) return '0 Sol/s';
       if (typeof precision === 'undefined') precision = 1;
-      hashrate = hashrate * 1000;
       var units = ['Sol/s', 'KSol/s', 'MSol/s', 'GSol/s', 'TSol/s', 'PSol/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
