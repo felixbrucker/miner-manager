@@ -3,6 +3,7 @@
 var configModule = require(__basedir + 'api/modules/configModule');
 var miningController = require(__basedir + 'api/controllers/miningController');
 
+
 function getConfig(req, res, next) {
   var obj=configModule.config;
   obj.types=configModule.configNonPersistent.types;
