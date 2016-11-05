@@ -375,6 +375,7 @@ function getMinerStats(id,port,type) {
         var req = '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}';
         mysocket.write(req + '\n');
         mysocket.setTimeout(1000);
+        mysocket.end();
       });
 
       mysocket.on('timeout', function() {
@@ -435,6 +436,7 @@ function getMinerStats(id,port,type) {
         var req = '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}';
         mysocket.write(req + '\n');
         mysocket.setTimeout(1000);
+        mysocket.end();
       });
 
       mysocket.on('timeout', function() {
@@ -488,6 +490,7 @@ function getMinerStats(id,port,type) {
         var req = 'status';
         mysocket.write(req + '\n');
         mysocket.setTimeout(1000);
+        mysocket.end();
       });
 
       mysocket.on('timeout', function() {
