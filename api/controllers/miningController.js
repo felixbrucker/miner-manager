@@ -320,7 +320,6 @@ function restartMiner(){
 
 
 function getMinerStats(id,port,type) {
-  console.log("getstats");
   switch(type){
     case "cpuminer-opt":
     case "ccminer":
