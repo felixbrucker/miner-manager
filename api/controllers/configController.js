@@ -4,8 +4,10 @@ var configModule = require(__basedir + 'api/modules/configModule');
 
 
 function getConfig(req, res, next) {
+  var obj=configModule.config;
+  obj.types=configModule.configNonPersistent.types;
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(configModule.config));
+  res.send(JSON.stringify(obj));
 }
 function setConfig(req, res, next) {
   configModule.setConfig(req.body);

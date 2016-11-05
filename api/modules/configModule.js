@@ -12,8 +12,10 @@ var config = module.exports = {
   config: {
     autostart:null,
     entries:[],
-    rigName:null,
-    types:["cpuminer-opt","ccminer","claymore-eth","other"]
+    rigName:null
+  },
+  configNonPersistent:{
+    types:["cpuminer-opt","ccminer","claymore-eth","claymore-zec","nheqminer","other"]
   },
   getConfig: function () {
     return config.config;

@@ -107,7 +107,11 @@ function startMiner() {
                     minerString+=" -b 127.0.0.1:"+entry.port;
                     break;
                   case "claymore-eth":
+                  case "claymore-zec":
                     minerString+=" -mport "+entry.port;
+                    break;
+                  case "nheqminer":
+                    minerString+=" -a "+entry.port;
                     break;
                   case "other":
                     break;
@@ -432,6 +436,107 @@ function getMinerStats(id,port,type) {
         stats.entries[id].version=null;
       });
 
+      mysocket.connect(port, "127.0.0.1");
+      break;
+    case "claymore-zec":
+      var net = require('net');
+      var mysocket = new net.Socket();
+
+      mysocket.on('connect', function() {
+        var req = '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}';
+        mysocket.write(req + '\n');
+        mysocket.setTimeout(1000);
+      });
+
+      mysocket.on('timeout', function() {
+        console.log(colors.red("timeout connecting to claymore-zec on port "+port));
+        mysocket.destroy();
+        stats.entries[id].uptime=null;
+        stats.entries[id]['zec-hashrate']=null;
+        stats.entries[id]['zec-accepted']=null;
+        stats.entries[id]['zec-rejected']=null;
+        stats.entries[id].temps=null;
+        stats.entries[id].fans=null;
+        stats.entries[id].pools=null;
+        stats.entries[id].version=null;
+      });
+
+      mysocket.on('data', function(data) {
+        mysocket.setTimeout(0);
+        var d = JSON.parse(data);
+        stats.entries[id].uptime= d.result[1]*60;
+        var properties = d.result[2].split(';');
+        stats.entries[id]['zec-hashrate']=properties[0];
+        stats.entries[id]['zec-accepted']=properties[1];
+        stats.entries[id]['zec-rejected']=properties[2];
+        properties = d.result[6].split(';');
+        stats.entries[id].temps=[];
+        stats.entries[id].fans=[];
+        for(var i=0;i<properties.length;i+=2){
+          if (properties[i]!==""&&properties[i]!==null){
+            stats.entries[id].temps.push(properties[i]);
+            stats.entries[id].fans.push(properties[i+1]);
+          }
+        }
+        stats.entries[id].pools = d.result[7].split(';');
+        stats.entries[id].version=d.result[0];
+      });
+
+      mysocket.on('close', function() {
+      });
+
+      mysocket.on('error', function(e) {
+        console.log(colors.red("socket error: " + e.message));
+        stats.entries[id].uptime=null;
+        stats.entries[id]['zec-hashrate']=null;
+        stats.entries[id]['zec-accepted']=null;
+        stats.entries[id]['zec-rejected']=null;
+        stats.entries[id].temps=null;
+        stats.entries[id].fans=null;
+        stats.entries[id].pools=null;
+        stats.entries[id].version=null;
+      });
+
+      mysocket.connect(port, "127.0.0.1");
+      break;
+    case "nheqminer":
+      var net = require('net');
+      var mysocket = new net.Socket();
+
+      mysocket.on('connect', function() {
+        var req = 'status';
+        mysocket.write(req + '\n');
+        mysocket.setTimeout(1000);
+      });
+
+      mysocket.on('timeout', function() {
+        console.log(colors.red("timeout connecting to nheqminer on port "+port));
+        mysocket.destroy();
+        stats.entries[id].iterationRate=null;
+        stats.entries[id].solutionRate=null;
+        stats.entries[id].acceptedPerMinute=null;
+        stats.entries[id].rejectedPerMinute=null;
+      });
+
+      mysocket.on('data', function(data) {
+        mysocket.setTimeout(0);
+        var d = JSON.parse(data);
+        stats.entries[id].iterationRate= d.result.speed_ips;
+        stats.entries[id].solutionRate=d.result.speed_sps;
+        stats.entries[id].acceptedPerMinute= d.result.accepted_per_minute;
+        stats.entries[id].rejectedPerMinute= d.result.rejected_per_minute;
+      });
+
+      mysocket.on('close', function() {
+      });
+
+      mysocket.on('error', function(e) {
+        console.log(colors.red("socket error: " + e.message));
+        stats.entries[id].iterationRate=null;
+        stats.entries[id].solutionRate=null;
+        stats.entries[id].acceptedPerMinute=null;
+        stats.entries[id].rejectedPerMinute=null;
+      });
       mysocket.connect(port, "127.0.0.1");
       break;
     case "other":

@@ -205,6 +205,98 @@
 
         </div>
 
+        <div ng-if="entry.type==='claymore-zec'">
+          <span style="font-size:120%;">[claymore-zec]</span><br/>
+
+          <div class="col-md-6" style="margin-top: 10px;">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Zec Hashrate</td>
+                    <td><span class="label label-primary">{{entry['zec-hashrate'] | hashrate}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Temperatures</td>
+                    <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="temp in entry.temps">{{temp}} °C</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Version</td>
+                    <td><span class="label label-info">{{entry.version}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Zec Accepted Shares</td>
+                    <td><span class="label label-primary">{{entry['zec-accepted']}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Zec Rejected Shares</td>
+                    <td><span class="label label-primary">{{entry['zec-rejected']}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Fans</td>
+                    <td><span style="margin-right: 4px;" class="label label-info"
+                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
+                  </tr>
+                  <tr>
+                    <td>Uptime</td>
+                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div ng-if="entry.type==='nheqminer'">
+          <span style="font-size:120%;">[nheqminer]</span><br/>
+
+          <div class="col-md-6" style="margin-top: 10px;">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Iterationrate</td>
+                    <td><span class="label label-primary">{{entry.iterationRate | iterationrate}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Accepted Shares / Min</td>
+                    <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Solutionrate</td>
+                    <td><span class="label label-primary">{{entry.solutionRate | solutionrate}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Rejected Shares / Min</td>
+                    <td><span class="label label-info">{{entry.rejectedPerMinute}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
         <div ng-if="entry.type==='other'">
           <span style="font-size:120%;">[other]</span><br/>
           <table class='table table-borderless' style="margin-top: 10px;">
