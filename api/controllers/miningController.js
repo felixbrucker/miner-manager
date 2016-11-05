@@ -424,17 +424,6 @@ function getMinerStats(id,port,type) {
 
       mysocket.on('error', function(e) {
         console.log(colors.red("socket error: " + e.message));
-        stats.entries[id].uptime=null;
-        stats.entries[id]['eth-hashrate']=null;
-        stats.entries[id]['eth-accepted']=null;
-        stats.entries[id]['eth-rejected']=null;
-        stats.entries[id]['alt-hashrate']=null;
-        stats.entries[id]['alt-accepted']=null;
-        stats.entries[id]['alt-rejected']=null;
-        stats.entries[id].temps=null;
-        stats.entries[id].fans=null;
-        stats.entries[id].pools=null;
-        stats.entries[id].version=null;
       });
 
       mysocket.connect(port, "127.0.0.1");
@@ -488,14 +477,6 @@ function getMinerStats(id,port,type) {
 
       mysocket.on('error', function(e) {
         console.log(colors.red("socket error: " + e.message));
-        stats.entries[id].uptime=null;
-        stats.entries[id]['zec-hashrate']=null;
-        stats.entries[id]['zec-accepted']=null;
-        stats.entries[id]['zec-rejected']=null;
-        stats.entries[id].temps=null;
-        stats.entries[id].fans=null;
-        stats.entries[id].pools=null;
-        stats.entries[id].version=null;
       });
 
       mysocket.connect(port, "127.0.0.1");
@@ -533,10 +514,6 @@ function getMinerStats(id,port,type) {
 
       mysocket.on('error', function(e) {
         console.log(colors.red("socket error: " + e.message));
-        stats.entries[id].iterationRate=null;
-        stats.entries[id].solutionRate=null;
-        stats.entries[id].acceptedPerMinute=null;
-        stats.entries[id].rejectedPerMinute=null;
       });
       mysocket.connect(port, "127.0.0.1");
       break;
