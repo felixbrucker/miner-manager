@@ -1,7 +1,7 @@
 'use strict';
 
 var configModule = require(__basedir + 'api/modules/configModule');
-
+var miningController = require(__basedir + 'api/controllers/miningController');
 
 function getConfig(req, res, next) {
   var obj=configModule.config;
@@ -17,6 +17,7 @@ function setConfig(req, res, next) {
 }
 
 function update(req, res, next) {
+  miningController.stopMiner();
   const spawn = require('cross-spawn');
   const child = spawn('git',['pull'],{
       detached: true,
