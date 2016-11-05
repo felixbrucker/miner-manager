@@ -73,7 +73,7 @@
       var units = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       if (number<0)
-        return hashrate + ' H/s';
+        return hashrate.toFixed(precision) + ' H/s';
       else
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
@@ -86,7 +86,7 @@
       var units = ['I/s', 'KI/s', 'MI/s', 'GI/s', 'TI/s', 'PI/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       if (number<0)
-        return hashrate + ' I/s';
+        return hashrate.toFixed(precision) + ' I/s';
       else
         return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
@@ -99,7 +99,7 @@
       var units = ['Sol/s', 'KSol/s', 'MSol/s', 'GSol/s', 'TSol/s', 'PSol/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       if (number<0)
-        return hashrate + ' Sol/s';
+        return hashrate.toFixed(precision) + ' Sol/s';
       else
       return (hashrate / Math.pow(1000, Math.floor(number))).toFixed(precision) + ' ' + units[number];
     }
