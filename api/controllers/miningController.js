@@ -154,29 +154,31 @@ function validateSettings(entry) {
 }
 
 function startAllMiner(){
-  for(var i=0;i< configModule.config.groups.length;i++) {
-    var group = configModule.config.groups[i];
-    if (group.enabled){
-      if (group.autoswitch){
-        if(configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
-          getAlgoForGroup(group);
-          profitTimer[group.id]=setInterval(function(){
+  if(configModule.config.groups!==undefined){
+    for(var i=0;i< configModule.config.groups.length;i++) {
+      var group = configModule.config.groups[i];
+      if (group.enabled){
+        if (group.autoswitch){
+          if(configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
             getAlgoForGroup(group);
-          },1000*180);
+            profitTimer[group.id]=setInterval(function(){
+              getAlgoForGroup(group);
+            },1000*180);
+          }else{
+            console.log(colors.red("Error: profitability url not configured"));
+          }
         }else{
-          console.log(colors.red("Error: profitability url not configured"));
-        }
-      }else{
-        for(var j=0;j< configModule.config.entries.length;j++) {
-          var entry = configModule.config.entries[j];
-          if (entry.group===group.name){
-            startMiner(entry);
+          for(var j=0;j< configModule.config.entries.length;j++) {
+            var entry = configModule.config.entries[j];
+            if (entry.group===group.name){
+              startMiner(entry);
+            }
           }
         }
       }
     }
+    stats.running=true;
   }
-  stats.running=true;
 }
 
 function startMiner(entry) {
