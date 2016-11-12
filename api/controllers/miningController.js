@@ -60,11 +60,11 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
   var query={
     algos:{},
     region:"eu",
-    name:configModule.config.rigName+"-"+group
+    name:configModule.config.rigName+"-"+group.name
   };
   for(var i=0;i< configModule.config.entries.length;i++) {
     var entry = configModule.config.entries[i];
-    if(entry.group===group&&entry.enabled){
+    if(entry.group===group.name&&entry.enabled){
       query.algos[entry.algo]={hashrate:entry.hashrate};
     }
   }
@@ -97,22 +97,22 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
           var destinedOne=null;
           for(var i=0;i< configModule.config.entries.length;i++) {
             var entry = configModule.config.entries[i];
-            if(entry.group===group&&entry.enabled&&entry.algo===parsed.result.algo){
+            if(entry.group===group.name&&entry.enabled&&entry.algo===parsed.result.algo){
               destinedOne=entry;
               break;
             }
           }
-          if(prevEntries[group]!==undefined){
-            if(prevEntries[group].algo!==parsed.result.algo){
+          if(prevEntries[group.name]!==undefined){
+            if(prevEntries[group.name].algo!==parsed.result.algo){
               //switch
-              stopMiner(prevEntries[group]);
+              stopMiner(prevEntries[group.name]);
               startMiner(destinedOne);
-              prevEntries[group]=destinedOne;
+              prevEntries[group.name]=destinedOne;
             }
           }else{
             //startup
             startMiner(destinedOne);
-            prevAlgos[group]=destinedOne;
+            prevAlgos[group.name]=destinedOne;
           }
         }
       }else
@@ -166,7 +166,7 @@ function startAllMiner(){
       }else{
         for(var j=0;j< configModule.config.entries.length;j++) {
           var entry = configModule.config.entries[j];
-          if (entry.group===group){
+          if (entry.group===group.name){
             startMiner(entry);
           }
         }
