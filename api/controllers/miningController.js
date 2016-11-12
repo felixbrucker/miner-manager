@@ -157,7 +157,7 @@ function startAllMiner(){
   for(var i=0;i< configModule.config.groups.length;i++) {
     var group = configModule.config.groups[i];
     if (group.enabled){
-      if (group.autoswitch){
+      if (group.autoswitch&&configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
         getAlgoForGroup(group);
         profitTimer[group.id]=setInterval(function(){
           getAlgoForGroup(group);
