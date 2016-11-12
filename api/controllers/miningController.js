@@ -171,7 +171,6 @@ function startAllMiner(){
           for(var j=0;j< configModule.config.entries.length;j++) {
             var entry = configModule.config.entries[j];
             if (entry.group===group.name){
-              console.log(entry);
               startMiner(entry);
             }
           }
@@ -623,7 +622,7 @@ function init() {
   if (configModule.config.autostart) {
     console.log(colors.green("autostart enabled, starting miner shortly.."));
     setTimeout(function () {
-      startMiner();
+      startAllMiner();
     }, 10000);
   }
   stats.rigName=configModule.config.rigName;
