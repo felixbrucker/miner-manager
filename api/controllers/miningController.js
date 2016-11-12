@@ -163,7 +163,7 @@ function startAllMiner(){
             getAlgoForGroup(group);
             profitTimer[group.id]=setInterval(function(){
               getAlgoForGroup(group);
-            },1000*180);
+            },1000*300);
           }else{
             console.log(colors.red("Error: profitability url not configured"));
           }
