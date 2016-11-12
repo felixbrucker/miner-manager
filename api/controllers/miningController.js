@@ -112,7 +112,7 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
           }else{
             //startup
             startMiner(destinedOne);
-            prevAlgos[group.name]=destinedOne;
+            prevEntries[group.name]=destinedOne;
           }
         }
       }else
