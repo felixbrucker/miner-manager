@@ -68,6 +68,7 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
       query.algos[entry.algo]={hashrate:entry.hashrate};
     }
   }
+  console.log(query);
   var arr = configModule.config.profitabilityServiceUrl.split(":");
   var req= http.request({
     host: arr[0],
