@@ -89,7 +89,7 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
       try{
         parsed=JSON.parse(body);
       }catch(error){
-        console.log(colors.red("["+group.toUpperCase()+"] Error: Unable to get profitability data"));
+        console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
         console.log(error);
       }
       if (parsed != null){
@@ -116,10 +116,10 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
           }
         }
       }else
-        console.log(colors.red("["+group.toUpperCase()+"] Error: malformed profitability request"));
+        console.log(colors.red("["+group.name.toUpperCase()+"] Error: malformed profitability request"));
     });
   }).on("error", function(error) {
-    console.log(colors.red("["+group.toUpperCase()+"] Error: Unable to get profitability data"));
+    console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
     console.log(error);
   });
   req.write(JSON.stringify(query));
