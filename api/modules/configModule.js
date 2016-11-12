@@ -82,6 +82,10 @@ var config = module.exports = {
             if (config.config.entries[i].shell===undefined)
               config.config.entries[i].shell=false;
           }
+          if (config.config.groups===undefined)
+            config.config.groups=[];
+          if(config.config.profitabilityServiceUrl===undefined)
+            config.config.profitabilityServiceUrl=null;
         });
       } else if (err.code == 'ENOENT') {
         //default conf
