@@ -629,4 +629,5 @@ exports.getStats = getStats;
 exports.startMining = startMining;
 exports.stopMining = stopMining;
 exports.stopMiner = stopMiner;
+exports.stopAllMiner = stopAllMiner;
 exports.startMiner = startMiner;
