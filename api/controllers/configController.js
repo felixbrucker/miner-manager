@@ -19,7 +19,7 @@ function setConfig(req, res, next) {
 }
 
 function update(req, res, next) {
-  miningController.stopMiner();
+  miningController.stopAllMiner();
   const spawn = require('cross-spawn');
   const child = spawn('git',['pull'],{
       detached: true,
