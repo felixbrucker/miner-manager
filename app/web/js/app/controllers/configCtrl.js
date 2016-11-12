@@ -24,7 +24,8 @@
             entries:[],
             types:[],
             groups:[],
-            algos:[]
+            algos:[],
+            profitabilityServiceUrl:null
         };
         vm.waiting = null;
         vm.updating=null;
@@ -173,6 +174,7 @@
                 vm.config.types=response.data.types;
                 vm.config.groups=response.data.groups;
                 vm.config.algos=response.data.algos;
+                vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
             }, function errorCallback(response) {
                 console.log(response);
             });

@@ -13,7 +13,8 @@ var config = module.exports = {
     autostart:null,
     entries:[],
     groups:[],
-    rigName:null
+    rigName:null,
+    profitabilityServiceUrl:null
   },
   configNonPersistent:{
     types:["cpuminer-opt","ccminer","claymore-eth","claymore-zec","nheqminer","other"],
