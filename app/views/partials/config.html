@@ -97,7 +97,7 @@
       <td ng-if="configVm.newCustomMiner.shell==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog" disabled></td>
       <td ng-if="configVm.newCustomMiner.writeMinerLog!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell"></td>
       <td ng-if="configVm.newCustomMiner.writeMinerLog==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell" disabled></td>
-      <td><select name="groupSelectNewMiner" ng-options="group for group in configVm.config.groups" ng-model="configVm.newCustomMiner.group" required></select></td>
+      <td><select name="groupSelectNewMiner" ng-options="group.name for group in configVm.config.groups" ng-model="configVm.newCustomMiner.group" required></select></td>
       <td><select name="algoSelectNewMiner" ng-options="algo for algo in configVm.config.algos" ng-model="configVm.newCustomMiner.algo"></select></td>
       <td><input type="number" name="hashrateNewMiner" ng-model="configVm.newCustomMiner.hashrate" placeholder="13.37"> H/s</td>
       <td><button type="button" class="btn btn-success" ng-click="configVm.addCustomMiner()">add entry</button></td>
