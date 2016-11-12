@@ -385,6 +385,7 @@ function stopAllMiner() {
     delete miner[key];
   });
   stats.running=false;
+  prevEntries={};
   setTimeout(function(){shouldExit=false;},5000);
 }
 
