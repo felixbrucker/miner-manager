@@ -72,7 +72,7 @@
           <td ng-if="entry.shell===true"><input type="checkbox" ng-model="entry.writeMinerLog" ng-click="configVm.setConfig()" disabled></td>
           <td ng-if="entry.writeMinerLog!==true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()"></td>
           <td ng-if="entry.writeMinerLog===true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()" disabled></td>
-          <td><select name="groupSelect-{{entry.id}}" ng-options="group for group in configVm.config.groups" ng-model="entry.group" required></select></td>
+          <td><select name="groupSelect-{{entry.id}}" ng-options="group.name for group in configVm.config.groups" ng-model="entry.group" required></select></td>
           <td><select name="algoSelect-{{entry.id}}" ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo"></select></td>
           <td><input type="number" name="hashrate-{{entry.id}}" ng-model="entry.hashrate" placeholder="13.37"> H/s</td>
           <td><button type="button" class="btn btn-warning" ng-click="configVm.delCustomMiner(entry.id)">remove entry</button></td>
