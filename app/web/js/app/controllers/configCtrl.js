@@ -22,7 +22,9 @@
             rigName: null,
             autostart:null,
             entries:[],
-            types:[]
+            types:[],
+            groups:[],
+            algos:[]
         };
         vm.waiting = null;
         vm.updating=null;
@@ -35,8 +37,19 @@
             type:null,
             port:null,
             writeMinerLog:true,
-            shell:false
+            shell:false,
+            hashrate:null,
+            group:null,
+            algo:null
         };
+
+        vm.newGroup={
+            id:null,
+            enabled:true,
+            name:"",
+            autoswitch:null
+        };
+
 
 
         // controller API
@@ -46,6 +59,8 @@
         vm.update=update;
         vm.addCustomMiner=addCustomMiner;
         vm.delCustomMiner=delCustomMiner;
+        vm.addGroup=addGroup;
+        vm.delGroup=delGroup;
 
 
 
@@ -83,6 +98,9 @@
                     vm.newCustomMiner.port=null;
                     vm.newCustomMiner.writeMinerLog=true;
                     vm.newCustomMiner.shell=false;
+                    vm.newCustomMiner.hashrate=null;
+                    vm.newCustomMiner.group=null;
+                    vm.newCustomMiner.algo=null;
                     vm.setConfig();
                 }
             }
@@ -102,6 +120,43 @@
             vm.setConfig();
         }
 
+
+
+        /**
+         * @name addGroup
+         * @desc add new group to array
+         * @memberOf configCtrl
+         */
+        function addGroup() {
+            if (vm.newGroup.name!==""&&vm.newGroup.name!==null){
+                //gen unique id
+                vm.newGroup.id=Date.now();
+                //add to array
+                vm.config.groups.push(JSON.parse(JSON.stringify(vm.newGroup)));
+                //clear variables
+                vm.newGroup.id=null;
+                vm.newGroup.enabled=true;
+                vm.newGroup.name="";
+                vm.newGroup.autoswitch=null;
+                vm.setConfig();
+            }
+        }
+
+
+        /**
+         * @name delGroup
+         * @desc delete group from array
+         * @memberOf configCtrl
+         */
+        function delGroup(id) {
+            vm.config.groups.forEach(function (entry,index,array) {
+                if (entry.id===id){
+                    vm.config.groups.splice(index,1);
+                }
+            });
+            vm.setConfig();
+        }
+
         /**
          * @name getConfig
          * @desc get the config
@@ -116,6 +171,8 @@
                 vm.config.autostart = response.data.autostart;
                 vm.config.entries=response.data.entries;
                 vm.config.types=response.data.types;
+                vm.config.groups=response.data.groups;
+                vm.config.algos=response.data.algos;
             }, function errorCallback(response) {
                 console.log(response);
             });

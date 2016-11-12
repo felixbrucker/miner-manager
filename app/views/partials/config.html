@@ -17,12 +17,41 @@
       <table class='table table-borderless'>
         <tr>
           <th>enabled</th>
+          <th>name</th>
+          <th>autoswitch</th>
+        </tr>
+        <tr ng-repeat="entry in configVm.config.groups track by $index">
+          <td><input type="checkbox" ng-model="entry.enabled" ng-click="configVm.setConfig()"></td>
+          <td><input type="text" name="{{entry.name}}" ng-model="entry.name" placeholder="name" size="26"></td>
+          <td><input type="checkbox" ng-model="entry.autoswitch" ng-click="configVm.setConfig()"></td>
+          <td><button type="button" class="btn btn-warning" ng-click="configVm.delGroup(entry.id)">remove Group</button></td>
+        </tr>
+      </table>
+      <table class='table table-borderless'>
+        <tr style="border-top: 1px solid lightgrey;">
+          <td><input type="checkbox" ng-model="configVm.newGroup.enabled"></td>
+          <td><input type="text" name="newGroupName" ng-model="configVm.newGroup.name" placeholder="name" size="26"></td>
+          <td><input type="checkbox" ng-model="configVm.newGroup.autoswitch"></td>
+          <td><button type="button" class="btn btn-success" ng-click="configVm.addGroup()">add Group</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-12">
+      <table class='table table-borderless'>
+        <tr>
+          <th>enabled</th>
           <th>miner path</th>
           <th>commandline</th>
           <th>type</th>
           <th>port</th>
           <th>write miner log</th>
           <th>own shell window</th>
+          <th>group</th>
+          <th>algorithm</th>
+          <th>hashrate</th>
           <th>action</th>
         </tr>
         <tr ng-repeat="entry in configVm.config.entries track by $index">
@@ -36,6 +65,9 @@
           <td ng-if="entry.shell===true"><input type="checkbox" ng-model="entry.writeMinerLog" ng-click="configVm.setConfig()" disabled></td>
           <td ng-if="entry.writeMinerLog!==true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()"></td>
           <td ng-if="entry.writeMinerLog===true"><input type="checkbox" ng-model="entry.shell" ng-click="configVm.setConfig()" disabled></td>
+          <td><select name="groupSelect-{{entry.id}}" ng-options="group for group in configVm.config.groups" ng-model="entry.group" required></select></td>
+          <td><select name="algoSelect-{{entry.id}}" ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo"></select></td>
+          <td><input type="number" name="hashrate-{{entry.id}}" ng-model="entry.hashrate" placeholder="13.37"> H/s</td>
           <td><button type="button" class="btn btn-warning" ng-click="configVm.delCustomMiner(entry.id)">remove entry</button></td>
         </tr>
       </table>
@@ -45,21 +77,27 @@
 
 
 </form>
-<table class='table table-borderless'>
-  <tr style="border-top: 1px solid lightgrey;">
-    <td><input type="checkbox" ng-model="configVm.newCustomMiner.enabled"></td>
-    <td><input type="text" name="binPath-newMiner" ng-model="configVm.newCustomMiner.binPath" placeholder="path to miner bin" size="26"></td>
-    <td><input type="text" name="cmdline-newMiner" ng-model="configVm.newCustomMiner.cmdline" placeholder="commandline for miner" size="42"></td>
-    <td><select name="typeSelect-newMiner" ng-options="type for type in configVm.config.types" ng-model="configVm.newCustomMiner.type" required></select></td>
-    <td ng-if="configVm.newCustomMiner.type!=='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api" required></td>
-    <td ng-if="configVm.newCustomMiner.type==='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api" disabled></td>
-    <td ng-if="configVm.newCustomMiner.shell!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog"></td>
-    <td ng-if="configVm.newCustomMiner.shell==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog" disabled></td>
-    <td ng-if="configVm.newCustomMiner.writeMinerLog!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell"></td>
-    <td ng-if="configVm.newCustomMiner.writeMinerLog==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell" disabled></td>
-    <td><button type="button" class="btn btn-success" ng-click="configVm.addCustomMiner()">add entry</button></td>
-  </tr>
-</table>
+<div>
+  <table class='table table-borderless'>
+    <tr style="border-top: 1px solid lightgrey;">
+      <td><input type="checkbox" ng-model="configVm.newCustomMiner.enabled"></td>
+      <td><input type="text" name="binPath-newMiner" ng-model="configVm.newCustomMiner.binPath" placeholder="path to miner bin" size="26"></td>
+      <td><input type="text" name="cmdline-newMiner" ng-model="configVm.newCustomMiner.cmdline" placeholder="commandline for miner" size="42"></td>
+      <td><select name="typeSelect-newMiner" ng-options="type for type in configVm.config.types" ng-model="configVm.newCustomMiner.type" required></select></td>
+      <td ng-if="configVm.newCustomMiner.type!=='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api" required></td>
+      <td ng-if="configVm.newCustomMiner.type==='other'"><input type="number" name="port-newMiner" ng-model="configVm.newCustomMiner.port" placeholder="port to use for api" disabled></td>
+      <td ng-if="configVm.newCustomMiner.shell!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog"></td>
+      <td ng-if="configVm.newCustomMiner.shell==true"><input type="checkbox" ng-model="configVm.newCustomMiner.writeMinerLog" disabled></td>
+      <td ng-if="configVm.newCustomMiner.writeMinerLog!==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell"></td>
+      <td ng-if="configVm.newCustomMiner.writeMinerLog==true"><input type="checkbox" ng-model="configVm.newCustomMiner.shell" disabled></td>
+      <td><select name="groupSelectNewMiner" ng-options="group for group in configVm.config.groups" ng-model="configVm.newCustomMiner.group" required></select></td>
+      <td><select name="algoSelectNewMiner" ng-options="algo for algo in configVm.config.algos" ng-model="configVm.newCustomMiner.algo"></select></td>
+      <td><input type="number" name="hashrateNewMiner" ng-model="configVm.newCustomMiner.hashrate" placeholder="13.37"> H/s</td>
+      <td><button type="button" class="btn btn-success" ng-click="configVm.addCustomMiner()">add entry</button></td>
+    </tr>
+  </table>
+</div>
+
 
 <div class="row" style="margin-bottom: 10px;">
   <div class="col-md-12">

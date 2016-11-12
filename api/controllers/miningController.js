@@ -23,6 +23,8 @@ var stats = {
 global.miner = {};
 var shouldExit=false;
 var timers={};
+var prevEntries={};
+var profitTimer={};
 
 var kill = function (pid, signal, callback) {
   signal = signal || 'SIGKILL';
@@ -54,6 +56,75 @@ var kill = function (pid, signal, callback) {
   }
 };
 
+function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
+  var query={
+    algos:{},
+    region:"eu",
+    name:configModule.config.rigName+"-"+group
+  };
+  for(var i=0;i< configModule.config.entries.length;i++) {
+    var entry = configModule.config.entries[i];
+    if(entry.group===group&&entry.enabled){
+      query.algos[entry.algo]={hashrate:entry.hashrate};
+    }
+  }
+  var arr = configModule.config.profitabilityServiceUrl.split(":");
+  var req= http.request({
+    host: arr[0],
+    path: '/api/query',
+    method: 'POST',
+    port: arr[1],
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    }
+  }, function (response) {
+    response.setEncoding('utf8');
+    var body = '';
+    response.on('data', function (d) {
+      body += d;
+    });
+    response.on('end', function () {
+      var parsed = null;
+      try{
+        parsed=JSON.parse(body);
+      }catch(error){
+        console.log(colors.red("["+group.toUpperCase()+"] Error: Unable to get profitability data"));
+        console.log(error);
+      }
+      if (parsed != null){
+        if (parsed.result!==false){
+          var destinedOne=null;
+          for(var i=0;i< configModule.config.entries.length;i++) {
+            var entry = configModule.config.entries[i];
+            if(entry.group===group&&entry.enabled&&entry.algo===parsed.result.algo){
+              destinedOne=entry;
+              break;
+            }
+          }
+          if(prevEntries[group]!==undefined){
+            if(prevEntries[group].algo!==parsed.result.algo){
+              //switch
+              stopMiner(prevEntries[group]);
+              startMiner(destinedOne);
+              prevEntries[group]=destinedOne;
+            }
+          }else{
+            //startup
+            startMiner(destinedOne);
+            prevAlgos[group]=destinedOne;
+          }
+        }
+      }else
+        console.log(colors.red("["+group.toUpperCase()+"] Error: malformed profitability request"));
+    });
+  }).on("error", function(error) {
+    console.log(colors.red("["+group.toUpperCase()+"] Error: Unable to get profitability data"));
+    console.log(error);
+  });
+  req.write(JSON.stringify(query));
+  req.end();
+}
+
 function getStats(req, res, next) {
   stats.rigName=configModule.config.rigName;
   res.setHeader('Content-Type', 'application/json');
@@ -62,7 +133,7 @@ function getStats(req, res, next) {
 
 function startMining(req, res, next) {
   if (!stats.running) {
-    startMinerWrapper();
+    startAllMiner();
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({result: true}));
   }else{
@@ -71,31 +142,42 @@ function startMining(req, res, next) {
   }
 }
 
-function validateSettings() {
-  for(var i=0;i< configModule.config.entries.length;i++) {
-    var entry=configModule.config.entries[i];
-    if(entry.enabled===true && entry.binPath!==undefined && entry.binPath!==null && entry.binPath!=="") {
-      try {
-        fs.statSync(entry.binPath);
-      } catch (err) {
-        return !(err && err.code === 'ENOENT');
-      }
+function validateSettings(entry) {
+  if(entry.enabled===true && entry.binPath!==undefined && entry.binPath!==null && entry.binPath!=="") {
+    try {
+      fs.statSync(entry.binPath);
+    } catch (err) {
+      return !(err && err.code === 'ENOENT');
     }
   }
   return true;
 }
 
-function startMinerWrapper(){
-  startMiner();
+function startAllMiner(){
+  for(var i=0;i< configModule.config.groups.length;i++) {
+    var group = configModule.config.groups[i];
+    if (group.enabled){
+      if (group.autoswitch){
+        getAlgoForGroup(group);
+        profitTimer[group.id]=setInterval(function(){
+          getAlgoForGroup(group);
+        },1000*180);
+      }else{
+        for(var j=0;j< configModule.config.entries.length;j++) {
+          var entry = configModule.config.entries[j];
+          if (entry.group===group){
+            startMiner(entry);
+          }
+        }
+      }
+    }
+  }
+  stats.running=true;
 }
 
-function startMiner() {
-  if (validateSettings()) {
-    if (stats.running!==true){
-      stats.running=true;
+function startMiner(entry) {
+  if (validateSettings(entry)) {
       const spawn = require('cross-spawn');
-      for(var i=0;i< configModule.config.entries.length;i++) {
-        var entry=configModule.config.entries[i];
         (function (entry){
           if (entry.enabled){
             if (miner[entry.id]===undefined || miner[entry.id]===null){
@@ -194,12 +276,6 @@ function startMiner() {
             }
           }
         }(entry));
-
-      }
-    }else{
-      console.log(colors.red("miner already running"));
-      return false;
-    }
   } else {
     console.log(colors.red("some required settings are not properly configured"));
     return false;
@@ -276,7 +352,7 @@ function checkMinerOutputString(output){
 
 function stopMining(req, res, next) {
   if (stats.running) {
-    stopMiner();
+    stopAllMiner();
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({result: true}));
   }else{
@@ -285,8 +361,14 @@ function stopMining(req, res, next) {
   }
 }
 
-function stopMiner() {
+function stopAllMiner() {
   shouldExit=true;
+  for(var i=0;i< configModule.config.groups.length;i++) {
+    var group = configModule.config.groups[i];
+    if(group.autoswitch){
+      clearInterval(profitTimer[group.id]);
+    }
+  }
   Object.keys(miner).forEach(function (key) {
     clearInterval(timers[key]);
     kill(miner[key].pid);
@@ -305,17 +387,22 @@ function stopMiner() {
   setTimeout(function(){shouldExit=false;},5000);
 }
 
+function stopMiner(entry) {
+  shouldExit=true;
+  clearInterval(timers[entry.id]);
+  kill(miner[entry.id].pid);
+  stats.entries[entry.id]=null;
+  delete stats.entries[entry.id];
+  console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner stopped"));
+  miner[key]=null;
+  delete miner[key];
+  setTimeout(function(){shouldExit=false;},1000);
+}
+
 function asyncSleep(param, callback) {
   setTimeout(function () {
     callback(null);
   }, param);
-}
-
-
-function restartMiner(){
-  stopMiner();
-  wait.for(asyncSleep, 2000);
-  startMiner();
 }
 
 

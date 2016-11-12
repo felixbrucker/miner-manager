@@ -12,10 +12,50 @@ var config = module.exports = {
   config: {
     autostart:null,
     entries:[],
+    groups:[],
     rigName:null
   },
   configNonPersistent:{
-    types:["cpuminer-opt","ccminer","claymore-eth","claymore-zec","nheqminer","other"]
+    types:["cpuminer-opt","ccminer","claymore-eth","claymore-zec","nheqminer","other"],
+    algos:[
+      "argon2",
+      "axiom",
+      "blake2s",
+      "blake256r8",
+      "blake256r8vnl",
+      "blake256r14",
+      "c11",
+      "cryptonight",
+      "daggerhashimoto",
+      "decred",
+      "equihash",
+      "hodl",
+      "keccak",
+      "lbry",
+      "lyra2re",
+      "lyra2rev2",
+      "m7m",
+      "myr-gr",
+      "neoscrypt",
+      "nist5",
+      "quark",
+      "qubit",
+      "scrypt",
+      "scryptjanenf16",
+      "scryptnf",
+      "sha256",
+      "sib",
+      "skein",
+      "veltor",
+      "whirlpoolx",
+      "x11",
+      "x11evo",
+      "x13",
+      "x14",
+      "x15",
+      "x17",
+      "yescrypt"
+    ]
   },
   getConfig: function () {
     return config.config;
