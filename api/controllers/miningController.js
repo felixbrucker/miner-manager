@@ -396,8 +396,8 @@ function stopMiner(entry) {
   stats.entries[entry.id]=null;
   delete stats.entries[entry.id];
   console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner stopped"));
-  miner[key]=null;
-  delete miner[key];
+  miner[entry.id]=null;
+  delete miner[entry.id];
   setTimeout(function(){shouldExit=false;},1000);
 }
 
