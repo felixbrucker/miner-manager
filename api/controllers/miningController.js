@@ -157,25 +157,27 @@ function startAllMiner(){
   if(configModule.config.groups!==undefined){
     for(var i=0;i< configModule.config.groups.length;i++) {
       var group = configModule.config.groups[i];
-      if (group.enabled){
-        if (group.autoswitch){
-          if(configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
-            getAlgoForGroup(group);
-            profitTimer[group.id]=setInterval(function(){
+      (function (group){
+        if (group.enabled){
+          if (group.autoswitch){
+            if(configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
               getAlgoForGroup(group);
-            },1000*300);
+              profitTimer[group.id]=setInterval(function(){
+                getAlgoForGroup(group);
+              },1000*300);
+            }else{
+              console.log(colors.red("Error: profitability url not configured"));
+            }
           }else{
-            console.log(colors.red("Error: profitability url not configured"));
-          }
-        }else{
-          for(var j=0;j< configModule.config.entries.length;j++) {
-            var entry = configModule.config.entries[j];
-            if (entry.group===group.name){
-              startMiner(entry);
+            for(var j=0;j< configModule.config.entries.length;j++) {
+              var entry = configModule.config.entries[j];
+              if (entry.group===group.name){
+                startMiner(entry);
+              }
             }
           }
         }
-      }
+      })(group);
     }
     stats.running=true;
   }
