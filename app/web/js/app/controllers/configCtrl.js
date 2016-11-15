@@ -82,7 +82,7 @@
          * @memberOf configCtrl
          */
         function addCustomMiner() {
-            if (vm.newCustomMiner.binPath!==""&&vm.newCustomMiner.binPath!==null&&vm.newCustomMiner.cmdline!==""&&vm.newCustomMiner.cmdline!==null){
+            if (vm.newCustomMiner.binPath!==""&&vm.newCustomMiner.binPath!==null){
                 if (vm.newCustomMiner.type!=='other'&&(vm.newCustomMiner.port===null||vm.newCustomMiner.port==="")){
                     return false;
                 }else{
