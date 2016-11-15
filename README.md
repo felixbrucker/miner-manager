@@ -5,6 +5,11 @@
 can use nicehash or zpool api via https://github.com/felixbrucker/profitability-service or run standalone without switching
 will see if using both is useful/possible when i got some spare time
 
+### Screens
+
+![Stats](/screens/r01-stats.png?raw=true "Stats")
+![Config](/screens/r01-config.png?raw=true "Config")
+
 
 ### Prerequisites
 
