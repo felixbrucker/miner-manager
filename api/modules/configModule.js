@@ -44,7 +44,7 @@ var config = module.exports = {
         //default conf
         config.config.autostart=false;
         config.config.rigName=process.env.WNAME;
-        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/nheqminer",cmdline:"-l equihash.eu.nicehash.com:3357 -u 1G6DD3skr8kzjJURzoME8TWLT6iqrFApk3."+process.env.WNAME+" -p x -t 3",type:"other",port:null,writeMinerLog:true,shell:false});
+        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-o stratum+tcp://cryptonight.eu.nicehash.com:3355 -u 1G6DD3skr8kzjJURzoME8TWLT6iqrFApk3."+process.env.WNAME+" -p x -t 3",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.saveConfig();
         setTimeout(function(){
           config.loadConfig();
