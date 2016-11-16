@@ -24,4 +24,3 @@ if [ ! -d "miner-manager" ]; then
   mv nheqminer-linux-static-x64-autoavx miner-manager/bin/nheqminer
   sleep infinity
 fi
-
