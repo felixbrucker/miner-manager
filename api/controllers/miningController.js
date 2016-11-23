@@ -596,6 +596,8 @@ function getMinerStats(id,port,type) {
         stats.entries[id].solutionRate=null;
         stats.entries[id].acceptedPerMinute=null;
         stats.entries[id].rejectedPerMinute=null;
+        miner[id].kill();
+        kill(miner[id].pid);
       });
 
       mysocket.on('data', function(data) {
