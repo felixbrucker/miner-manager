@@ -2,7 +2,6 @@
 
 const https = require('https');
 const http = require('http');
-const wait = require('wait.for');
 var fs = require('fs');
 var path = require('path');
 var colors = require('colors/safe');
