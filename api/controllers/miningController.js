@@ -401,7 +401,7 @@ function init() {
       configModule.config.autostart=true;
       configModule.saveConfig();
       startMiner();
-    },130*1000);
+    },150*1000);
   }
   stats.rigName=configModule.config.rigName;
 
