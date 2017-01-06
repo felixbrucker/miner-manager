@@ -21,7 +21,7 @@
         <div ng-if="entry.type==='cpuminer-opt'">
           <span style="font-size:120%;">[cpuminer-opt]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -37,6 +37,15 @@
                     <td>Cores</td>
                     <td><span class="label label-info">{{entry.cores}}</span></td>
                   </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
                   <tr>
                     <td>Temperature</td>
                     <td ng-show="entry.temperature"><span class="label label-info">{{entry.temperature}} °C</span></td>
@@ -45,12 +54,16 @@
                     <td>Version</td>
                     <td><span class="label label-info">{{entry.miner}}</span></td>
                   </tr>
+                  <tr>
+                    <td>Uptime</td>
+                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                  </tr>
                 </table>
               </div>
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -70,10 +83,6 @@
                     <td>Difficulty</td>
                     <td><span class="label label-info">{{entry.difficulty}}</span></td>
                   </tr>
-                  <tr>
-                    <td>Uptime</td>
-                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-                  </tr>
                 </table>
               </div>
             </div>
@@ -84,7 +93,7 @@
         <div ng-if="entry.type==='ccminer'">
           <span style="font-size:120%;">[ccminer]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -100,6 +109,24 @@
                     <td>GPUs</td>
                     <td><span class="label label-info">{{entry.gpus}}</span></td>
                   </tr>
+
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Difficulty</td>
+                    <td><span class="label label-info">{{entry.difficulty}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Version</td>
+                    <td><span class="label label-info">{{entry.miner}}</span></td>
+                  </tr>
                   <tr>
                     <td>Uptime</td>
                     <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
@@ -109,7 +136,7 @@
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -125,14 +152,6 @@
                     <td>Accepted Shares / Min</td>
                     <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
                   </tr>
-                  <tr>
-                    <td>Difficulty</td>
-                    <td><span class="label label-info">{{entry.difficulty}}</span></td>
-                  </tr>
-                  <tr>
-                    <td>Version</td>
-                    <td><span class="label label-info">{{entry.miner}}</span></td>
-                  </tr>
                 </table>
               </div>
             </div>
@@ -143,7 +162,7 @@
         <div ng-if="entry.type==='claymore-eth'">
           <span style="font-size:120%;">[claymore-eth]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -159,21 +178,40 @@
                     <td>Eth Rejected Shares</td>
                     <td><span class="label label-primary">{{entry['eth-rejected']}}</span></td>
                   </tr>
+
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
                   <tr>
                     <td>Temperatures</td>
                     <td><span style="margin-right: 4px;" class="label label-info" ng-repeat="temp in entry.temps">{{temp}} °C</span>
                     </td>
                   </tr>
                   <tr>
+                    <td>Fans</td>
+                    <td><span style="margin-right: 4px;" class="label label-info"
+                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
+                  </tr>
+                  <tr>
                     <td>Version</td>
                     <td><span class="label label-info">{{entry.version}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Uptime</td>
+                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
                   </tr>
                 </table>
               </div>
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -189,15 +227,6 @@
                     <td>Sia/Dcr/Lbry Rejected Shares</td>
                     <td><span class="label label-primary">{{entry['alt-rejected']}}</span></td>
                   </tr>
-                  <tr>
-                    <td>Fans</td>
-                    <td><span style="margin-right: 4px;" class="label label-info"
-                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
-                  </tr>
-                  <tr>
-                    <td>Uptime</td>
-                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-                  </tr>
                 </table>
               </div>
             </div>
@@ -208,7 +237,7 @@
         <div ng-if="entry.type==='claymore-zec'">
           <span style="font-size:120%;">[claymore-zec]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -222,15 +251,33 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Version</td>
-                    <td><span class="label label-info">{{entry.version}}</span></td>
+                    <td>Fans</td>
+                    <td><span style="margin-right: 4px;" class="label label-info"
+                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
                   </tr>
                 </table>
               </div>
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Version</td>
+                    <td><span class="label label-info">{{entry.version}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Uptime</td>
+                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -241,15 +288,6 @@
                   <tr>
                     <td>Rejected Shares</td>
                     <td><span class="label label-primary">{{entry['zec-rejected']}}</span></td>
-                  </tr>
-                  <tr>
-                    <td>Fans</td>
-                    <td><span style="margin-right: 4px;" class="label label-info"
-                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
-                  </tr>
-                  <tr>
-                    <td>Uptime</td>
-                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
                   </tr>
                 </table>
               </div>
@@ -262,7 +300,7 @@
         <div ng-if="entry.type==='claymore-cryptonight'">
           <span style="font-size:120%;">[claymore-cryptonight]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -276,15 +314,33 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Version</td>
-                    <td><span class="label label-info">{{entry.version}}</span></td>
+                    <td>Fans</td>
+                    <td><span style="margin-right: 4px;" class="label label-info"
+                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
                   </tr>
                 </table>
               </div>
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-4" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
+                  <tr>
+                    <td>Version</td>
+                    <td><span class="label label-info">{{entry.version}}</span></td>
+                  </tr>
+                  <tr>
+                    <td>Uptime</td>
+                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
@@ -296,15 +352,6 @@
                     <td>Rejected Shares</td>
                     <td><span class="label label-primary">{{entry.rejected}}</span></td>
                   </tr>
-                  <tr>
-                    <td>Fans</td>
-                    <td><span style="margin-right: 4px;" class="label label-info"
-                              ng-repeat="fan in entry.fans">{{fan}}%</span></td>
-                  </tr>
-                  <tr>
-                    <td>Uptime</td>
-                    <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
-                  </tr>
                 </table>
               </div>
             </div>
@@ -315,14 +362,23 @@
         <div ng-if="entry.type==='nheqminer'">
           <span style="font-size:120%;">[nheqminer]</span><br/>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-3" style="margin-top: 10px;">
             <div class="panel panel-default">
               <div class="panel-body">
                 <table class='table table-borderless'>
                   <tr>
-                    <td>Iterationrate</td>
-                    <td><span class="label label-primary">{{entry.iterationRate | iterationrate}}</span></td>
+                    <td>Solutionrate</td>
+                    <td><span class="label label-primary">{{entry.solutionRate | solutionrate}}</span></td>
                   </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
                   <tr>
                     <td>Accepted Shares / Min</td>
                     <td><span class="label label-info">{{entry.acceptedPerMinute}}</span></td>
@@ -332,14 +388,23 @@
             </div>
           </div>
 
-          <div class="col-md-6" style="margin-top: 10px;">
+          <div class="col-md-3" style="margin-top: 10px;">
             <div class="panel panel-default" style="padding-left: 2px;">
               <div class="panel-body">
                 <table class='table table-borderless'>
                   <tr>
-                    <td>Solutionrate</td>
-                    <td><span class="label label-primary">{{entry.solutionRate | solutionrate}}</span></td>
+                    <td>Iterationrate</td>
+                    <td><span class="label label-primary">{{entry.iterationRate | iterationrate}}</span></td>
                   </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3" style="margin-top: 10px;">
+            <div class="panel panel-default" style="padding-left: 2px;">
+              <div class="panel-body">
+                <table class='table table-borderless'>
                   <tr>
                     <td>Rejected Shares / Min</td>
                     <td><span class="label label-info">{{entry.rejectedPerMinute}}</span></td>
