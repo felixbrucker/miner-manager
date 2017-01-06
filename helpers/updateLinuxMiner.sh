@@ -11,6 +11,7 @@ if [ ! -d "miner" ]; then
     cd "miner"
     echo 'initial setup, building ...'
     cd src/cpuminer-opt
+    chmod +x build.sh
     ./build.sh
     mkdir -p ../../../bin
     cp cpuminer ../../../bin/
