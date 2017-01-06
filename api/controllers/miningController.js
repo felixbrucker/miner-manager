@@ -197,7 +197,8 @@ function startMiner(entry) {
                     break;
                   case "claymore-eth":
                   case "claymore-zec":
-                    minerString+=" -mport "+entry.port;
+                  case "claymore-cryptonight":
+                    minerString+=" -mport -"+entry.port;
                     break;
                   case "nheqminer":
                     minerString+=" -a "+entry.port;
@@ -292,61 +293,63 @@ function startMiner(entry) {
 
 function restartMinerOnExit(entry,minerString){
   if (!shouldExit){
-    (function (entry,minerString){
-      stats.entries[entry.id]={};
-      stats.entries[entry.id].type=entry.type;
-      stats.entries[entry.id].text=entry.binPath+" "+minerString;
-      const spawn = require('cross-spawn');
-      console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
-      var isWin = /^win/.test(process.platform);
-      if (entry.shell){
-        if (isWin)
-          miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-            shell:true,
-            detached:true,
-            cwd:path.dirname(entry.binPath)
-          });
-        else
-          miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
-            shell:true,
-            detached:true
-          });
-      }
-      else{
-        if (isWin)
-          miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
-            cwd:path.dirname(entry.binPath)
-          });
-        else
-          miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
-      }
+    setTimeout(function(){
+      (function (entry,minerString){
+        stats.entries[entry.id]={};
+        stats.entries[entry.id].type=entry.type;
+        stats.entries[entry.id].text=entry.binPath+" "+minerString;
+        const spawn = require('cross-spawn');
+        console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
+        var isWin = /^win/.test(process.platform);
+        if (entry.shell){
+          if (isWin)
+            miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+              shell:true,
+              detached:true,
+              cwd:path.dirname(entry.binPath)
+            });
+          else
+            miner[entry.id]=spawn(entry.binPath, minerString.split(" "),{
+              shell:true,
+              detached:true
+            });
+        }
+        else{
+          if (isWin)
+            miner[entry.id]=spawn(path.basename(entry.binPath), minerString.split(" "),{
+              cwd:path.dirname(entry.binPath)
+            });
+          else
+            miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
+        }
 
-      console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
-      miner[entry.id].stdout.on('data', function (data) {
-        if (entry.writeMinerLog) {
-          miner_logs[entry.id].write(data.toString());
-        }
-        if(checkMinerOutputString(data.toString())){
-          miner[entry.id].kill();
-          kill(miner[entry.id].pid);
-        }
-      });
-      miner[entry.id].stderr.on('data', function (data) {
-        if (entry.writeMinerLog){
-          miner_logs[entry.id].write(data.toString());
-        }
-        if(checkMinerOutputString(data.toString())){
-          miner[entry.id].kill();
-          kill(miner[entry.id].pid);
-        }
-      });
-      miner[entry.id].on('exit', function(){
-        restartMinerOnExit(entry,minerString);
-      });
-      miner[entry.id].on('error', function(err) {
-        //silently discard enoent for killing proc
-      });
-    }(entry,minerString));
+        console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
+        miner[entry.id].stdout.on('data', function (data) {
+          if (entry.writeMinerLog) {
+            miner_logs[entry.id].write(data.toString());
+          }
+          if(checkMinerOutputString(data.toString())){
+            miner[entry.id].kill();
+            kill(miner[entry.id].pid);
+          }
+        });
+        miner[entry.id].stderr.on('data', function (data) {
+          if (entry.writeMinerLog){
+            miner_logs[entry.id].write(data.toString());
+          }
+          if(checkMinerOutputString(data.toString())){
+            miner[entry.id].kill();
+            kill(miner[entry.id].pid);
+          }
+        });
+        miner[entry.id].on('exit', function(){
+          restartMinerOnExit(entry,minerString);
+        });
+        miner[entry.id].on('error', function(err) {
+          //silently discard enoent for killing proc
+        });
+      }(entry,minerString));
+    },500);
   }
 }
 
@@ -577,6 +580,60 @@ function getMinerStats(id,port,type) {
 
       mysocket.connect(port, "127.0.0.1");
       break;
+    case "claymore-cryptonight":
+      var net = require('net');
+      var mysocket = new net.Socket();
+
+      mysocket.on('connect', function() {
+        var req = '{"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}';
+        mysocket.write(req + '\n');
+        mysocket.setTimeout(1000);
+        mysocket.end();
+      });
+
+      mysocket.on('timeout', function() {
+        console.log(colors.red("timeout connecting to claymore-cryptonight on port "+port));
+        mysocket.destroy();
+        stats.entries[id].uptime=null;
+        stats.entries[id].hashrate=null;
+        stats.entries[id].accepted=null;
+        stats.entries[id].rejected=null;
+        stats.entries[id].temps=null;
+        stats.entries[id].fans=null;
+        stats.entries[id].pools=null;
+        stats.entries[id].version=null;
+      });
+
+      mysocket.on('data', function(data) {
+        mysocket.setTimeout(0);
+        var d = JSON.parse(data);
+        stats.entries[id].uptime= d.result[1]*60;
+        var properties = d.result[2].split(';');
+        stats.entries[id].hashrate=properties[0];
+        stats.entries[id].accepted=properties[1];
+        stats.entries[id].rejected=properties[2];
+        properties = d.result[6].split(';');
+        stats.entries[id].temps=[];
+        stats.entries[id].fans=[];
+        for(var i=0;i<properties.length;i+=2){
+          if (properties[i]!==""&&properties[i]!==null){
+            stats.entries[id].temps.push(properties[i]);
+            stats.entries[id].fans.push(properties[i+1]);
+          }
+        }
+        stats.entries[id].pools = d.result[7].split(';');
+        stats.entries[id].version=d.result[0];
+      });
+
+      mysocket.on('close', function() {
+      });
+
+      mysocket.on('error', function(e) {
+        console.log(colors.red("socket error: " + e.message));
+      });
+
+      mysocket.connect(port, "127.0.0.1");
+      break;
     case "nheqminer":
       var net = require('net');
       var mysocket = new net.Socket();
@@ -621,6 +678,10 @@ function getMinerStats(id,port,type) {
   }
 }
 
+function isRunning(){
+  return stats.running;
+}
+
 function init() {
   if (configModule.config.autostart) {
     console.log(colors.green("autostart enabled, starting miner shortly.."));
@@ -639,3 +700,5 @@ exports.stopMining = stopMining;
 exports.stopMiner = stopMiner;
 exports.stopAllMiner = stopAllMiner;
 exports.startMiner = startMiner;
+exports.startAllMiner = startAllMiner;
+exports.isRunning=isRunning;

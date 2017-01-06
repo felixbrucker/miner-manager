@@ -29,6 +29,7 @@
         };
         vm.waiting = null;
         vm.updating=null;
+        vm.updatingMiner=null;
 
         vm.newCustomMiner={
             id:null,
@@ -58,6 +59,7 @@
         vm.getConfig=getConfig;
         vm.setConfig=setConfig;
         vm.update=update;
+        vm.updateMiner=updateMiner;
         vm.addCustomMiner=addCustomMiner;
         vm.delCustomMiner=delCustomMiner;
         vm.addGroup=addGroup;
@@ -222,7 +224,25 @@
             });
         }
 
-
+        /**
+         * @name updateMiner
+         * @desc updates the miner from git
+         * @memberOf configCtrl
+         */
+        function updateMiner() {
+            vm.updatingMiner=true;
+            return $http({
+                method: 'POST',
+                url: 'api/config/updateMiner',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+            }).then(function successCallback(response) {
+                setTimeout(function(){vm.updatingMiner = false;},500);
+            }, function errorCallback(response) {
+                console.log(response);
+            });
+        }
 
 
         // call init function on firstload
