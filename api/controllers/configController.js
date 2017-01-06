@@ -21,6 +21,7 @@ function setConfig(req, res, next) {
 }
 
 function update(req, res, next) {
+  console.log("a");
   var running=miningController.isRunning();
   if (running)
     miningController.stopAllMiner();
@@ -46,6 +47,7 @@ function updateMiner(req, res, next) {
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
     if(isWin){
+      console.log("a");
       const child = spawn(path.basename('helpers\\updateWindowsMiner.bat'),[],{
         detached: true,
         stdio: 'ignore',
