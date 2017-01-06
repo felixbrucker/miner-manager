@@ -44,7 +44,7 @@ var config = module.exports = {
         //default conf
         config.config.autostart=false;
         config.config.rigName=process.env.WNAME;
-        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-a cryptonight -o stratum+tcp://us-east.cryptonight-hub.miningpoolhub.com:20580 -u someone123."+process.env.WNAME+" -p x -t 3",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
+        config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-a cryptonight -o stratum+tcp://cryptonight.usa.nicehash.com:3355 -u 12gotm1HbU1zv9FMnuNfPakpn7rsRjB1no."+process.env.WNAME+" -p x -t 3",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.saveConfig();
         setTimeout(function(){
           config.loadConfig();
