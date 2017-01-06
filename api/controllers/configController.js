@@ -49,8 +49,7 @@ function updateMiner(req, res, next) {
       const child = spawn('helpers\\updateWindowsMiner.bat',[],{
         detached: true,
         stdio: 'ignore',
-        shell:true,
-        cwd:"helpers"
+        shell:true
       });
       child.on('error', function(err) {
         console.log(err);
