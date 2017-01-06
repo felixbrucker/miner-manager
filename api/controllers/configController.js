@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path');
+
 var configModule = require(__basedir + 'api/modules/configModule');
 var miningController = require(__basedir + 'api/controllers/miningController');
 
@@ -44,11 +46,11 @@ function updateMiner(req, res, next) {
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
     if(isWin){
-      const child = spawn('updateWindowsMiner.bat',[],{
+      const child = spawn(path.basename('helpers\\updateWindowsMiner.bat'),[],{
         detached: true,
         stdio: 'ignore',
         shell:true,
-        cwd:"helpers"
+        cwd:path.dirname("helpers\\updateWindowsMiner.bat")
       });
     }
     else{
