@@ -12,6 +12,7 @@ if [ ! -d "miner" ]; then
     echo 'initial setup, building ...'
     cd src/cpuminer-opt
     chmod +x build.sh
+    chmod +x autogen.sh
     ./build.sh
     mkdir -p ../../../bin
     cp cpuminer ../../../bin/
@@ -36,6 +37,7 @@ else
         cd src/cpuminer-opt
         chmod +x build.sh
         ./build.sh
+        chmod +x autogen.sh
         mkdir -p ../../../bin
         cp cpuminer ../../../bin/
         cd ../../
