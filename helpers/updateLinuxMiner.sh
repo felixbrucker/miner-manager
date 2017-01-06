@@ -33,6 +33,7 @@ else
     if [ "$prevSizeCPU" != "$currSizeCPU" ]; then
         echo 'newer cpuminer-opt version available, building ...'
         cd src/cpuminer-opt
+        chmod +x build.sh
         ./build.sh
         mkdir -p ../../../bin
         cp cpuminer ../../../bin/
