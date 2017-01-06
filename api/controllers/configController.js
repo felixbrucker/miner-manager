@@ -21,7 +21,6 @@ function setConfig(req, res, next) {
 }
 
 function update(req, res, next) {
-  console.log("a");
   var running=miningController.isRunning();
   if (running)
     miningController.stopAllMiner();
@@ -47,12 +46,22 @@ function updateMiner(req, res, next) {
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
     if(isWin){
-      console.log("a");
       const child = spawn(path.basename('helpers\\updateWindowsMiner.bat'),[],{
         detached: true,
         stdio: 'ignore',
         shell:true,
         cwd:path.dirname("helpers\\updateWindowsMiner.bat")
+      });
+      child.on('error', function(err) {
+        console.log(err);
+      });
+      child.on('exit', function() {
+        if (running)
+          setTimeout(function(){
+            miningController.startAllMiner();
+          },2000);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({result:true}));
       });
     }
     else{
@@ -61,13 +70,20 @@ function updateMiner(req, res, next) {
         stdio: 'ignore',
         shell:true
       });
+      child.on('error', function(err) {
+        console.log(err);
+      });
+      child.on('exit', function() {
+        if (running)
+          setTimeout(function(){
+            miningController.startAllMiner();
+          },2000);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({result:true}));
+      });
     }
-    if (running)
-      setTimeout(function(){
-        miningController.startAllMiner();
-      },10000);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify({result:true}));
+
+
   },1000);
 }
 
