@@ -46,11 +46,11 @@ function updateMiner(req, res, next) {
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
     if(isWin){
-      const child = spawn(path.basename('helpers\\updateWindowsMiner.bat'),[],{
+      const child = spawn('helpers\\updateWindowsMiner.bat',[],{
         detached: true,
         stdio: 'ignore',
         shell:true,
-        cwd:path.dirname("helpers\\updateWindowsMiner.bat")
+        cwd:"helpers"
       });
       child.on('error', function(err) {
         console.log(err);
