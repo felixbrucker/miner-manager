@@ -104,8 +104,10 @@ function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
             if(prevEntries[group.name].algo!==parsed.result.algo){
               //switch
               stopMiner(prevEntries[group.name]);
-              startMiner(destinedOne);
-              prevEntries[group.name]=destinedOne;
+              setTimeout(function (){
+                startMiner(destinedOne);
+                prevEntries[group.name]=destinedOne;
+              },500);
             }
           }else{
             //startup
