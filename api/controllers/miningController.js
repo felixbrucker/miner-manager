@@ -571,7 +571,7 @@ function getMinerStats(id,port,type) {
           }
         }
         stats.entries[id].pools = d.result[7].split(';');
-        stats.entries[id].version=d.result[0];
+        stats.entries[id].version=d.result[0].replace(" - ZEC","");
       });
 
       mysocket.on('close', function() {
