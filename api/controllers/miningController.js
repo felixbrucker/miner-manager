@@ -375,8 +375,9 @@ function stopAllMiner() {
   shouldExit=true;
   for(var i=0;i< configModule.config.groups.length;i++) {
     var group = configModule.config.groups[i];
-    if(group.autoswitch){
+    if(profitTimer[group.id]!==undefined&&profitTimer[group.id]!==null){
       clearInterval(profitTimer[group.id]);
+      profitTimer[group.id]=null;
     }
   }
   Object.keys(miner).forEach(function (key) {
