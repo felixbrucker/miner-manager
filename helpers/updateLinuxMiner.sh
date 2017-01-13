@@ -46,4 +46,4 @@ else
     fi
 fi
 
-} &> minerUpdate.log
+} &> data/minerUpdate.log
