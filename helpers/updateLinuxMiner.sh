@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+
 # set starting point
 cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# change to working dir
 cd ..
+
+{
 
 # clone on first time and setup
 if [ ! -d "miner" ]; then
@@ -36,8 +37,8 @@ else
         echo 'newer cpuminer-opt version available, building ...'
         cd src/cpuminer-opt
         chmod +x build.sh
-        ./build.sh
         chmod +x autogen.sh
+        ./build.sh
         mkdir -p ../../../bin
         cp cpuminer ../../../bin/
         cd ../../
@@ -45,5 +46,4 @@ else
     fi
 fi
 
-
-
+} &> minerUpdate.log
