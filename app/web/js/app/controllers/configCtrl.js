@@ -15,7 +15,7 @@
         .module('app')
         .controller('configCtrl', configController);
 
-    function configController($scope,$interval,$http) {
+    function configController($scope,$interval,$http,$rootScope) {
 
         var vm = this;
         vm.config = {
@@ -177,6 +177,7 @@
                 vm.config.groups=response.data.groups;
                 vm.config.algos=response.data.algos;
                 vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
+                $rootScope.title = vm.config.rigName + " Miner-Manager Config";
             }, function errorCallback(response) {
                 console.log(response);
             });

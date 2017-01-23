@@ -15,7 +15,7 @@
     .module('app')
     .controller('statsCtrl', statsController);
 
-  function statsController($scope, $interval, $http) {
+  function statsController($scope, $interval, $http, $rootScope) {
 
     var vm = this;
     vm.statsInterval = null;
@@ -59,6 +59,7 @@
         vm.current.running = response.data.running;
         vm.current.entries = response.data.entries;
         vm.current.rigName = response.data.rigName;
+        $rootScope.title = vm.current.rigName + " Miner-Manager Stats";
       }, function errorCallback(response) {
         console.log(response);
       });

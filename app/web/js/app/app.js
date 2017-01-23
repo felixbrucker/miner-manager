@@ -24,7 +24,7 @@
 
           var listener = function (event, toState) {
 
-            var title = 'Autoswitch-Miner';
+            var title = 'Miner-Manager';
             if (toState.data && toState.data.pageTitle) title = toState.data.pageTitle;
 
             $timeout(function () {
