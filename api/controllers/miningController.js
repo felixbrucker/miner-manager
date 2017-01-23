@@ -202,6 +202,9 @@ function startMiner(entry) {
                   case "claymore-cryptonight":
                     minerString+=" -mport -"+entry.port;
                     break;
+                  case "optiminer-zec":
+                    minerString+=" -m "+entry.port;
+                    break;
                   case "nheqminer":
                     minerString+=" -a "+entry.port;
                     break;
@@ -675,6 +678,61 @@ function getMinerStats(id,port,type) {
         console.log(colors.red("socket error: " + e.message));
       });
       mysocket.connect(port, "127.0.0.1");
+      break;
+    case "optiminer-zec":
+      var req= http.request({
+        host: "127.0.0.1",
+        path: "/",
+        method: 'GET',
+        port: port,
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      }, function (response) {
+        response.setEncoding('utf8');
+        var body = '';
+        response.on('data', function (d) {
+          body += d;
+        });
+        response.on('end', function () {
+          //console.log(body);
+          var parsed = null;
+          try{
+            parsed=JSON.parse(body);
+          }catch(error){
+            stats.entries[id].uptime=null;
+            stats.entries[id].hashrate=null;
+            stats.entries[id].accepted=null;
+            stats.entries[id].rejected=null;
+            console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
+          }
+          if (parsed != null){
+            stats.entries[id].uptime=parsed.uptime;
+            stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["60s"];
+            stats.entries[id].accepted=parsed.share.accepted;
+            stats.entries[id].rejected=parsed.share.rejected;
+          }
+        });
+      }).on("error", function(error) {
+        stats.entries[id].uptime=null;
+        stats.entries[id].hashrate=null;
+        stats.entries[id].accepted=null;
+        stats.entries[id].rejected=null;
+        console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
+        console.log(error);
+      });
+      req.on('socket', function (socket) {
+        socket.setTimeout(2000);
+        socket.on('timeout', function() {
+          console.log(colors.red("timeout connecting to optiminer-zec on port "+port));
+          stats.entries[id].uptime=null;
+          stats.entries[id].hashrate=null;
+          stats.entries[id].accepted=null;
+          stats.entries[id].rejected=null;
+          req.abort();
+        });
+      });
+      req.end();
       break;
     case "other":
       break;

@@ -17,7 +17,7 @@ var config = module.exports = {
     profitabilityServiceUrl:null
   },
   configNonPersistent:{
-    types:["cpuminer-opt","ccminer","claymore-eth","claymore-zec","claymore-cryptonight","nheqminer","other"],
+    types:["cpuminer-opt","claymore-eth","claymore-zec","claymore-cryptonight","optiminer-zec","ccminer","nheqminer","other"],
     algos:[
       "argon2",
       "axiom",
