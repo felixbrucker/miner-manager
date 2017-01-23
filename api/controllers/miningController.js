@@ -707,10 +707,15 @@ function getMinerStats(id,port,type) {
             console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
           }
           if (parsed != null){
-            stats.entries[id].uptime=parsed.uptime;
-            stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["60s"];
-            stats.entries[id].accepted=parsed.share.accepted;
-            stats.entries[id].rejected=parsed.share.rejected;
+            console.log(parsed);
+            if (parsed.uptime)
+              stats.entries[id].uptime=parsed.uptime;
+            if (parsed["solution_rate"]&&parsed["solution_rate"]["Total"])
+              stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["60s"];
+            if (parsed.share){
+              stats.entries[id].accepted=parsed.share.accepted;
+              stats.entries[id].rejected=parsed.share.rejected;
+            }
           }
         });
       }).on("error", function(error) {
