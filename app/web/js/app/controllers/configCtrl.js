@@ -64,6 +64,7 @@
         vm.delCustomMiner=delCustomMiner;
         vm.addGroup=addGroup;
         vm.delGroup=delGroup;
+        vm.rebootSystem=rebootSystem;
 
 
 
@@ -243,6 +244,26 @@
             }, function errorCallback(response) {
                 console.log(response);
             });
+        }
+
+        /**
+         * @name rebootSystem
+         * @desc reboots the system if confirmed
+         * @memberOf configCtrl
+         */
+        function rebootSystem() {
+            if(confirm('Are you sure you want to reboot the System?')){
+                return $http({
+                    method: 'POST',
+                    url: 'api/config/reboot',
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                }).then(function successCallback(response) {
+                }, function errorCallback(response) {
+                    console.log(response);
+                });
+            }
         }
 
 

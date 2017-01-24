@@ -87,6 +87,45 @@ function updateMiner(req, res, next) {
 }
 
 
+function rebootSystem(req, res, next) {
+  var running=miningController.isRunning();
+  if (running)
+    miningController.stopAllMiner();
+  setTimeout(function(){
+    const spawn = require('cross-spawn');
+    var isWin = /^win/.test(process.platform);
+    if(isWin){
+      const child = spawn('helpers\\rebootWindows.bat',[],{
+        detached: true,
+        stdio: 'ignore',
+        shell:true
+      });
+      child.on('error', function(err) {
+        console.log(err);
+      });
+      child.on('exit', function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({result:true}));
+      });
+    }
+    else{
+      const child = spawn('helpers/rebootLinux.sh',[],{
+        detached: true,
+        stdio: 'ignore',
+        shell:true
+      });
+      child.on('error', function(err) {
+        console.log(err);
+      });
+      child.on('exit', function() {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({result:true}));
+      });
+    }
+  },1000);
+}
+
+
 
 function init() {
 }
@@ -97,3 +136,4 @@ exports.getConfig = getConfig;
 exports.setConfig = setConfig;
 exports.update = update;
 exports.updateMiner = updateMiner;
+exports.rebootSystem = rebootSystem;
