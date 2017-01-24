@@ -715,10 +715,15 @@ function getMinerStats(id,port,type) {
             if (parsed.uptime)
               stats.entries[id].uptime=parsed.uptime;
             if (parsed["solution_rate"]&&parsed["solution_rate"]["Total"])
-              if(parsed["solution_rate"]["Total"]["60s"])
-                stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["60s"];
-              else
-                stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["5s"];
+              if(parsed["solution_rate"]["Total"]["3600s"]){
+                stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["3600s"];
+              }else{
+                if(parsed["solution_rate"]["Total"]["60s"])
+                  stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["60s"];
+                else
+                  stats.entries[id].hashrate=parsed["solution_rate"]["Total"]["5s"];
+              }
+                
             if (parsed.share){
               stats.entries[id].accepted=parsed.share.accepted;
               stats.entries[id].rejected=parsed.share.rejected;
