@@ -469,6 +469,62 @@
 
           </div>
 
+          <div ng-if="entry.type==='sgminer-gm'">
+            <span style="font-size:120%;">[sgminer-gm]</span><br/>
+
+            <div class="col-md-4" style="margin-top: 10px;">
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <table class='table table-borderless'>
+                    <tr>
+                      <td>Hashrate</td>
+                      <td><span class="label label-primary">{{entry.hashrate | hashrate}}</span></td>
+                    </tr>
+                    <tr>
+                      <td>Algorithm</td>
+                      <td><span class="label label-primary">{{entry.algorithm}}</span></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4" style="margin-top: 10px;">
+              <div class="panel panel-default" >
+                <div class="panel-body">
+                  <table class='table table-borderless'>
+                    <tr>
+                      <td>Version</td>
+                      <td><span class="label label-info">{{entry.miner}}</span></td>
+                    </tr>
+                    <tr>
+                      <td>Uptime</td>
+                      <td><span class="label label-info">{{entry.uptime | secondsToTimeString}}</span></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4" style="margin-top: 10px;">
+              <div class="panel panel-default" >
+                <div class="panel-body">
+                  <table class='table table-borderless'>
+                    <tr>
+                      <td>Accepted Shares</td>
+                      <td><span class="label label-primary">{{entry.accepted}}</span></td>
+                    </tr>
+                    <tr>
+                      <td>Rejected Shares</td>
+                      <td><span class="label label-primary">{{entry.rejected}}</span></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
           <div ng-if="entry.type==='other'">
             <span style="font-size:120%;">[other]</span><br/>
             <table class='table table-borderless' style="margin-top: 10px;">

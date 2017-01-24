@@ -205,6 +205,9 @@ function startMiner(entry) {
                   case "optiminer-zec":
                     minerString+=" -m "+entry.port;
                     break;
+                  case "sgminer-gm":
+                    minerString+=" --api-listen --api-port "+entry.port;
+                    break;
                   case "nheqminer":
                     minerString+=" -a "+entry.port;
                     break;
@@ -740,6 +743,70 @@ function getMinerStats(id,port,type) {
         });
       });
       req.end();
+      break;
+    case "sgminer-gm":
+      var net = require('net');
+      var mysocket = new net.Socket();
+
+      mysocket.on('connect', function() {
+        var req = '{"command":"summary+coin","parameter":""}';
+        mysocket.write(req + '\n');
+        mysocket.setTimeout(2000);
+        mysocket.end();
+      });
+
+      mysocket.on('timeout', function() {
+        stats.entries[id].accepted = null;
+        stats.entries[id].rejected = null;
+        stats.entries[id].algorithm = null;
+        stats.entries[id].hashrate = null;
+        stats.entries[id].miner = null;
+        stats.entries[id].uptime = null;
+        console.log("timeout connecting to sgminer-gm on port "+port);
+        mysocket.destroy();
+      });
+
+      mysocket.on('data', function(data) {
+        mysocket.setTimeout(0);
+        var parsed=null;
+        var tmpString=data.toString('utf8');
+        try{
+          //cut last char ("")
+          parsed=JSON.parse(tmpString.substring(0, tmpString.length - 1));
+        }catch(error){
+          stats.entries[id].accepted = null;
+          stats.entries[id].rejected = null;
+          stats.entries[id].algorithm = null;
+          stats.entries[id].hashrate = null;
+          stats.entries[id].miner = null;
+          stats.entries[id].uptime = null;
+          console.log("Error: Unable to get stats data for sgminer-gm on port "+port);
+          console.log(error);
+        }
+        if (parsed != null){
+          stats.entries[id].accepted = parseInt(parsed.summary[0].SUMMARY[0].Accepted);
+          stats.entries[id].rejected = parseFloat(parsed.summary[0].SUMMARY[0].Rejected);
+          stats.entries[id].algorithm = parsed.coin[0].COIN[0]["Hash Method"];
+          stats.entries[id].hashrate = parseFloat(parsed.summary[0].SUMMARY[0]["KHS av"]);
+          stats.entries[id].miner = parsed.summary[0].STATUS[0].Description;
+          stats.entries[id].uptime = parsed.summary[0].SUMMARY[0].Elapsed;
+        }
+      });
+
+      mysocket.on('close', function() {
+      });
+
+      mysocket.on('error', function(e) {
+        stats.entries[id].accepted = null;
+        stats.entries[id].rejected = null;
+        stats.entries[id].algorithm = null;
+        stats.entries[id].hashrate = null;
+        stats.entries[id].miner = null;
+        stats.entries[id].uptime = null;
+        console.log("socket error: " + e.message);
+      });
+
+      mysocket.connect(port, "127.0.0.1");
       break;
     case "other":
       break;

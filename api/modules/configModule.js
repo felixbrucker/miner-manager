@@ -17,10 +17,9 @@ var config = module.exports = {
     profitabilityServiceUrl:null
   },
   configNonPersistent:{
-    types:["cpuminer-opt","claymore-eth","claymore-zec","claymore-cryptonight","optiminer-zec","ccminer","nheqminer","other"],
+    types:["cpuminer-opt","claymore-eth","claymore-zec","claymore-cryptonight","optiminer-zec","sgminer-gm","ccminer","nheqminer","other"],
     algos:[
       "argon2",
-      "axiom",
       "blake2s",
       "blake256r8",
       "blake256r8vnl",
@@ -30,7 +29,6 @@ var config = module.exports = {
       "daggerhashimoto",
       "decred",
       "equihash",
-      "hodl",
       "keccak",
       "lbry",
       "lyra2re",
@@ -38,22 +36,11 @@ var config = module.exports = {
       "m7m",
       "myr-gr",
       "neoscrypt",
-      "nist5",
-      "quark",
-      "qubit",
-      "scrypt",
-      "scryptjanenf16",
-      "scryptnf",
-      "sha256",
       "sib",
       "skein",
       "veltor",
       "whirlpoolx",
-      "x11",
       "x11evo",
-      "x13",
-      "x14",
-      "x15",
       "x17",
       "yescrypt"
     ]
