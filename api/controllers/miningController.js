@@ -762,7 +762,7 @@ function getMinerStats(id,port,type) {
         stats.entries[id].hashrate = null;
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
-        console.log("timeout connecting to sgminer-gm on port "+port);
+        console.log(colors.red("timeout connecting to sgminer-gm on port "+port));
         mysocket.destroy();
       });
 
@@ -780,7 +780,7 @@ function getMinerStats(id,port,type) {
           stats.entries[id].hashrate = null;
           stats.entries[id].miner = null;
           stats.entries[id].uptime = null;
-          console.log("Error: Unable to get stats data for sgminer-gm on port "+port);
+          console.log(colors.red("Error: Unable to get stats data for sgminer-gm on port "+port));
           console.log(error);
         }
         if (parsed != null){
@@ -803,7 +803,7 @@ function getMinerStats(id,port,type) {
         stats.entries[id].hashrate = null;
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
-        console.log("socket error: " + e.message);
+        console.log(colors.red("socket error: " + e.message));
       });
 
       mysocket.connect(port, "127.0.0.1");
