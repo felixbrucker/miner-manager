@@ -243,6 +243,7 @@ function startMiner(entry) {
                   stats.entries[entry.id]={};
                 stats.entries[entry.id].type=entry.type;
                 stats.entries[entry.id].text=entry.binPath+" "+minerString;
+                stats.entries[entry.id].expectedHr=entry.hashrate;
 
                 timers[entry.id]=setInterval(function () {
                   getMinerStats(entry.id,entry.port,entry.type);
@@ -306,6 +307,7 @@ function restartMinerOnExit(entry,minerString){
         stats.entries[entry.id]={};
         stats.entries[entry.id].type=entry.type;
         stats.entries[entry.id].text=entry.binPath+" "+minerString;
+        stats.entries[entry.id].expectedHr=entry.hashrate;
         const spawn = require('cross-spawn');
         console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
         var isWin = /^win/.test(process.platform);
