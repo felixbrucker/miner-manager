@@ -454,7 +454,8 @@ function getMinerStats(id,port,type) {
               var tup = property.split('=');
               obj[tup[0]] = tup[1];
             });
-            stats.entries[id].accepted = parseFloat(obj.ACC);
+            if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+              stats.entries[id].accepted = parseFloat(obj.ACC);
             stats.entries[id].acceptedPerMinute = parseFloat(obj.ACCMN);
             stats.entries[id].algorithm = obj.ALGO;
             stats.entries[id].difficulty = parseFloat(obj.DIFF);
@@ -470,6 +471,7 @@ function getMinerStats(id,port,type) {
               case "ccminer":
                 stats.entries[id].gpus = parseFloat(obj.GPUS);
                 break;
+            }
             }
           }
         });
@@ -488,9 +490,11 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('timeout', function() {
-        console.log(colors.red("timeout connecting to claymore-eth on port "+port));
+        
         mysocket.destroy();
-        stats.entries[id].uptime=null;
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          console.log(colors.red("timeout connecting to claymore-eth on port "+port));
+          stats.entries[id].uptime=null;
         stats.entries[id]['eth-hashrate']=null;
         stats.entries[id]['eth-accepted']=null;
         stats.entries[id]['eth-rejected']=null;
@@ -501,12 +505,15 @@ function getMinerStats(id,port,type) {
         stats.entries[id].fans=null;
         stats.entries[id].pools=null;
         stats.entries[id].version=null;
+            }
+        
       });
 
       mysocket.on('data', function(data) {
         mysocket.setTimeout(0);
         var d = JSON.parse(data);
-        stats.entries[id].uptime= d.result[1]*60;
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          stats.entries[id].uptime= d.result[1]*60;
         var properties = d.result[2].split(';');
         stats.entries[id]['eth-hashrate']=properties[0];
         stats.entries[id]['eth-accepted']=properties[1];
@@ -526,6 +533,8 @@ function getMinerStats(id,port,type) {
         }
         stats.entries[id].pools = d.result[7].split(';');
         stats.entries[id].version=d.result[0];
+            }
+        
       });
 
       mysocket.on('close', function() {
@@ -549,9 +558,11 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('timeout', function() {
-        console.log(colors.red("timeout connecting to claymore-zec on port "+port));
+        
         mysocket.destroy();
-        stats.entries[id].uptime=null;
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          console.log(colors.red("timeout connecting to claymore-zec on port "+port));
+          stats.entries[id].uptime=null;
         stats.entries[id]['zec-hashrate']=null;
         stats.entries[id]['zec-accepted']=null;
         stats.entries[id]['zec-rejected']=null;
@@ -559,12 +570,15 @@ function getMinerStats(id,port,type) {
         stats.entries[id].fans=null;
         stats.entries[id].pools=null;
         stats.entries[id].version=null;
+            }
+        
       });
 
       mysocket.on('data', function(data) {
         mysocket.setTimeout(0);
         var d = JSON.parse(data);
-        stats.entries[id].uptime= d.result[1]*60;
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          stats.entries[id].uptime= d.result[1]*60;
         var properties = d.result[2].split(';');
         stats.entries[id]['zec-hashrate']=properties[0];
         stats.entries[id]['zec-accepted']=properties[1];
@@ -580,6 +594,8 @@ function getMinerStats(id,port,type) {
         }
         stats.entries[id].pools = d.result[7].split(';');
         stats.entries[id].version=d.result[0].replace(" - ZEC","");
+            }
+        
       });
 
       mysocket.on('close', function() {
@@ -603,9 +619,11 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('timeout', function() {
-        console.log(colors.red("timeout connecting to claymore-cryptonight on port "+port));
+        
         mysocket.destroy();
-        stats.entries[id].uptime=null;
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          console.log(colors.red("timeout connecting to claymore-cryptonight on port "+port));
+          stats.entries[id].uptime=null;
         stats.entries[id].hashrate=null;
         stats.entries[id].accepted=null;
         stats.entries[id].rejected=null;
@@ -613,11 +631,14 @@ function getMinerStats(id,port,type) {
         stats.entries[id].fans=null;
         stats.entries[id].pools=null;
         stats.entries[id].version=null;
+            }
+        
       });
 
       mysocket.on('data', function(data) {
         mysocket.setTimeout(0);
         var d = JSON.parse(data);
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         stats.entries[id].uptime= d.result[1]*60;
         var properties = d.result[2].split(';');
         stats.entries[id].hashrate=properties[0];
@@ -634,6 +655,7 @@ function getMinerStats(id,port,type) {
         }
         stats.entries[id].pools = d.result[7].split(';');
         stats.entries[id].version=d.result[0].replace(" - CN","");
+        }
       });
 
       mysocket.on('close', function() {
@@ -657,23 +679,27 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('timeout', function() {
-        console.log(colors.red("timeout connecting to nheqminer on port "+port));
         mysocket.destroy();
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
+          console.log(colors.red("timeout connecting to nheqminer on port "+port));
         stats.entries[id].iterationRate=null;
         stats.entries[id].solutionRate=null;
         stats.entries[id].acceptedPerMinute=null;
         stats.entries[id].rejectedPerMinute=null;
         miner[id].kill();
         kill(miner[id].pid);
+        }
       });
 
       mysocket.on('data', function(data) {
         mysocket.setTimeout(0);
         var d = JSON.parse(data);
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         stats.entries[id].iterationRate= d.result.speed_ips;
         stats.entries[id].solutionRate=d.result.speed_sps;
         stats.entries[id].acceptedPerMinute= d.result.accepted_per_minute;
         stats.entries[id].rejectedPerMinute= d.result.rejected_per_minute;
+        }
       });
 
       mysocket.on('close', function() {
@@ -700,6 +726,7 @@ function getMinerStats(id,port,type) {
           body += d;
         });
         response.on('end', function () {
+          if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
           //console.log(body);
           var parsed = null;
           try{
@@ -729,23 +756,28 @@ function getMinerStats(id,port,type) {
               stats.entries[id].rejected=parsed.share.rejected;
             }
           }
+          }
         });
       }).on("error", function(error) {
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         stats.entries[id].uptime=null;
         stats.entries[id].hashrate=null;
         stats.entries[id].accepted=null;
         stats.entries[id].rejected=null;
         console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
         console.log(error);
+        }
       });
       req.on('socket', function (socket) {
         socket.setTimeout(2000);
         socket.on('timeout', function() {
+          if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
           console.log(colors.red("timeout connecting to optiminer-zec on port "+port));
           stats.entries[id].uptime=null;
           stats.entries[id].hashrate=null;
           stats.entries[id].accepted=null;
           stats.entries[id].rejected=null;
+          }
           req.abort();
         });
       });
@@ -763,6 +795,7 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('timeout', function() {
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         stats.entries[id].accepted = null;
         stats.entries[id].rejected = null;
         stats.entries[id].algorithm = null;
@@ -770,11 +803,13 @@ function getMinerStats(id,port,type) {
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
         console.log(colors.red("timeout connecting to sgminer-gm on port "+port));
+        }
         mysocket.destroy();
       });
 
       mysocket.on('data', function(data) {
         mysocket.setTimeout(0);
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         var parsed=null;
         var tmpString=data.toString('utf8');
         try{
@@ -798,12 +833,14 @@ function getMinerStats(id,port,type) {
           stats.entries[id].miner = parsed.summary[0].STATUS[0].Description;
           stats.entries[id].uptime = parsed.summary[0].SUMMARY[0].Elapsed;
         }
+        }
       });
 
       mysocket.on('close', function() {
       });
 
       mysocket.on('error', function(e) {
+        if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
         stats.entries[id].accepted = null;
         stats.entries[id].rejected = null;
         stats.entries[id].algorithm = null;
@@ -811,6 +848,7 @@ function getMinerStats(id,port,type) {
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
         console.log(colors.red("socket error: " + e.message));
+        }
       });
 
       mysocket.connect(port, "127.0.0.1");
