@@ -24,16 +24,16 @@ else
     cd "miner"
 
     # check on src changes for building
-    prevSizeCPU=`du -s src/cpuminer-opt`
+    prevStatCPU=`stat -t src/cpuminer-opt`
 
     # update
     git pull
 
     # check on src changes for building
-    currSizeCPU=`du -s src/cpuminer-opt`
+    currStatCPU=`stat -t src/cpuminer-opt`
 
     # build in case newer version is detected
-    if [ "$prevSizeCPU" != "$currSizeCPU" ]; then
+    if [ "$prevStatCPU" != "$currStatCPU" ]; then
         echo 'newer cpuminer-opt version available, building ...'
         cd src/cpuminer-opt
         chmod +x build.sh
