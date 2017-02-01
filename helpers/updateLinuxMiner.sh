@@ -47,3 +47,5 @@ else
 fi
 
 } &> data/minerUpdate.log
+
+exit 0;
