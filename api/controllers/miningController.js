@@ -150,7 +150,7 @@ function checkIfMiningOnCorrectPool(group){
       }
 
       if(prevEntries[group.name]!==undefined){
-        if(prevEntries[group.name].pool!==chosenPool.pool||prevEntries[group.name].miner!==configModule.config.entries[pos]){
+        if(prevEntries[group.name].pool.name!==chosenPool.pool.name||prevEntries[group.name].miner!==configModule.config.entries[pos]){
           //switch
           stopMiner(prevEntries[group.name].miner);
           setTimeout(function (){

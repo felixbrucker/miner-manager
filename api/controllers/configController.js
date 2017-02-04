@@ -10,6 +10,7 @@ function getConfig(req, res, next) {
   var obj=configModule.config;
   obj.types=configModule.configNonPersistent.types;
   obj.algos=configModule.configNonPersistent.algos;
+  obj.locations=configModule.configNonPersistent.locations;
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(obj));
 }

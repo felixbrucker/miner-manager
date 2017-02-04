@@ -1,7 +1,7 @@
 <form name="config">
   <div class="row" style="margin-bottom: 10px;" ng-repeat="asPool in configVm.config.autoswitchPools track by $index">
     <div class="col-md-12">
-      <b>{{asPool.name}}:</b> worker: <input type="text" ng-model="asPool.worker" size="42">, pass: <input type="text" ng-model="asPool.pass">, location: <input type="text" ng-model="asPool.location">, append rig name: <input type="checkbox" ng-model="asPool.appendRigName">
+      <input type="checkbox" ng-model="asPool.enabled"> <b>{{asPool.name}}:</b> worker: <input type="text" ng-model="asPool.worker" size="42">, pass: <input type="text" ng-model="asPool.pass">, location: <select ng-options="location for location in configVm.config.locations" ng-model="asPool.location"></select>, append rig name: <input type="checkbox" ng-model="asPool.appendRigName">
     </div>
     <div class="col-md-12">
       <table class='table table-borderless table-condensed'>

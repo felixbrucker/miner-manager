@@ -39,6 +39,12 @@ var config = module.exports = {
       "yescrypt",
       "timetravel",
       "pascal"
+    ],
+    locations:[
+      "eu",
+      "usa",
+      "hk",
+      "jp"
     ]
   },
   getConfig: function () {

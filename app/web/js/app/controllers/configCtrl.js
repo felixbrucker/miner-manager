@@ -353,6 +353,7 @@
                 vm.config.pools=response.data.pools;
                 vm.config.autoswitchPools=response.data.autoswitchPools;
                 vm.config.algos=response.data.algos;
+                vm.config.locations=response.data.locations;
                 vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
                 $rootScope.title = vm.config.rigName + " Miner-Manager Config";
             }, function errorCallback(response) {
