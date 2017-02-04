@@ -262,7 +262,7 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
     var query={
       algos:{},
       region:pool.location,
-      name:configModule.config.rigName+"-"+group.name
+      name:configModule.config.rigName+group.name
     };
     for(var i=0;i< configModule.config.entries.length;i++) {
       var entry = configModule.config.entries[i];
