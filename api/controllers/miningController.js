@@ -196,7 +196,11 @@ function parsePoolToMinerString(pool,minerType,rigName){
       result = " -zpool " + pool.url + " -zwal " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-zpsw "+pool.pass;
       break;
     case "optiminer-zec":
-      result = " -s " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      var arr = pool.url.split("://");
+      arr = arr[(arr.length===1 ? 0 : 1)].split(":");
+      var hostname = arr[0];
+      var port = arr[1];
+      result = " -s " + hostname+":"+ port + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
       break;
     case "sgminer-gm":
     case "claymore-cryptonight":
