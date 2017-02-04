@@ -150,12 +150,12 @@ function checkIfMiningOnCorrectPool(group){
       }
 
       if(prevEntries[group.name]!==undefined){
-        if(prevEntries[group.name].pool.name!==chosenPool.pool.name||prevEntries[group.name].miner!==configModule.config.entries[pos]){
+        if(prevEntries[group.name].pool.name!==chosenPool.pool.name||prevEntries[group.name].miner.id!==configModule.config.entries[pos].id){
           //switch
           stopMiner(prevEntries[group.name].miner);
           setTimeout(function (){
             startMiner(configModule.config.entries[pos],chosenPool.pool);
-            prevEntries[group.name].miner=configModule.config.entries[pos];
+            prevEntries[group.name]={pool:chosenPool.pool,miner:configModule.config.entries[pos]};
           },500);
         }
       }else{
