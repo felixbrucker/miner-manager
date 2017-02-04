@@ -95,6 +95,10 @@ function updatePoolStatus(){
     if(configModule.config.pools[i].enabled){
       (function (i) {
         stratumTestModule.testStratum(configModule.config.pools[i],function(result){
+          if(configModule.config.pools[i].working&&!result.working)
+            console.log(configModule.config.pools[i].name+" is not working anymore: '"+result.data+"'");
+          if(!configModule.config.pools[i].working&&result.working)
+            console.log(configModule.config.pools[i].name+" is working again");
           configModule.config.pools[i].working=result.working;
         });
       })(i);
@@ -109,6 +113,10 @@ function updatePoolStatus(){
           obj.worker=configModule.config.autoswitchPools[i].worker;
           obj.pass=configModule.config.autoswitchPools[i].pass;
           stratumTestModule.testStratum(obj, function (result) {
+            if(configModule.config.autoswitchPools[i].pools[j].working&&!result.working)
+              console.log(configModule.config.autoswitchPools[i].pools[j].name+" is not working anymore: '"+result.data+"'");
+            if(!configModule.config.autoswitchPools[i].pools[j].working&&result.working)
+              console.log(configModule.config.autoswitchPools[i].pools[j].name+" is working again");
             configModule.config.autoswitchPools[i].pools[j].working = result.working;
           });
         })(i,j);
