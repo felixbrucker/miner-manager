@@ -88,7 +88,8 @@ var config = module.exports = {
                 {enabled:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
                 {enabled:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
                 {enabled:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
-                {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true}
+                {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
+                {enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
               ]}
             ];
         });
@@ -106,7 +107,8 @@ var config = module.exports = {
             {enabled:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
             {enabled:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
             {enabled:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
-            {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true}
+            {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
+            {enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
           ]}
         ];
         config.saveConfig();
