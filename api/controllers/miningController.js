@@ -186,30 +186,30 @@ function startAllMiner(){
   }
 }
 
-function parsePoolToMinerString(pool,minerType,rigName){
+function parsePoolToMinerString(pool,minerType,rigName,groupName){
   var result="";
   switch(minerType){
     case "claymore-eth":
-      result = " -epool " + pool.url + " -ewal " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-epsw "+pool.pass;
+      result = " -epool " + pool.url + " -ewal " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-epsw "+pool.pass;
       break;
     case "claymore-zec":
-      result = " -zpool " + pool.url + " -zwal " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-zpsw "+pool.pass;
+      result = " -zpool " + pool.url + " -zwal " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-zpsw "+pool.pass;
       break;
     case "optiminer-zec":
       var arr = pool.url.split("://");
       arr = arr[(arr.length===1 ? 0 : 1)].split(":");
       var hostname = arr[0];
       var port = arr[1];
-      result = " -s " + hostname+":"+ port + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      result = " -s " + hostname+":"+ port + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
       break;
     case "sgminer-gm":
     case "claymore-cryptonight":
     case "ccminer":
     case "cpuminer-opt":
-      result = " -o " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      result = " -o " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
       break;
     case "nheqminer":
-      result = " -l " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      result = " -l " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
       break;
     case "other":
       break;
@@ -387,7 +387,7 @@ function startMiner(entry,pool) {
               if (entry.port!==undefined&&entry.port!==null){
                 minerString+=parseApiPort(entry);
               }
-              minerString+=parsePoolToMinerString(pool,entry.type,configModule.config.rigName);
+              minerString+=parsePoolToMinerString(pool,entry.type,configModule.config.rigName,entry.group);
               (function (entry,minerString){
                 var isWin = /^win/.test(process.platform);
                 if (entry.shell){
