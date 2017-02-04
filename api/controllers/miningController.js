@@ -254,7 +254,7 @@ function getAutoswitchPoolObj(poolName){
 }
 
 function getMostProfitablePool(group,pool,callback){ //expected to be a autoswitch pool obj
-  if(configModule.config.profitabilityServiceUrl!==undefined&&configModule.config.profitabilityServiceUrl!==null){
+  if(configModule.config.profitabilityServiceUrl!==undefined&&configModule.config.profitabilityServiceUrl!==null&&pool.enabled){
     var query={
       algos:{},
       region:pool.location,
