@@ -81,6 +81,7 @@ var self = module.exports = {
               case 2:
                 if(parsed.error!==undefined&&parsed.error===null){
                   mysocket.end();
+                  mysocket.destroy();
                   callbackSent=true;
                   callback({working:true,data:"success"});
                 }else{
