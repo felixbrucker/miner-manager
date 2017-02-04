@@ -119,6 +119,7 @@ function updatePoolStatus(){
 
 function checkIfMiningOnCorrectPool(group){
   var poolArray=[];
+  if(group.pools){
   for(var j=0;j<group.pools.length;j++){
     if(group.pools[j].name.includes('autoswitch')){
       (function (j) {
@@ -164,6 +165,7 @@ function checkIfMiningOnCorrectPool(group){
       }
     }
   },5000);
+  }
 }
 
 function startAllMiner(){
