@@ -1,0 +1,63 @@
+<form name="config">
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-12">
+      <td><input type="checkbox" ng-model="configVm.config.autostart" ng-click="configVm.setConfig()"> Autostart Miner</td>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-12">
+      Rig Name: <input type="text" name="rigName" ng-model="configVm.config.rigName" size="8" placeholder="required" required>
+    </div>
+  </div>
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div  class="col-md-12">
+      <a href="https://github.com/felixbrucker/profitability-service" target="_blank">Profitability-Service</a> URL: <input type="text" name="profitabilityServiceUrl" ng-model="configVm.config.profitabilityServiceUrl" size="26" placeholder="IP:PORT eg. 127.0.0.1:8081">
+    </div>
+  </div>
+
+</form>
+
+
+
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-12">
+    <button ng-show="!configVm.waiting" type="button" class="btn btn-primary" ng-click="configVm.setConfig()" ng-disabled="config.$invalid"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+    </button>
+    <button ng-show="configVm.waiting" type="button" class="btn btn-success" disabled><i class="fa fa-refresh" aria-hidden="true"></i> Saving..
+    </button>
+    <i ng-show="configVm.waiting" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-12">
+    <button ng-show="!configVm.updating" type="button" class="btn btn-info" ng-click="configVm.update()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Git Pull
+    </button>
+    <button ng-show="configVm.updating" type="button" class="btn btn-success" disabled><i class="fa fa-refresh" aria-hidden="true"></i> update running..
+    </button>
+    <i ng-show="configVm.updating" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<div class="row" style="margin-bottom: 40px;">
+  <div class="col-md-12">
+    <button ng-show="!configVm.updatingMiner" type="button" class="btn btn-info" ng-click="configVm.updateMiner()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Update Miner
+    </button>
+    <button ng-show="configVm.updatingMiner" type="button" class="btn btn-success" disabled><i class="fa fa-refresh" aria-hidden="true"></i> update running..
+    </button>
+    <i ng-show="configVm.updatingMiner" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-12">
+    <button type="button" class="btn btn-danger" ng-click="configVm.rebootSystem()"><i class="fa fa-repeat" aria-hidden="true"></i> Reboot System
+    </button>
+  </div>
+</div>

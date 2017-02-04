@@ -10,7 +10,8 @@ var rfs    = require('rotating-file-stream');
 
 var miner_logs = {};
 
-var configModule = require(__basedir + 'api/modules/configModule');
+const configModule = require(__basedir + 'api/modules/configModule');
+const stratumTestModule = require(__basedir + 'api/modules/stratumTestModule');
 
 var stats = {
   running:null,
@@ -55,76 +56,6 @@ var kill = function (pid, signal, callback) {
   }
 };
 
-function getAlgoForGroup(group){ //group is expected to be autoswitch-enabled
-  var query={
-    algos:{},
-    region:"eu",
-    name:configModule.config.rigName+"-"+group.name
-  };
-  for(var i=0;i< configModule.config.entries.length;i++) {
-    var entry = configModule.config.entries[i];
-    if(entry.group===group.name&&entry.enabled){
-      query.algos[entry.algo]={hashrate:entry.hashrate};
-    }
-  }
-  var arr = configModule.config.profitabilityServiceUrl.split(":");
-  var req= http.request({
-    host: arr[0],
-    path: '/api/query',
-    method: 'POST',
-    port: arr[1],
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
-  }, function (response) {
-    response.setEncoding('utf8');
-    var body = '';
-    response.on('data', function (d) {
-      body += d;
-    });
-    response.on('end', function () {
-      var parsed = null;
-      try{
-        parsed=JSON.parse(body);
-      }catch(error){
-        console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
-        console.log(error);
-      }
-      if (parsed != null){
-        if (parsed.result!==false){
-          var destinedOne=null;
-          for(var i=0;i< configModule.config.entries.length;i++) {
-            var entry = configModule.config.entries[i];
-            if(entry.group===group.name&&entry.enabled&&entry.algo===parsed.result.algo){
-              destinedOne=entry;
-              break;
-            }
-          }
-          if(prevEntries[group.name]!==undefined){
-            if(prevEntries[group.name].algo!==parsed.result.algo){
-              //switch
-              stopMiner(prevEntries[group.name]);
-              setTimeout(function (){
-                startMiner(destinedOne);
-                prevEntries[group.name]=destinedOne;
-              },500);
-            }
-          }else{
-            //startup
-            startMiner(destinedOne);
-            prevEntries[group.name]=destinedOne;
-          }
-        }
-      }else
-        console.log(colors.red("["+group.name.toUpperCase()+"] Error: malformed profitability request"));
-    });
-  }).on("error", function(error) {
-    console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
-    console.log(error);
-  });
-  req.write(JSON.stringify(query));
-  req.end();
-}
 
 function getStats(req, res, next) {
   stats.rigName=configModule.config.rigName;
@@ -154,29 +85,98 @@ function validateSettings(entry) {
   return true;
 }
 
+function parseLocation(url,location){
+  return url.replace("#APPENDLOCATION#",location);
+}
+
+function updatePoolStatus(){
+
+  for(var i=0;i<configModule.config.pools.length;i++){
+    if(configModule.config.pools[i].enabled){
+      (function (i) {
+        stratumTestModule.testStratum(configModule.config.pools[i],function(result){
+          configModule.config.pools[i].working=result.working;
+        });
+      })(i);
+    }
+  }
+  for(var i=0;i<configModule.config.autoswitchPools.length;i++){
+    for(var j=0;j<configModule.config.autoswitchPools[i].pools.length;j++){
+      if(configModule.config.autoswitchPools[i].pools[j].enabled){
+        (function (i,j) {
+          var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
+          obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
+          obj.worker=configModule.config.autoswitchPools[i].worker;
+          obj.pass=configModule.config.autoswitchPools[i].pass;
+          stratumTestModule.testStratum(obj, function (result) {
+            configModule.config.autoswitchPools[i].pools[j].working = result.working;
+          });
+        })(i,j);
+      }
+    }
+  }
+}
+
+function checkIfMiningOnCorrectPool(group){
+  var poolArray=[];
+  for(var j=0;j<group.pools.length;j++){
+    if(group.pools[j].name.includes('autoswitch')){
+      (function (j) {
+        getMostProfitablePool(group,getAutoswitchPoolObj(group.pools[j].name),function(result){
+          if(result)
+            poolArray.push({prio:group.pools[j].prio,pool:result});
+        });
+      })(j);
+    }else{
+      var pool=getPoolObj(group.pools[j].name);
+      if(pool)
+        poolArray.push({prio:group.pools[j].prio,pool:pool});
+    }
+  }
+
+  setTimeout(function(){
+    var chosenPool=selectPool(poolArray);
+    if(chosenPool!==null){
+      var bestHr=0;
+      var pos=0;
+      //get the best miner for selected pool, allows multiple miners for same algo to be enabled and using the only the best
+      for(var i=0;i< configModule.config.entries.length;i++) {
+        var entry = configModule.config.entries[i];
+        if(entry.group===group.name&&entry.enabled&&entry.algo===chosenPool.pool.algo&&entry.hashrate>bestHr){
+          pos=i;
+          bestHr=entry.hashrate;
+        }
+      }
+
+      if(prevEntries[group.name]!==undefined){
+        if(prevEntries[group.name].pool!==chosenPool.pool||prevEntries[group.name].miner!==configModule.config.entries[pos]){
+          //switch
+          stopMiner(prevEntries[group.name].miner);
+          setTimeout(function (){
+            startMiner(configModule.config.entries[pos],chosenPool.pool);
+            prevEntries[group.name].miner=configModule.config.entries[pos];
+          },500);
+        }
+      }else{
+        //startup
+        startMiner(configModule.config.entries[pos],chosenPool.pool);
+        prevEntries[group.name]={pool:chosenPool.pool,miner:configModule.config.entries[pos]};
+      }
+    }
+  },5000);
+}
+
 function startAllMiner(){
   if(configModule.config.groups!==undefined){
+    console.log("starting up miners, please wait..");
     for(var i=0;i< configModule.config.groups.length;i++) {
       var group = configModule.config.groups[i];
       (function (group){
         if (group.enabled){
-          if (group.autoswitch){
-            if(configModule.config.profitabilityServiceUrl!==""&&configModule.config.profitabilityServiceUrl!==null&&configModule.config.profitabilityServiceUrl!==undefined){
-              getAlgoForGroup(group);
-              profitTimer[group.id]=setInterval(function(){
-                getAlgoForGroup(group);
-              },1000*300);
-            }else{
-              console.log(colors.red("Error: profitability url not configured"));
-            }
-          }else{
-            for(var j=0;j< configModule.config.entries.length;j++) {
-              var entry = configModule.config.entries[j];
-              if (entry.group===group.name){
-                startMiner(entry);
-              }
-            }
-          }
+          checkIfMiningOnCorrectPool(group);
+          profitTimer[group.id]=setInterval(function(){
+            checkIfMiningOnCorrectPool(group);
+          },1000*180);
         }
       })(group);
     }
@@ -184,38 +184,204 @@ function startAllMiner(){
   }
 }
 
-function startMiner(entry) {
+function parsePoolToMinerString(pool,minerType,rigName){
+  var result="";
+  switch(minerType){
+    case "claymore-eth":
+      result = " -epool " + pool.url + " -ewal " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-epsw "+pool.pass;
+      break;
+    case "claymore-zec":
+      result = " -zpool " + pool.url + " -zwal " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-zpsw "+pool.pass;
+      break;
+    case "optiminer-zec":
+      result = " -s " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      break;
+    case "sgminer-gm":
+    case "claymore-cryptonight":
+    case "ccminer":
+    case "cpuminer-opt":
+      result = " -o " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      break;
+    case "nheqminer":
+      result = " -l " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+" " : " ") + "-p "+pool.pass;
+      break;
+    case "other":
+      break;
+  }
+  return result;
+}
+
+function parseApiPort(entry){
+  var result="";
+  switch (entry.type){
+    case "cpuminer-opt":
+    case "ccminer":
+      result=" -b 127.0.0.1:"+entry.port;
+      break;
+    case "claymore-eth":
+    case "claymore-zec":
+    case "claymore-cryptonight":
+      result=" -mport -"+entry.port;
+      break;
+    case "optiminer-zec":
+      result=" -m "+entry.port;
+      break;
+    case "sgminer-gm":
+      result=" --api-listen --api-port "+entry.port;
+      break;
+    case "nheqminer":
+      result=" -a "+entry.port;
+      break;
+    case "other":
+      break;
+  }
+  return result;
+}
+
+function getPoolObj(poolName){
+  for(var i=0;i<configModule.config.pools.length;i++){
+    if(configModule.config.pools[i].name===poolName)
+      return configModule.config.pools[i];
+  }
+}
+function getAutoswitchPoolObj(poolName){
+  for(var i=0;i<configModule.config.autoswitchPools.length;i++){
+    if(configModule.config.autoswitchPools[i].name===poolName)
+      return configModule.config.autoswitchPools[i];
+  }
+}
+
+function getMostProfitablePool(group,pool,callback){ //expected to be a autoswitch pool obj
+  if(configModule.config.profitabilityServiceUrl!==undefined&&configModule.config.profitabilityServiceUrl!==null){
+    var query={
+      algos:{},
+      region:pool.location,
+      name:configModule.config.rigName+"-"+group.name
+    };
+    for(var i=0;i< configModule.config.entries.length;i++) {
+      var entry = configModule.config.entries[i];
+      if(entry.group===group.name&&entry.enabled){
+        query.algos[entry.algo]={hashrate:entry.hashrate};
+      }
+    }
+    var arr = configModule.config.profitabilityServiceUrl.split(":");
+    var req= http.request({
+      host: arr[0],
+      path: '/api/query',
+      method: 'POST',
+      port: arr[1],
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      }
+    }, function (response) {
+      response.setEncoding('utf8');
+      var body = '';
+      response.on('data', function (d) {
+        body += d;
+      });
+      response.on('end', function () {
+        var parsed = null;
+        try{
+          parsed=JSON.parse(body);
+        }catch(error){
+          console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
+          console.log(error);
+        }
+        if (parsed != null){
+          if (parsed.result!==false){
+            var chosenPools=[];
+            for(var j=0;j<pool.pools.length;j++){
+              if(pool.pools[j].algo===parsed.result.algo){
+                chosenPools.push(pool.pools[j]);
+              }
+            }
+            var destinedOne=null;
+            var bestHr=0;
+            var pos=0;
+            //get the best miner for selected algo, allows multiple miners for same algo to be enabled
+            for(var i=0;i< configModule.config.entries.length;i++) {
+              var entry = configModule.config.entries[i];
+              if(entry.group===group.name&&entry.enabled&&entry.algo===parsed.result.algo&&entry.hashrate>bestHr){
+                pos=i;
+                bestHr=entry.hashrate;
+              }
+            }
+            destinedOne=configModule.config.entries[pos];
+            var preferSSL=false;
+            //check if miner supports ssl connection
+            if(destinedOne.type==="claymore-zec"||destinedOne.type==="claymore-cryptonight")
+              preferSSL=true;
+            var actualPool;
+            //get the right pool (depending on ssl above)
+            for(var j=0;j<chosenPools.length;j++){
+              if(preferSSL){
+                if(chosenPools[j].isSSL){
+                  actualPool=JSON.parse(JSON.stringify(chosenPools[j]));
+                  break;
+                }else{
+                  actualPool=JSON.parse(JSON.stringify(chosenPools[j]));
+                }
+              }else{
+                if(!chosenPools[j].isSSL){
+                  actualPool=JSON.parse(JSON.stringify(chosenPools[j]));
+                }
+              }
+            }
+
+            actualPool.url=parseLocation(actualPool.url,pool.location);
+            actualPool.worker=pool.worker;
+            actualPool.pass=pool.pass;
+            actualPool.appendRigName=pool.appendRigName;
+
+
+            callback(actualPool);
+          }else{
+            callback(false);
+          }
+        }else{
+          console.log(colors.red("["+group.name.toUpperCase()+"] Error: malformed profitability request"));
+          callback(false);
+        }
+      });
+    }).on("error", function(error) {
+      console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
+      console.log(error);
+      callback(false);
+    });
+    req.write(JSON.stringify(query));
+    req.end();
+  }else{
+    callback(false);
+  }
+}
+
+//get lowest prio working pool
+function selectPool(pools){
+  var lowest=9999;
+  var pos=0;
+  for(var i=0;i<pools.length;i++){
+    if(pools[i].prio<lowest&&pools[i].pool.working){
+      lowest=pools[i].prio;
+      pos=i;
+    }
+  }
+  if(lowest!==9999){
+    return pools[pos];
+  }
+  return null;
+}
+
+function startMiner(entry,pool) {
   if (validateSettings(entry)) {
       const spawn = require('cross-spawn');
-        (function (entry){
+        (function (entry,pool){
           if (entry.enabled){
             if (miner[entry.id]===undefined || miner[entry.id]===null){
               var minerString=entry.cmdline;
               if (entry.port!==undefined&&entry.port!==null){
-                switch (entry.type){
-                  case "cpuminer-opt":
-                  case "ccminer":
-                    minerString+=" -b 127.0.0.1:"+entry.port;
-                    break;
-                  case "claymore-eth":
-                  case "claymore-zec":
-                  case "claymore-cryptonight":
-                    minerString+=" -mport -"+entry.port;
-                    break;
-                  case "optiminer-zec":
-                    minerString+=" -m "+entry.port;
-                    break;
-                  case "sgminer-gm":
-                    minerString+=" --api-listen --api-port "+entry.port;
-                    break;
-                  case "nheqminer":
-                    minerString+=" -a "+entry.port;
-                    break;
-                  case "other":
-                    break;
-                }
+                minerString+=parseApiPort(entry);
               }
-
+              minerString+=parsePoolToMinerString(pool,entry.type,configModule.config.rigName);
               (function (entry,minerString){
                 var isWin = /^win/.test(process.platform);
                 if (entry.shell){
@@ -292,7 +458,7 @@ function startMiner(entry) {
               return false;
             }
           }
-        }(entry));
+        }(entry,pool));
   } else {
     console.log(colors.red("some required settings are not properly configured"));
     return false;
@@ -875,6 +1041,10 @@ function init() {
     }, 10000);
   }
   stats.rigName=configModule.config.rigName;
+
+  updatePoolStatus();
+  //check stratum status every minute
+  setInterval(updatePoolStatus,60*1000);
 }
 
 setTimeout(init, 1000);

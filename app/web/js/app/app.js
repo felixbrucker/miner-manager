@@ -132,13 +132,49 @@
           pageTitle: 'Miner-Manager Stats'
         }
       })
-      .state('config', {
-        url: '/config',
-        templateUrl: 'views/partials/config.html',
+      .state('generalConfig', {
+        url: '/generalConfig',
+        templateUrl: 'views/partials/configGeneral.html',
         controller: 'configCtrl',
         controllerAs: 'configVm',
         data: {
-          pageTitle: 'Miner-Manager Config'
+          pageTitle: 'Miner-Control General Config'
+        }
+      })
+      .state('minerConfig', {
+        url: '/minerConfig',
+        templateUrl: 'views/partials/configMiner.html',
+        controller: 'configCtrl',
+        controllerAs: 'configVm',
+        data: {
+          pageTitle: 'Miner-Manager Miner Config'
+        }
+      })
+      .state('groupConfig', {
+        url: '/groupConfig',
+        templateUrl: 'views/partials/configGroups.html',
+        controller: 'configCtrl',
+        controllerAs: 'configVm',
+        data: {
+          pageTitle: 'Miner-Manager Group Config'
+        }
+      })
+      .state('poolConfig', {
+        url: '/poolConfig',
+        templateUrl: 'views/partials/configPools.html',
+        controller: 'configCtrl',
+        controllerAs: 'configVm',
+        data: {
+          pageTitle: 'Miner-Manager Pool Config'
+        }
+      })
+      .state('autoswitchPoolConfig', {
+        url: '/autoswitchPoolConfig',
+        templateUrl: 'views/partials/configAutoswitchPools.html',
+        controller: 'configCtrl',
+        controllerAs: 'configVm',
+        data: {
+          pageTitle: 'Miner-Manager Autoswitch Pools Config'
         }
       });
     $urlRouterProvider.otherwise('/');

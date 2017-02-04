@@ -25,6 +25,8 @@
             types:[],
             groups:[],
             algos:[],
+            pools:[],
+            autoswitchPools:[],
             profitabilityServiceUrl:null
         };
         vm.waiting = null;
@@ -38,8 +40,8 @@
             cmdline:"",
             type:null,
             port:null,
-            writeMinerLog:true,
-            shell:false,
+            writeMinerLog:false,
+            shell:true,
             hashrate:null,
             group:null,
             algo:null
@@ -49,9 +51,33 @@
             id:null,
             enabled:true,
             name:"",
-            autoswitch:null
+            pools:[]
         };
 
+        vm.newPool={
+            id:null,
+            enabled:true,
+            name:"",
+            algo:"",
+            url:"",
+            isSSL:false,
+            appendRigName:true,
+            worker:"",
+            pass:"x",
+            working:true
+        };
+
+        vm.currentlyEditing = {
+            id:null,
+            group: null,
+            pools: [],
+            availablePools:[],
+            newPool: {
+                id: null,
+                prio:null,
+                name:""
+            }
+        };
 
 
         // controller API
@@ -65,6 +91,12 @@
         vm.addGroup=addGroup;
         vm.delGroup=delGroup;
         vm.rebootSystem=rebootSystem;
+        vm.getMatchingPools=getMatchingPools;
+        vm.saveFromPoolConfigModal=saveFromPoolConfigModal;
+        vm.addPoolFromModal=addPoolFromModal;
+        vm.delPoolFromModal=delPoolFromModal;
+        vm.addPool=addPool;
+        vm.delPool=delPool;
 
 
 
@@ -75,8 +107,150 @@
          */
         function init() {
             angular.element(document).ready(function () {
+                $('#groupPoolConfigModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget); // Button that triggered the modal
+                    var entryId = parseInt(button.data('entry')); // Extract info from data-* attributes
+                    if (entryId !== -1){
+                        for (var i = 0; i < vm.config.groups.length; i++) {
+                            var entry = vm.config.groups[i];
+                            if (entry.id === entryId) {
+                                vm.currentlyEditing.name = JSON.parse(JSON.stringify(entry.name));
+                                vm.currentlyEditing.id = parseInt(JSON.parse(JSON.stringify(entry.id)));
+                                vm.currentlyEditing.pools = [];
+                                if (entry.pools !== undefined){
+                                    vm.currentlyEditing.pools = JSON.parse(JSON.stringify(entry.pools));
+                                }
+                                vm.currentlyEditing.availablePools=getMatchingPools(entry.name);
+                                break;
+                            }
+                        }
+                    }else{
+                        vm.currentlyEditing.id=-1;
+                        vm.currentlyEditing.name=vm.newGroup.name;
+                        if (vm.newGroup.pools !== undefined)
+                            vm.currentlyEditing.pools = JSON.parse(JSON.stringify(vm.newGroup.pools));
+                        else
+                            vm.currentlyEditing.pools = [];
+                        vm.currentlyEditing.availablePools=[];
+                    }
+
+                    $scope.$apply();
+                    var modal = $(this);
+                    modal.find('.modal-title').text('Configure pools for ' + vm.currentlyEditing.name);
+                });
+
+
                 vm.getConfig();
             });
+        }
+
+        /**
+         * @name addPool
+         * @desc add new pool to array
+         * @memberOf configCtrl
+         */
+        function addPool() {
+            if (vm.newPool.name!==""&&vm.newPool.name!==null){
+                //gen unique id
+                vm.newPool.id=Date.now();
+                //add to array
+                vm.config.pools.push(JSON.parse(JSON.stringify(vm.newPool)));
+                //clear variables
+                vm.newPool={
+                    id:null,
+                    enabled:true,
+                    name:"",
+                    algo:"",
+                    url:"",
+                    isSSL:false,
+                    appendRigName:true,
+                    worker:"",
+                    pass:"x",
+                    working:true
+                };
+                vm.setConfig();
+            }
+        }
+
+
+        /**
+         * @name delPool
+         * @desc delete pool from array
+         * @memberOf configCtrl
+         */
+        function delPool(id) {
+            vm.config.pools.forEach(function (entry,index,array) {
+                if (entry.id===id){
+                    vm.config.pools.splice(index,1);
+                }
+            });
+            vm.setConfig();
+        }
+
+        function addPoolFromModal(){
+            vm.currentlyEditing.newPool.id = Date.now();
+            vm.currentlyEditing.pools.push(JSON.parse(JSON.stringify(vm.currentlyEditing.newPool)));
+            vm.currentlyEditing.newPool={
+                id: null,
+                prio:null,
+                name:""
+            };
+        }
+
+        function delPoolFromModal(id){
+            vm.currentlyEditing.pools.forEach(function (entry, index, array) {
+                if (entry.id === id) {
+                    vm.currentlyEditing.pools.splice(index, 1);
+                }
+            });
+        }
+
+        /**
+         * @name saveFromPoolConfigModal
+         * @desc save pools to group config
+         * @memberOf configCtrl
+         */
+        function saveFromPoolConfigModal() {
+            for (var i = 0; i < vm.config.groups.length; i++) {
+                var entry = vm.config.groups[i];
+                if (entry.id === vm.currentlyEditing.id) {
+                    entry.pools = JSON.parse(JSON.stringify(vm.currentlyEditing.pools));
+                    break;
+                }
+            }
+            vm.setConfig();
+            $('#groupPoolConfigModal').modal('hide');
+        }
+
+        /**
+         * @name getMatchingPools
+         * @desc gets all pools matching the algo of miners in the group
+         * @memberOf configCtrl
+         */
+        function getMatchingPools(group){
+            var result=[];
+            for(var k=0;k<vm.config.entries.length;k++){
+                var entry=vm.config.entries[k];
+                if(entry.group===group){
+                    for(var i=0;i<vm.config.pools.length;i++){
+                        if(vm.config.pools[i].algo===entry.algo)
+                            result.push(vm.config.pools[i].name);
+                    }
+                    for(var i=0;i<vm.config.autoswitchPools.length;i++){
+                        var found=false;
+                        for(var j=0;j<vm.config.autoswitchPools[i].pools.length;j++){
+                            if(vm.config.autoswitchPools[i].pools[j].algo===entry.algo){
+                                found=true;
+                                break;
+                            }
+                        }
+                        if(found)
+                            result.push(vm.config.autoswitchPools[i].name);
+                    }
+                }
+            }
+
+            return result;
         }
 
         /**
@@ -100,8 +274,8 @@
                     vm.newCustomMiner.cmdline="";
                     vm.newCustomMiner.type=null;
                     vm.newCustomMiner.port=null;
-                    vm.newCustomMiner.writeMinerLog=true;
-                    vm.newCustomMiner.shell=false;
+                    vm.newCustomMiner.writeMinerLog=false;
+                    vm.newCustomMiner.shell=true;
                     vm.newCustomMiner.hashrate=null;
                     vm.newCustomMiner.group=null;
                     vm.newCustomMiner.algo=null;
@@ -141,7 +315,7 @@
                 vm.newGroup.id=null;
                 vm.newGroup.enabled=true;
                 vm.newGroup.name="";
-                vm.newGroup.autoswitch=null;
+                vm.newGroup.pools=[];
                 vm.setConfig();
             }
         }
@@ -176,6 +350,8 @@
                 vm.config.entries=response.data.entries;
                 vm.config.types=response.data.types;
                 vm.config.groups=response.data.groups;
+                vm.config.pools=response.data.pools;
+                vm.config.autoswitchPools=response.data.autoswitchPools;
                 vm.config.algos=response.data.algos;
                 vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
                 $rootScope.title = vm.config.rigName + " Miner-Manager Config";

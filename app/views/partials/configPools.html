@@ -1,0 +1,58 @@
+<form name="config">
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-12">
+      <table class='table table-borderless table-condensed'>
+        <tr>
+          <th>working</th>
+          <th>enabled</th>
+          <th>name</th>
+          <th>algorithm</th>
+          <th>SSL</th>
+          <th>stratum url</th>
+          <th>worker</th>
+          <th>password</th>
+          <th>append rig name to worker</th>
+          <th>action</th>
+        </tr>
+        <tr ng-repeat="entry in configVm.config.pools track by $index">
+          <td ng-if="entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:green"></i></td>
+          <td ng-if="!entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:red"></i></td>
+          <td><input type="checkbox" ng-model="entry.enabled" ng-click="configVm.setConfig()"></td>
+          <td><input type="text" name="name-{{entry.id}}" ng-model="entry.name" required></td>
+          <td><select name="algoSelect-{{entry.id}}" ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo" required></select></td>
+          <td><input type="checkbox" ng-model="entry.isSSL" ng-click="configVm.setConfig()"></td>
+          <td><input type="text" name="stratum-{{entry.id}}" ng-model="entry.url" placeholder="stratum+tcp://domain.tld:1234" size="42" required></td>
+          <td><input type="text" name="worker-{{entry.id}}" ng-model="entry.worker" placeholder="someone123" size="20" required></td>
+          <td><input type="text" name="password-{{entry.id}}" ng-model="entry.pass" placeholder="x" size="4" required></td>
+          <td><input type="checkbox" ng-model="entry.appendRigName" ng-click="configVm.setConfig()"></td>
+
+          <td><button type="button" class="btn btn-warning" ng-click="configVm.delPool(entry.id)">remove Pool</button></td>
+        </tr>
+        <tr style="border-top: 1px solid lightgrey;">
+          <td>N/A</td>
+          <td><input type="checkbox" ng-model="configVm.newPool.enabled"></td>
+          <td><input type="text" name="name-newPool" ng-model="configVm.newPool.name"></td>
+          <td><select name="algoSelect-newPool" ng-options="algo for algo in configVm.config.algos" ng-model="configVm.newPool.algo"></select></td>
+          <td><input type="checkbox" ng-model="configVm.newPool.isSSL"></td>
+          <td><input type="text" name="stratum-newPool" ng-model="configVm.newPool.url" placeholder="stratum+tcp://domain.tld:1234" size="42"></td>
+          <td><input type="text" name="worker-newPool" ng-model="configVm.newPool.worker" placeholder="someone123" size="20"></td>
+          <td><input type="text" name="password-newPool" ng-model="configVm.newPool.pass" placeholder="x" size="4"></td>
+          <td><input type="checkbox" ng-model="configVm.newPool.appendRigName"></td>
+
+          <td><button type="button" class="btn btn-success" ng-click="configVm.addPool()">add Pool</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</form>
+
+
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-12">
+    <button type="button" class="btn btn-success" ng-click="configVm.setConfig()" ng-disabled="config.$invalid">Save
+    </button>
+    <i ng-show="configVm.waiting" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+

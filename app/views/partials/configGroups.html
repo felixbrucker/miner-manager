@@ -1,0 +1,73 @@
+<form name="config">
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-md-8 col-md-offset-2">
+      <table class='table table-borderless'>
+        <tr>
+          <th>enabled</th>
+          <th>name</th>
+          <th>pools</th>
+        </tr>
+        <tr ng-repeat="entry in configVm.config.groups track by $index">
+          <td><input type="checkbox" ng-model="entry.enabled" ng-click="configVm.setConfig()"></td>
+          <td><input type="text" name="{{entry.name}}" ng-model="entry.name" placeholder="name" size="26"></td>
+          <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#groupPoolConfigModal" data-entry="{{entry.id}}">configure</button></td>
+          <td><button type="button" class="btn btn-warning" ng-click="configVm.delGroup(entry.id)">remove Group</button></td>
+        </tr>
+        <tr style="border-top: 1px solid lightgrey;">
+          <td><input type="checkbox" ng-model="configVm.newGroup.enabled"></td>
+          <td><input type="text" name="newGroupName" ng-model="configVm.newGroup.name" placeholder="name" size="26"></td>
+          <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#groupPoolConfigModal" data-entry="-1">configure</button></td>
+          <td><button type="button" class="btn btn-success" ng-click="configVm.addGroup()">add Group</button></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</form>
+
+<div class="modal fade col-md-8 col-md-offset-2" id="groupPoolConfigModal" tabindex="-1" role="dialog" aria-labelledby="groupPoolConfigModalLabel">
+  <div class="modal-dialogmodal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="deviceMinerModalLabel">Configure pools</h4>
+      </div>
+      <div class="modal-body">
+        <table class='table table-borderless table-condensed'>
+          <tr>
+            <th>prio</th>
+            <th>pool</th>
+            <th>action</th>
+          </tr>
+          <tr ng-repeat="entry in configVm.currentlyEditing.pools track by $index">
+            <td><input type="number" ng-model="entry.prio" placeholder="lower is better"></td>
+            <td><select ng-options="pool as pool for pool in configVm.currentlyEditing.availablePools" ng-model="entry.name" required></select></td>
+            <td><button type="button" class="btn btn-warning" ng-click="configVm.delPoolFromModal(entry.id)">remove pool</button></td>
+          </tr>
+          <tr style="border-top: 2px solid black;">
+            <td><input type="number" ng-model="configVm.currentlyEditing.newPool.prio" placeholder="lower is better"></td>
+            <td><select ng-options="pool as pool for pool in configVm.currentlyEditing.availablePools" ng-model="configVm.currentlyEditing.newPool.name"></select></td>
+            <td><button type="button" class="btn btn-success" ng-click="configVm.addPoolFromModal()">add pool</button></td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-click="configVm.saveFromPoolConfigModal()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-12">
+    <button ng-show="!configVm.waiting" type="button" class="btn btn-primary" ng-click="configVm.setConfig()" ng-disabled="config.$invalid"><i class="fa fa-floppy-o" aria-hidden="true"></i> Save
+    </button>
+    <button ng-show="configVm.waiting" type="button" class="btn btn-success" disabled><i class="fa fa-refresh" aria-hidden="true"></i> Saving..
+    </button>
+    <i ng-show="configVm.waiting" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
