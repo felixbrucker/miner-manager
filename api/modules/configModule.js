@@ -92,6 +92,8 @@ var config = module.exports = {
                 {enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
               ]}
             ];
+          if (config.config.autoswitchPools[0].pools[9]===undefined)
+            config.config.autoswitchPools[0].pools.push({enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true});
         });
       } else if (err.code == 'ENOENT') {
         //default conf
