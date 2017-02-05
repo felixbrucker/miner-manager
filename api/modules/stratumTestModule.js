@@ -16,7 +16,7 @@ var self = module.exports = {
       mysocket = new net.Socket().connect(port, hostname);
     }
 
-    mysocket.setTimeout(5000);
+    mysocket.setTimeout(10000);
 
     mysocket.on('connect', function() {
       var req;
@@ -71,7 +71,7 @@ var self = module.exports = {
                 if(parsed.error!==undefined&&parsed.error===null){
                   var req = '{"id": 2, "jsonrpc":"2.0", "method": "mining.authorize", "params": ["'+pool.worker+'", "'+pool.pass+'"]}';
                   mysocket.write(req + '\n');
-                  mysocket.setTimeout(5000);
+                  mysocket.setTimeout(10000);
                 }else{
                   //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
                   callbackSent=true;
