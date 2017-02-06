@@ -402,12 +402,12 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
   }
 }
 
-//get lowest prio working pool
+//get lowest prio working & enabled pool
 function selectPool(pools){
   var lowest=9999;
   var pos=0;
   for(var i=0;i<pools.length;i++){
-    if(pools[i].prio<lowest&&pools[i].pool.working){
+    if(pools[i].prio<lowest&&pools[i].pool.working&&pools[i].pool.enabled){
       lowest=pools[i].prio;
       pos=i;
     }
