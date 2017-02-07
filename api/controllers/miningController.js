@@ -110,7 +110,7 @@ function getStratumStatus(pool,isAS,i,j){
         console.log(pool.name + " is not working anymore: '" + result.data + "'");
       }
 
-      setTimeout(function(){getStratumStatus(pool,isAS,i,j,problemCounter);},60*1000);
+      setTimeout(function(){getStratumStatus(pool,isAS,i,j,problemCounter);},3*60*1000);
     });
   }
 }
