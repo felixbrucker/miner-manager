@@ -117,8 +117,16 @@ function getStratumStatus(pool,isAS,i,j){
 
 function updatePoolStatus(){
 
+  //only check mineable algos/pools
+  var minerAlgos={};
+  for(var i=0;i<configModule.config.entries.length;i++){
+    if(configModule.config.entries[i].enabled){
+      minerAlgos[configModule.config.entries[i].algo]=true;
+    }
+  }
+
   for(var i=0;i<configModule.config.pools.length;i++){
-    if(configModule.config.pools[i].enabled){
+    if(configModule.config.pools[i].enabled&&minerAlgos[configModule.config.pools[i].algo]){
       (function (i) {
         if(problemCounter[configModule.config.pools[i].name]===undefined)
           problemCounter[configModule.config.pools[i].name]=0;
@@ -128,7 +136,7 @@ function updatePoolStatus(){
   }
   for(var i=0;i<configModule.config.autoswitchPools.length;i++){
     for(var j=0;j<configModule.config.autoswitchPools[i].pools.length;j++){
-      if(configModule.config.autoswitchPools[i].pools[j].enabled){
+      if(configModule.config.autoswitchPools[i].pools[j].enabled&&minerAlgos[configModule.config.autoswitchPools[i].pools[j].algo]){
         (function (i,j) {
           var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
           obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
