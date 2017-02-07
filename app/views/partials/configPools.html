@@ -8,7 +8,7 @@
           <th>name</th>
           <th>algorithm</th>
           <th>SSL</th>
-          <th>NicehashPool</th>
+          <th><span title="assumed always online">is ignored</span></th>
           <th>stratum url</th>
           <th>worker</th>
           <th>password</th>
@@ -22,7 +22,7 @@
           <td><input type="text" name="name-{{entry.id}}" ng-model="entry.name" required></td>
           <td><select name="algoSelect-{{entry.id}}" ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo" required></select></td>
           <td><input type="checkbox" ng-model="entry.isSSL" ng-click="configVm.setConfig()"></td>
-          <td><input type="checkbox" ng-model="entry.isNH" ng-click="configVm.setConfig()"></td>
+          <td><input type="checkbox" ng-model="entry.isIgnored" ng-click="configVm.setConfig()"></td>
           <td><input type="text" name="stratum-{{entry.id}}" ng-model="entry.url" placeholder="stratum+tcp://domain.tld:1234" size="42" required></td>
           <td><input type="text" name="worker-{{entry.id}}" ng-model="entry.worker" placeholder="someone123" size="20" required></td>
           <td><input type="text" name="password-{{entry.id}}" ng-model="entry.pass" placeholder="x" size="4" required></td>
@@ -36,7 +36,7 @@
           <td><input type="text" name="name-newPool" ng-model="configVm.newPool.name"></td>
           <td><select name="algoSelect-newPool" ng-options="algo for algo in configVm.config.algos" ng-model="configVm.newPool.algo"></select></td>
           <td><input type="checkbox" ng-model="configVm.newPool.isSSL"></td>
-          <td><input type="checkbox" ng-model="configVm.newPool.isNH"></td>
+          <td><input type="checkbox" ng-model="configVm.newPool.isIgnored"></td>
           <td><input type="text" name="stratum-newPool" ng-model="configVm.newPool.url" placeholder="stratum+tcp://domain.tld:1234" size="42"></td>
           <td><input type="text" name="worker-newPool" ng-model="configVm.newPool.worker" placeholder="someone123" size="20"></td>
           <td><input type="text" name="password-newPool" ng-model="configVm.newPool.pass" placeholder="x" size="4"></td>

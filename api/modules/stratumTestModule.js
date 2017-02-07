@@ -22,7 +22,7 @@ var self = module.exports = {
       var req;
       switch(pool.algo){
         case "cryptonight":
-          req = '{"id":2, "jsonrpc":"2.0", "method":"login", "params": {"login":"'+pool.worker+'", "pass": "'+(pool.isNH ? "p=9999" : pool.pass)+'", "agent": "stratumTest"}}';
+          req = '{"id":2, "jsonrpc":"2.0", "method":"login", "params": {"login":"'+pool.worker+'", "pass": "'+pool.pass+'", "agent": "stratumTest"}}';
           break;
         default:
           req = '{"id":1, "jsonrpc":"2.0", "method":"mining.subscribe", "params": []}';
@@ -69,7 +69,7 @@ var self = module.exports = {
             switch (parsed.id){
               case 1:
                 if(parsed.error!==undefined&&parsed.error===null){
-                  var req = '{"id": 2, "jsonrpc":"2.0", "method": "mining.authorize", "params": ["'+pool.worker+'", "'+(pool.isNH ? "p=9999" : pool.pass)+'"]}';
+                  var req = '{"id": 2, "jsonrpc":"2.0", "method": "mining.authorize", "params": ["'+pool.worker+'", "'+pool.pass+'"]}';
                   mysocket.write(req + '\n');
                   mysocket.setTimeout(10000);
                 }else{
@@ -79,20 +79,15 @@ var self = module.exports = {
                 }
                 break;
               case 2:
-                if(pool.isNH){
+                if(parsed.error!==undefined&&parsed.error===null){
+                  mysocket.end();
+                  mysocket.destroy();
                   callbackSent=true;
                   callback({working:true,data:"success"});
                 }else{
-                  if(parsed.error!==undefined&&parsed.error===null){
-                    mysocket.end();
-                    mysocket.destroy();
-                    callbackSent=true;
-                    callback({working:true,data:"success"});
-                  }else{
-                    //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
-                    callbackSent=true;
-                    callback({working:false,data:"authorize error"});
-                  }
+                  //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
+                  callbackSent=true;
+                  callback({working:false,data:"authorize error"});
                 }
                 break;
             }
