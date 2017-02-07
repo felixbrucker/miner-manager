@@ -95,29 +95,31 @@ function updatePoolStatus(){
   for(var i=0;i<configModule.config.pools.length;i++){
     if(configModule.config.pools[i].enabled){
       (function (i) {
-        stratumTestModule.testStratum(configModule.config.pools[i],function(result){
-          if(problemCounter[configModule.config.pools[i].name]===undefined)
-            problemCounter[configModule.config.pools[i].name]=0;
+        if(!configModule.config.pools[i].isIgnored){
+          stratumTestModule.testStratum(configModule.config.pools[i],function(result){
+            if(problemCounter[configModule.config.pools[i].name]===undefined)
+              problemCounter[configModule.config.pools[i].name]=0;
 
-          if(!result.working){
-            if(problemCounter[configModule.config.pools[i].name]===1000)
-              problemCounter[configModule.config.pools[i].name]=4;
-            else
-              problemCounter[configModule.config.pools[i].name]+=1;
+            if(!result.working){
+              if(problemCounter[configModule.config.pools[i].name]===1000)
+                problemCounter[configModule.config.pools[i].name]=4;
+              else
+                problemCounter[configModule.config.pools[i].name]+=1;
 
-            if(problemCounter[configModule.config.pools[i].name]===3){
+              if(problemCounter[configModule.config.pools[i].name]===3){
+                configModule.config.pools[i].working=result.working;
+                console.log(configModule.config.pools[i].name + " is not working anymore: '" + result.data + "'");
+              }
+            }else{
+              if(problemCounter[configModule.config.pools[i].name]>=3){
+                //was down
+                console.log(configModule.config.pools[i].name+" is working again");
+              }
+              problemCounter[configModule.config.pools[i].name]=0;
               configModule.config.pools[i].working=result.working;
-              console.log(configModule.config.pools[i].name + " is not working anymore: '" + result.data + "'");
             }
-          }else{
-            if(problemCounter[configModule.config.pools[i].name]>=3){
-              //was down
-              console.log(configModule.config.pools[i].name+" is working again");
-            }
-            problemCounter[configModule.config.pools[i].name]=0;
-            configModule.config.pools[i].working=result.working;
-          }
-        });
+          });
+        }
       })(i);
     }
   }
@@ -125,33 +127,35 @@ function updatePoolStatus(){
     for(var j=0;j<configModule.config.autoswitchPools[i].pools.length;j++){
       if(configModule.config.autoswitchPools[i].pools[j].enabled){
         (function (i,j) {
-          var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
-          obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
-          obj.worker=configModule.config.autoswitchPools[i].worker;
-          obj.pass=configModule.config.autoswitchPools[i].pass;
-          stratumTestModule.testStratum(obj, function (result) {
-            if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===undefined)
-              problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
+          if(!configModule.config.autoswitchPools[i].pools[j].isIgnored){
+            var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
+            obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
+            obj.worker=configModule.config.autoswitchPools[i].worker;
+            obj.pass=configModule.config.autoswitchPools[i].pass;
+            stratumTestModule.testStratum(obj, function (result) {
+              if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===undefined)
+                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
 
-            if(!result.working){
-              if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===1000)
-                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=4;
-              else
-                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]+=1;
+              if(!result.working){
+                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===1000)
+                  problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=4;
+                else
+                  problemCounter[configModule.config.autoswitchPools[i].pools[j].name]+=1;
 
-              if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===3){
+                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===3){
+                  configModule.config.autoswitchPools[i].pools[j].working = result.working;
+                  console.log(configModule.config.autoswitchPools[i].pools[j].name + " is not working anymore: '" + result.data + "'");
+                }
+              }else{
+                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]>=3){
+                  //was down
+                  console.log(configModule.config.autoswitchPools[i].pools[j].name+" is working again");
+                }
+                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
                 configModule.config.autoswitchPools[i].pools[j].working = result.working;
-                console.log(configModule.config.autoswitchPools[i].pools[j].name + " is not working anymore: '" + result.data + "'");
               }
-            }else{
-              if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]>=3){
-                //was down
-                console.log(configModule.config.autoswitchPools[i].pools[j].name+" is working again");
-              }
-              problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
-              configModule.config.autoswitchPools[i].pools[j].working = result.working;
-            }
-          });
+            });
+          }
         })(i,j);
       }
     }
