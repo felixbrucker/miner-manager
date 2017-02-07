@@ -82,16 +82,16 @@ var config = module.exports = {
               {enabled:false,name:"nicehash-autoswitch",appendRigName:true,worker:"",pass:"",location:"eu",pools:[]}
             ];
           config.config.autoswitchPools[0].pools=[
-            {enabled:true,isIgnored:true,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-lyra2rev2",algo:"lyra2rev2",url:"stratum+tcp://lyra2rev2.#APPENDLOCATION#.nicehash.com:3347",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-daggerhashimoto",algo:"daggerhashimoto",url:"stratum+tcp://daggerhashimoto.#APPENDLOCATION#.nicehash.com:3353",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-decred",algo:"decred",url:"stratum+tcp://decred.#APPENDLOCATION#.nicehash.com:3354",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-cryptonight",algo:"cryptonight",url:"stratum+tcp://cryptonight.#APPENDLOCATION#.nicehash.com:3355",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
+            {enabled:true,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-lyra2rev2",algo:"lyra2rev2",url:"stratum+tcp://lyra2rev2.#APPENDLOCATION#.nicehash.com:3347",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-daggerhashimoto",algo:"daggerhashimoto",url:"stratum+tcp://daggerhashimoto.#APPENDLOCATION#.nicehash.com:3353",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-decred",algo:"decred",url:"stratum+tcp://decred.#APPENDLOCATION#.nicehash.com:3354",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-cryptonight",algo:"cryptonight",url:"stratum+tcp://cryptonight.#APPENDLOCATION#.nicehash.com:3355",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
+            {enabled:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
+            {enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
           ];
         });
       } else if (err.code == 'ENOENT') {
@@ -100,16 +100,16 @@ var config = module.exports = {
         config.config.rigName="RXX";
         config.config.autoswitchPools=[
           {enabled:false,name:"nicehash-autoswitch",appendRigName:true,worker:"",pass:"",location:"eu",pools:[
-            {enabled:true,isIgnored:true,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-lyra2rev2",algo:"lyra2rev2",url:"stratum+tcp://lyra2rev2.#APPENDLOCATION#.nicehash.com:3347",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-daggerhashimoto",algo:"daggerhashimoto",url:"stratum+tcp://daggerhashimoto.#APPENDLOCATION#.nicehash.com:3353",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-decred",algo:"decred",url:"stratum+tcp://decred.#APPENDLOCATION#.nicehash.com:3354",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-cryptonight",algo:"cryptonight",url:"stratum+tcp://cryptonight.#APPENDLOCATION#.nicehash.com:3355",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
-            {enabled:true,isIgnored:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
+            {enabled:true,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-lyra2rev2",algo:"lyra2rev2",url:"stratum+tcp://lyra2rev2.#APPENDLOCATION#.nicehash.com:3347",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-daggerhashimoto",algo:"daggerhashimoto",url:"stratum+tcp://daggerhashimoto.#APPENDLOCATION#.nicehash.com:3353",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-decred",algo:"decred",url:"stratum+tcp://decred.#APPENDLOCATION#.nicehash.com:3354",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-cryptonight",algo:"cryptonight",url:"stratum+tcp://cryptonight.#APPENDLOCATION#.nicehash.com:3355",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-cryptonightSSL",algo:"cryptonight",url:"stratum+ssl://cryptonight.#APPENDLOCATION#.nicehash.com:33355",isSSL:true,working:true},
+            {enabled:true,name:"nicehash-lbry",algo:"lbry",url:"stratum+tcp://lbry.#APPENDLOCATION#.nicehash.com:3356",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-equihash",algo:"equihash",url:"stratum+tcp://equihash.#APPENDLOCATION#.nicehash.com:3357",isSSL:false,working:true},
+            {enabled:true,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
+            {enabled:true,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
           ]}
         ];
         config.saveConfig();

@@ -1,8 +1,9 @@
 const net = require('net');
 const tls = require('tls');
+const configModule = require(__basedir + 'api/modules/configModule');
 
 var self = module.exports = {
-  testStratum : function (pool,callback){
+  testStratum : function (pool,isAS,gi,gj,problemCounter,callback){
     var callbackSent=false;
     var mysocket;
     var arr = pool.url.split("://");
@@ -33,8 +34,9 @@ var self = module.exports = {
 
 
     mysocket.on('timeout', function() {
-      mysocket.destroy();
       callbackSent=true;
+      mysocket.end();
+      mysocket.destroy();
       callback({working:false,data:"timeout"});
     });
 
@@ -52,6 +54,8 @@ var self = module.exports = {
         console.log(data.toString('utf8'));
         console.log(error);
         callbackSent=true;
+        mysocket.end();
+        mysocket.destroy();
         callback({working:false,data:"json error"});
       }
 
@@ -75,18 +79,29 @@ var self = module.exports = {
                 }else{
                   //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
                   callbackSent=true;
+                  mysocket.end();
+                  mysocket.destroy();
                   callback({working:false,data:"subscribe error"});
                 }
                 break;
               case 2:
                 if(parsed.error!==undefined&&parsed.error===null){
-                  mysocket.end();
-                  mysocket.destroy();
-                  callbackSent=true;
-                  callback({working:true,data:"success"});
+                  //success, now do nothing and wait till it doesnt work anymore
+                  mysocket.setTimeout(0);
+                  if(problemCounter[pool.name]>=3){
+                    //was down
+                    console.log(pool.name+" is working again");
+                  }
+                  problemCounter[pool.name]=0;
+                  if(isAS)
+                    configModule.config.autoswitchPools[gi].pools[gj].working = true;
+                  else
+                    configModule.config.pools[gi].working=true;
                 }else{
                   //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
                   callbackSent=true;
+                  mysocket.end();
+                  mysocket.destroy();
                   callback({working:false,data:"authorize error"});
                 }
                 break;

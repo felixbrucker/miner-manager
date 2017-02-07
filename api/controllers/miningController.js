@@ -26,6 +26,8 @@ var timers={};
 var prevEntries={};
 var profitTimer={};
 var problemCounter={};
+var reloading=false;
+
 
 var kill = function (pid, signal, callback) {
   signal = signal || 'SIGKILL';
@@ -90,36 +92,37 @@ function parseLocation(url,location){
   return url.replace("#APPENDLOCATION#",location);
 }
 
+function getStratumStatus(pool,isAS,i,j){
+  if(!reloading){
+    stratumTestModule.testStratum(pool,isAS,i,j,problemCounter,function(result){
+      //console.log(result.data + " from pool: "+pool.name);
+      //set pool working to false
+      if(problemCounter[pool.name]===1000)
+        problemCounter[pool.name]=4;
+      else
+        problemCounter[pool.name]+=1;
+
+      if(problemCounter[pool.name]===3){
+        if(isAS)
+          configModule.config.autoswitchPools[i].pools[j].working=false;
+        else
+          pool.working = false;
+        console.log(pool.name + " is not working anymore: '" + result.data + "'");
+      }
+
+      setTimeout(function(){getStratumStatus(pool,isAS,i,j,problemCounter);},60*1000);
+    });
+  }
+}
+
 function updatePoolStatus(){
 
   for(var i=0;i<configModule.config.pools.length;i++){
     if(configModule.config.pools[i].enabled){
       (function (i) {
-        if(!configModule.config.pools[i].isIgnored){
-          stratumTestModule.testStratum(configModule.config.pools[i],function(result){
-            if(problemCounter[configModule.config.pools[i].name]===undefined)
-              problemCounter[configModule.config.pools[i].name]=0;
-
-            if(!result.working){
-              if(problemCounter[configModule.config.pools[i].name]===1000)
-                problemCounter[configModule.config.pools[i].name]=4;
-              else
-                problemCounter[configModule.config.pools[i].name]+=1;
-
-              if(problemCounter[configModule.config.pools[i].name]===3){
-                configModule.config.pools[i].working=result.working;
-                console.log(configModule.config.pools[i].name + " is not working anymore: '" + result.data + "'");
-              }
-            }else{
-              if(problemCounter[configModule.config.pools[i].name]>=3){
-                //was down
-                console.log(configModule.config.pools[i].name+" is working again");
-              }
-              problemCounter[configModule.config.pools[i].name]=0;
-              configModule.config.pools[i].working=result.working;
-            }
-          });
-        }
+        if(problemCounter[configModule.config.pools[i].name]===undefined)
+          problemCounter[configModule.config.pools[i].name]=0;
+        getStratumStatus(configModule.config.pools[i],false,i,null);
       })(i);
     }
   }
@@ -127,35 +130,13 @@ function updatePoolStatus(){
     for(var j=0;j<configModule.config.autoswitchPools[i].pools.length;j++){
       if(configModule.config.autoswitchPools[i].pools[j].enabled){
         (function (i,j) {
-          if(!configModule.config.autoswitchPools[i].pools[j].isIgnored){
-            var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
-            obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
-            obj.worker=configModule.config.autoswitchPools[i].worker;
-            obj.pass=configModule.config.autoswitchPools[i].pass;
-            stratumTestModule.testStratum(obj, function (result) {
-              if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===undefined)
-                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
-
-              if(!result.working){
-                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===1000)
-                  problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=4;
-                else
-                  problemCounter[configModule.config.autoswitchPools[i].pools[j].name]+=1;
-
-                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]===3){
-                  configModule.config.autoswitchPools[i].pools[j].working = result.working;
-                  console.log(configModule.config.autoswitchPools[i].pools[j].name + " is not working anymore: '" + result.data + "'");
-                }
-              }else{
-                if(problemCounter[configModule.config.autoswitchPools[i].pools[j].name]>=3){
-                  //was down
-                  console.log(configModule.config.autoswitchPools[i].pools[j].name+" is working again");
-                }
-                problemCounter[configModule.config.autoswitchPools[i].pools[j].name]=0;
-                configModule.config.autoswitchPools[i].pools[j].working = result.working;
-              }
-            });
-          }
+          var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
+          obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
+          obj.worker=configModule.config.autoswitchPools[i].worker;
+          obj.pass=configModule.config.autoswitchPools[i].pass;
+          if(problemCounter[obj.name]===undefined)
+            problemCounter[obj.name]=0;
+          getStratumStatus(obj,true,i,j);
         })(i,j);
       }
     }
@@ -1084,6 +1065,14 @@ function isRunning(){
   return stats.running;
 }
 
+function reload(){
+  reloading=true;
+  setTimeout(function(){
+    reloading=false;
+    updatePoolStatus();
+  },60*1000);
+}
+
 function init() {
   if (configModule.config.autostart) {
     console.log(colors.green("autostart enabled, starting miner shortly.."));
@@ -1094,8 +1083,7 @@ function init() {
   stats.rigName=configModule.config.rigName;
 
   updatePoolStatus();
-  //check stratum status every minute
-  setInterval(updatePoolStatus,60*1000);
+
 }
 
 setTimeout(init, 1000);
