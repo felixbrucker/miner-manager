@@ -11,15 +11,17 @@
           <th>name</th>
           <th>algorithm</th>
           <th>SSL</th>
+          <th><span title="assumed always online, no stratum checks">is ignored</span></th>
           <th>stratum url</th>
         </tr>
         <tr ng-repeat="entry in asPool.pools track by $index">
           <td ng-if="entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:green"></i></td>
           <td ng-if="!entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:red"></i></td>
-          <td><input type="checkbox" ng-model="entry.enabled" disabled></td>
+          <td><input type="checkbox" ng-model="entry.enabled"></td>
           <td><input type="text" ng-model="entry.name" disabled></td>
           <td><select ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo" disabled></select></td>
           <td><input type="checkbox" ng-model="entry.isSSL" disabled></td>
+          <td><input type="checkbox" ng-model="entry.isIgnored"></td>
           <td><input type="text" name="stratum-{{entry.id}}" ng-model="entry.url" placeholder="stratum+tcp://domain.tld:1234" size="42" disabled></td>
         </tr>
       </table>

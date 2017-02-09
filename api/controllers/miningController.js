@@ -126,7 +126,7 @@ function updatePoolStatus(){
   }
 
   for(var i=0;i<configModule.config.pools.length;i++){
-    if(configModule.config.pools[i].enabled&&minerAlgos[configModule.config.pools[i].algo]){
+    if(configModule.config.pools[i].enabled&&(!configModule.config.pools[i].isIgnored)&&minerAlgos[configModule.config.pools[i].algo]){
       (function (i) {
         if(problemCounter[configModule.config.pools[i].name]===undefined)
           problemCounter[configModule.config.pools[i].name]=0;
@@ -136,7 +136,7 @@ function updatePoolStatus(){
   }
   for(var i=0;i<configModule.config.autoswitchPools.length;i++){
     for(var j=0;j<configModule.config.autoswitchPools[i].pools.length;j++){
-      if(configModule.config.autoswitchPools[i].pools[j].enabled&&minerAlgos[configModule.config.autoswitchPools[i].pools[j].algo]){
+      if(configModule.config.autoswitchPools[i].pools[j].enabled&&(!configModule.config.autoswitchPools[i].pools[j].isIgnored)&&minerAlgos[configModule.config.autoswitchPools[i].pools[j].algo]){
         (function (i,j) {
           var obj = JSON.parse(JSON.stringify(configModule.config.autoswitchPools[i].pools[j]));
           obj.url = parseLocation(obj.url, configModule.config.autoswitchPools[i].location);
@@ -1074,6 +1074,8 @@ function isRunning(){
 }
 
 function reload(){
+  //TODO: save timeout handle and cancel it when reloading
+  //TODO: integrate reload after save/change
   reloading=true;
   setTimeout(function(){
     reloading=false;
