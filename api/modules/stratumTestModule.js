@@ -61,7 +61,7 @@ var self = module.exports = {
 
       
       //console.log(JSON.stringify(parsed,null,2));
-      if(parsed!==null)
+      if(parsed!==null){
         for(var i=0;i<parsed.length;i++){
           if(parsed[i]!==""&&(parsed[i].id===1||parsed[i].id===2)){
             //ignore other stuff
@@ -108,6 +108,7 @@ var self = module.exports = {
                 break;
             }
         }
+      }
     });
 
     mysocket.on('close', function() {
