@@ -59,15 +59,16 @@ var self = module.exports = {
         callback({working:false,data:"json error"});
       }
 
-      for(var i=0;i<parsed.length;i++){
-        if(parsed[i]!==""&&(parsed[i].id===1||parsed[i].id===2)){
-          //ignore other stuff
-          parsed=parsed[i];
-          break;
-        }
-      }
+      
       //console.log(JSON.stringify(parsed,null,2));
       if(parsed!==null)
+        for(var i=0;i<parsed.length;i++){
+          if(parsed[i]!==""&&(parsed[i].id===1||parsed[i].id===2)){
+            //ignore other stuff
+            parsed=parsed[i];
+            break;
+          }
+        }
         switch(pool.algo){
           default:
             switch (parsed.id){
