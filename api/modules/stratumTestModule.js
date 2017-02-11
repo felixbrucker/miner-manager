@@ -89,7 +89,7 @@ var self = module.exports = {
                 }
                 break;
               case 2:
-                console.log(JSON.stringify(parsed,null,2));
+                //console.log(JSON.stringify(parsed,null,2));
                 if(isNH&&parsed.result===false&&parsed.error[1]==="High price. No order to work on."){
                   //disregard error because we used high p param, stratum should be working fine
                   mysocket.setTimeout(0);
