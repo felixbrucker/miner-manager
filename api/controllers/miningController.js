@@ -94,23 +94,30 @@ function parseLocation(url,location){
 
 function getStratumStatus(pool,isAS,i,j){
   if(!reloading){
-    stratumTestModule.testStratum(pool,isAS,i,j,problemCounter,function(result){
+    stratumTestModule.testStratum(pool,function(result){
       //console.log(result.data + " from pool: "+pool.name);
-      //set pool working to false
-      if(problemCounter[pool.name]===1000)
-        problemCounter[pool.name]=4;
-      else
-        problemCounter[pool.name]+=1;
-
-      if(problemCounter[pool.name]===3){
+      if (result.working){
+        if(problemCounter[pool.name]>=2)
+          console.log(pool.name + " is working again");
+        problemCounter[pool.name]=0;
         if(isAS)
-          configModule.config.autoswitchPools[i].pools[j].working=false;
+          configModule.config.autoswitchPools[i].pools[j].working=true;
         else
-          pool.working = false;
-        console.log(pool.name + " is not working anymore: '" + result.data + "'");
-      }
+          pool.working = true;
+      }else{
+        if(problemCounter[pool.name]===1000)
+          problemCounter[pool.name]=3;
+        else
+          problemCounter[pool.name]+=1;
 
-      setTimeout(function(){getStratumStatus(pool,isAS,i,j,problemCounter);},3*60*1000);
+        if(problemCounter[pool.name]===2){
+          if(isAS)
+            configModule.config.autoswitchPools[i].pools[j].working=false;
+          else
+            pool.working = false;
+          console.log(pool.name + " is not working anymore: '" + result.data + "'");
+        }
+      }
     });
   }
 }
@@ -1073,15 +1080,6 @@ function isRunning(){
   return stats.running;
 }
 
-function reload(){
-  //TODO: save timeout handle and cancel it when reloading
-  //TODO: integrate reload after save/change
-  reloading=true;
-  setTimeout(function(){
-    reloading=false;
-    updatePoolStatus();
-  },60*1000);
-}
 
 function init() {
   if (configModule.config.autostart) {
@@ -1093,7 +1091,7 @@ function init() {
   stats.rigName=configModule.config.rigName;
 
   updatePoolStatus();
-
+  setTimeout(updatePoolStatus,5*60*1000);
 }
 
 setTimeout(init, 1000);

@@ -3,13 +3,16 @@ const tls = require('tls');
 const configModule = require(__basedir + 'api/modules/configModule');
 
 var self = module.exports = {
-  testStratum : function (pool,isAS,gi,gj,problemCounter,callback){
+  testStratum : function (pool,callback){
     var callbackSent=false;
     var mysocket;
     var arr = pool.url.split("://");
     arr = arr[(arr.length===1 ? 0 : 1)].split(":");
     var hostname = arr[0];
     var port = arr[1];
+    var isNH=(hostname.indexOf("nicehash")!== -1 ? true : false);
+    //work around nicehash bans with high p param
+    var pass=(isNH ? "p=9999" : pool.pass);
 
     if(pool.isSSL){
       mysocket = new tls.connect({host:hostname,port:port,rejectUnauthorized:false});
@@ -23,7 +26,7 @@ var self = module.exports = {
       var req;
       switch(pool.algo){
         case "cryptonight":
-          req = '{"id":2, "jsonrpc":"2.0", "method":"login", "params": {"login":"'+pool.worker+'", "pass": "'+pool.pass+'", "agent": "stratumTest"}}';
+          req = '{"id":2, "jsonrpc":"2.0", "method":"login", "params": {"login":"'+pool.worker+'", "pass": "'+pass+'", "agent": "stratumTest"}}';
           break;
         default:
           req = '{"id":1, "jsonrpc":"2.0", "method":"mining.subscribe", "params": []}';
@@ -74,7 +77,7 @@ var self = module.exports = {
             switch (parsed.id){
               case 1:
                 if(parsed.error!==undefined&&parsed.error===null){
-                  var req = '{"id": 2, "jsonrpc":"2.0", "method": "mining.authorize", "params": ["'+pool.worker+'", "'+pool.pass+'"]}';
+                  var req = '{"id": 2, "jsonrpc":"2.0", "method": "mining.authorize", "params": ["'+pool.worker+'", "'+pass+'"]}';
                   mysocket.write(req + '\n');
                   mysocket.setTimeout(10000);
                 }else{
@@ -86,18 +89,21 @@ var self = module.exports = {
                 }
                 break;
               case 2:
-                if(parsed.error!==undefined&&parsed.error===null){
-                  //success, now do nothing and wait till it doesnt work anymore
+                if(isNH&&parsed.error[1]==="High price. No order to work on."){
+                  //disregard error because we used high p param, stratum should be working fine
                   mysocket.setTimeout(0);
-                  if(problemCounter[pool.name]>=3){
-                    //was down
-                    console.log(pool.name+" is working again");
-                  }
-                  problemCounter[pool.name]=0;
-                  if(isAS)
-                    configModule.config.autoswitchPools[gi].pools[gj].working = true;
-                  else
-                    configModule.config.pools[gi].working=true;
+                  callbackSent=true;
+                  mysocket.end();
+                  mysocket.destroy();
+                  callback({working:true,data:"success"});
+                }
+                if(parsed.error!==undefined&&parsed.error===null){
+                  //success
+                  mysocket.setTimeout(0);
+                  callbackSent=true;
+                  mysocket.end();
+                  mysocket.destroy();
+                  callback({working:true,data:"success"});
                 }else{
                   //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
                   callbackSent=true;
