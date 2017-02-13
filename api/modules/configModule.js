@@ -2,7 +2,8 @@
 
 var colors = require('colors/safe');
 var fs = require('fs');
-
+var log4js = require('log4js');
+var logger = log4js.getLogger('config');
 var configPath="data/settings.json";
 
 if (!fs.existsSync("data")){
@@ -16,7 +17,8 @@ var config = module.exports = {
     rigName:null,
     profitabilityServiceUrl:null,
     pools:[],
-    autoswitchPools:[]
+    autoswitchPools:[],
+    logLevel:null
   },
   configNonPersistent:{
     types:["cpuminer-opt","claymore-eth","claymore-zec","claymore-cryptonight","optiminer-zec","sgminer-gm","ccminer","nheqminer","other"],
@@ -54,10 +56,10 @@ var config = module.exports = {
     config.config = newConfig;
   },
   saveConfig: function () {
-    console.log(colors.grey("writing config to file.."));
+    logger.info(colors.grey("writing config to file.."));
     fs.writeFile(configPath, JSON.stringify(config.config,null,2), function (err) {
       if (err) {
-        return console.log(err);
+        return logger.error(err);
       }
     });
   },
@@ -93,6 +95,9 @@ var config = module.exports = {
             {enabled:true,isIgnored:false,name:"nicehash-equihashSSL",algo:"equihash",url:"stratum+ssl://equihash.#APPENDLOCATION#.nicehash.com:33357",isSSL:true,working:true},
             {enabled:true,isIgnored:false,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
           ];
+          if (config.config.logLevel===undefined)
+            config.config.logLevel="INFO";
+          logger.setLevel(config.config.logLevel);
         });
       } else if (err.code == 'ENOENT') {
         //default conf
@@ -112,6 +117,7 @@ var config = module.exports = {
             {enabled:true,isIgnored:false,name:"nicehash-pascal",algo:"pascal",url:"stratum+tcp://pascal.#APPENDLOCATION#.nicehash.com:3358",isSSL:false,working:true}
           ]}
         ];
+        config.config.logLevel="INFO";
         config.saveConfig();
         setTimeout(function(){
           config.loadConfig();
@@ -120,5 +126,10 @@ var config = module.exports = {
     });
   }
 };
-console.log("initializing, please wait...");
-config.loadConfig();
+
+function init(){
+  logger.info("initializing, please wait...");
+  config.loadConfig();
+}
+
+init();

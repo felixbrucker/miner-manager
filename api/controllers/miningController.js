@@ -7,6 +7,9 @@ var path = require('path');
 var colors = require('colors/safe');
 var psTree = require('ps-tree');
 var rfs    = require('rotating-file-stream');
+var log4js = require('log4js');
+var logger = log4js.getLogger('mining');
+var stratumTestLogger = log4js.getLogger('stratumTest');
 
 var miner_logs = {};
 
@@ -95,10 +98,10 @@ function parseLocation(url,location){
 function getStratumStatus(pool,isAS,i,j){
   if(!reloading){
     stratumTestModule.testStratum(pool,function(result){
-      //console.log(result.data + " from pool: "+pool.name);
+      stratumTestLogger.debug(result.data + " from pool: "+pool.name);
       if (result.working){
         if(problemCounter[pool.name]>=2)
-          console.log(pool.name + " is working again");
+          stratumTestLogger.info(pool.name + " is working again");
         problemCounter[pool.name]=0;
         if(isAS)
           configModule.config.autoswitchPools[i].pools[j].working=true;
@@ -115,7 +118,7 @@ function getStratumStatus(pool,isAS,i,j){
             configModule.config.autoswitchPools[i].pools[j].working=false;
           else
             pool.working = false;
-          console.log(pool.name + " is not working anymore: '" + result.data + "'");
+          stratumTestLogger.info(pool.name + " is not working anymore: '" + result.data + "'");
         }
       }
     });
@@ -211,7 +214,7 @@ function checkIfMiningOnCorrectPool(group){
 
 function startAllMiner(){
   if(configModule.config.groups!==undefined){
-    console.log("starting up miners, please wait..");
+    logger.info("starting up miners, please wait..");
     for(var i=0;i< configModule.config.groups.length;i++) {
       var group = configModule.config.groups[i];
       (function (group){
@@ -331,8 +334,8 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
         try{
           parsed=JSON.parse(body);
         }catch(error){
-          console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
-          console.log(error);
+          logger.error(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
+          logger.debug(error);
         }
         if (parsed != null){
           if (parsed.result!==false){
@@ -386,13 +389,13 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
             callback(false);
           }
         }else{
-          console.log(colors.red("["+group.name.toUpperCase()+"] Error: malformed profitability request"));
+          logger.error(colors.red("["+group.name.toUpperCase()+"] Error: malformed profitability request"));
           callback(false);
         }
       });
     }).on("error", function(error) {
-      console.log(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
-      console.log(error);
+      logger.error(colors.red("["+group.name.toUpperCase()+"] Error: Unable to get profitability data"));
+      logger.debug(error);
       callback(false);
     });
     req.write(JSON.stringify(query));
@@ -463,7 +466,7 @@ function startMiner(entry,pool) {
                 }, 5000);
 
 
-                console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
+                logger.info(colors.cyan("["+entry.type+"] ")+"miner started");
                 miner_logs[entry.id] = rfs('miner'+entry.id+'.log', {
                   size:'50M',
                   path:'data'
@@ -501,13 +504,13 @@ function startMiner(entry,pool) {
 
 
             }else{
-              console.log(colors.red("miner already running"));
+              logger.warn(colors.red("miner already running"));
               return false;
             }
           }
         }(entry,pool));
   } else {
-    console.log(colors.red("some required settings are not properly configured"));
+    logger.error(colors.red("some required settings are not properly configured"));
     return false;
   }
   return true;
@@ -522,7 +525,7 @@ function restartMinerOnExit(entry,minerString){
         stats.entries[entry.id].text=entry.binPath+" "+minerString;
         stats.entries[entry.id].expectedHr=entry.hashrate;
         const spawn = require('cross-spawn');
-        console.log(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
+        logger.warn(colors.cyan("["+entry.type+"] ")+colors.red("miner terminated, restarting..."));
         var isWin = /^win/.test(process.platform);
         if (entry.shell){
           if (isWin)
@@ -546,7 +549,7 @@ function restartMinerOnExit(entry,minerString){
             miner[entry.id]=spawn(entry.binPath, minerString.split(" "));
         }
 
-        console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner started"));
+        logger.info(colors.cyan("["+entry.type+"] ")+"miner started");
         miner[entry.id].stdout.on('data', function (data) {
           if (entry.writeMinerLog) {
             miner_logs[entry.id].write(data.toString());
@@ -610,7 +613,7 @@ function stopAllMiner() {
     delete stats.entries[key];
     for (var i=0;i<configModule.config.entries.length;i++){
       if (configModule.config.entries[i].id==key){
-        console.log(colors.cyan("["+configModule.config.entries[i].type+"] ")+colors.green("miner stopped"));
+        logger.info(colors.cyan("["+configModule.config.entries[i].type+"] ")+"miner stopped");
         break;
       }
     }
@@ -628,7 +631,7 @@ function stopMiner(entry) {
   kill(miner[entry.id].pid);
   stats.entries[entry.id]=null;
   delete stats.entries[entry.id];
-  console.log(colors.cyan("["+entry.type+"] ")+colors.green("miner stopped"));
+  logger.info(colors.cyan("["+entry.type+"] ")+"miner stopped");
   miner[entry.id]=null;
   delete miner[entry.id];
   setTimeout(function(){shouldExit=false;},1000);
@@ -649,12 +652,14 @@ function getMinerStats(id,port,type) {
       var client = new WebSocketClient();
 
       client.on('connectFailed', function (error) {
-        console.log(colors.red("Connect Failed: " + error.toString()));
+        logger.error("Connect failed for "+type+ " on port: "+port);
+        logger.debug(error.toString());
       });
 
       client.on('connect', function (connection) {
         connection.on('error', function (error) {
-          console.log(colors.red("Connection Error: " + error.toString()));
+          logger.error("Connection Error for "+type+ " on port: "+port);
+          logger.debug(error.toString());
         });
         connection.on('close', function () {
         });
@@ -706,7 +711,7 @@ function getMinerStats(id,port,type) {
         
         mysocket.destroy();
         if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-          console.log(colors.red("timeout connecting to claymore-eth on port "+port));
+          logger.warn("timeout connecting to claymore-eth on port "+port);
           stats.entries[id].uptime=null;
         stats.entries[id]['eth-hashrate']=null;
         stats.entries[id]['eth-accepted']=null;
@@ -754,7 +759,8 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        console.log(colors.red("socket error: " + e.message));
+        logger.warn("socket error for claymore-eth on port "+port);
+        logger.debug(e.message);
       });
 
       mysocket.connect(port, "127.0.0.1");
@@ -774,7 +780,7 @@ function getMinerStats(id,port,type) {
         
         mysocket.destroy();
         if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-          console.log(colors.red("timeout connecting to claymore-zec on port "+port));
+          logger.warn("timeout connecting to claymore-zec on port "+port);
           stats.entries[id].uptime=null;
         stats.entries[id]['zec-hashrate']=null;
         stats.entries[id]['zec-accepted']=null;
@@ -815,7 +821,8 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        console.log(colors.red("socket error: " + e.message));
+        logger.warn("socket error for claymore-eth on port "+port);
+        logger.debug(e.message);
       });
 
       mysocket.connect(port, "127.0.0.1");
@@ -835,7 +842,7 @@ function getMinerStats(id,port,type) {
         
         mysocket.destroy();
         if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-          console.log(colors.red("timeout connecting to claymore-cryptonight on port "+port));
+          logger.warn("timeout connecting to claymore-cryptonight on port "+port);
           stats.entries[id].uptime=null;
         stats.entries[id].hashrate=null;
         stats.entries[id].accepted=null;
@@ -875,7 +882,8 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        console.log(colors.red("socket error: " + e.message));
+        logger.warn("socket error for claymore-eth on port "+port);
+        logger.debug(e.message);
       });
 
       mysocket.connect(port, "127.0.0.1");
@@ -894,7 +902,7 @@ function getMinerStats(id,port,type) {
       mysocket.on('timeout', function() {
         mysocket.destroy();
         if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-          console.log(colors.red("timeout connecting to nheqminer on port "+port));
+          logger.warn("timeout connecting to nheqminer on port "+port);
         stats.entries[id].iterationRate=null;
         stats.entries[id].solutionRate=null;
         stats.entries[id].acceptedPerMinute=null;
@@ -919,7 +927,8 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        console.log(colors.red("socket error: " + e.message));
+        logger.warn("socket error for claymore-eth on port "+port);
+        logger.debug(e.message);
       });
       mysocket.connect(port, "127.0.0.1");
       break;
@@ -940,7 +949,6 @@ function getMinerStats(id,port,type) {
         });
         response.on('end', function () {
           if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-          //console.log(body);
           var parsed = null;
           try{
             parsed=JSON.parse(body);
@@ -950,7 +958,7 @@ function getMinerStats(id,port,type) {
             stats.entries[id].hashrate=null;
             stats.entries[id].accepted=null;
             stats.entries[id].rejected=null;
-            console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
+            logger.warn("Error: Unable to get stats data for optiminer-zec on port "+port);
           }
           if (parsed != null){
             if (parsed.uptime)
@@ -981,15 +989,15 @@ function getMinerStats(id,port,type) {
           stats.entries[id].hashrate=null;
           stats.entries[id].accepted=null;
           stats.entries[id].rejected=null;
-          console.log(colors.red("Error: Unable to get stats data for optiminer-zec on port "+port));
-        console.log(error);
+          logger.warn("Error: Unable to get stats data for optiminer-zec on port "+port);
+        logger.debug(error);
         }
       });
       req.on('socket', function (socket) {
         socket.setTimeout(2000);
         socket.on('timeout', function() {
           if(stats.entries[id]!==undefined&&stats.entries[id]!==null){
-            console.log(colors.red("timeout connecting to optiminer-zec on port "+port));
+            logger.warn("timeout connecting to optiminer-zec on port "+port);
             stats.entries[id].uptime=null;
             stats.entries[id].version=null;
             stats.entries[id].hashrate=null;
@@ -1020,7 +1028,7 @@ function getMinerStats(id,port,type) {
         stats.entries[id].hashrate = null;
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
-        console.log(colors.red("timeout connecting to sgminer-gm on port "+port));
+        logger.warn("timeout connecting to sgminer-gm on port "+port);
         }
         mysocket.destroy();
       });
@@ -1040,8 +1048,8 @@ function getMinerStats(id,port,type) {
           stats.entries[id].hashrate = null;
           stats.entries[id].miner = null;
           stats.entries[id].uptime = null;
-          console.log(colors.red("Error: Unable to get stats data for sgminer-gm on port "+port));
-          console.log(error);
+          logger.warn("Error: Unable to get stats data for sgminer-gm on port "+port);
+          logger.debug(error);
         }
         if (parsed != null){
           stats.entries[id].accepted = parseInt(parsed.summary[0].SUMMARY[0].Accepted);
@@ -1065,7 +1073,8 @@ function getMinerStats(id,port,type) {
         stats.entries[id].hashrate = null;
         stats.entries[id].miner = null;
         stats.entries[id].uptime = null;
-        console.log(colors.red("socket error: " + e.message));
+          logger.warn("socket error for sgminer-gm on port "+port);
+          logger.debug(e.message);
         }
       });
 
@@ -1082,8 +1091,9 @@ function isRunning(){
 
 
 function init() {
+  logger.setLevel(configModule.config.logLevel);
   if (configModule.config.autostart) {
-    console.log(colors.green("autostart enabled, starting miner shortly.."));
+    logger.info("autostart enabled, starting miner shortly..");
     setTimeout(function () {
       startAllMiner();
     }, 10000);

@@ -1,5 +1,7 @@
 const net = require('net');
 const tls = require('tls');
+var log4js = require('log4js');
+var logger = log4js.getLogger('stratumTest');
 const configModule = require(__basedir + 'api/modules/configModule');
 
 var self = module.exports = {
@@ -51,22 +53,21 @@ var self = module.exports = {
           if(line!=="")
             return JSON.parse(line);
           else
-            return "";
+            return null;
         });
       }catch(error){
-        console.log(data.toString('utf8'));
-        console.log(error);
+        logger.debug(data.toString('utf8'));
+        logger.debug(error);
         callbackSent=true;
         mysocket.end();
         mysocket.destroy();
         callback({working:false,data:"json error"});
       }
 
-      
-      //console.log(JSON.stringify(parsed,null,2));
+      logger.debug(JSON.stringify(parsed,null,2));
       if(parsed!==null){
         for(var i=0;i<parsed.length;i++){
-          if(parsed[i]!==""&&(parsed[i].id===1||parsed[i].id===2)){
+          if(parsed[i]!==null&&(parsed[i].id===1||parsed[i].id===2)){
             //ignore other stuff
             parsed=parsed[i];
             break;
@@ -81,7 +82,6 @@ var self = module.exports = {
                   mysocket.write(req + '\n');
                   mysocket.setTimeout(10000);
                 }else{
-                  //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
                   callbackSent=true;
                   mysocket.end();
                   mysocket.destroy();
@@ -89,7 +89,6 @@ var self = module.exports = {
                 }
                 break;
               case 2:
-                //console.log(JSON.stringify(parsed,null,2));
                 if(isNH&&parsed.result===false&&parsed.error[1]==="High price. No order to work on."){
                   //disregard error because we used high p param, stratum should be working fine
                   mysocket.setTimeout(0);
@@ -97,20 +96,20 @@ var self = module.exports = {
                   mysocket.end();
                   mysocket.destroy();
                   callback({working:true,data:"success"});
-                }
-                if(parsed.error!==undefined&&parsed.error===null){
-                  //success
-                  mysocket.setTimeout(0);
-                  callbackSent=true;
-                  mysocket.end();
-                  mysocket.destroy();
-                  callback({working:true,data:"success"});
                 }else{
-                  //console.log("Error: \n"+JSON.stringify(parsed.error,null,2));
-                  callbackSent=true;
-                  mysocket.end();
-                  mysocket.destroy();
-                  callback({working:false,data:"authorize error"});
+                  if(parsed.error!==undefined&&parsed.error===null){
+                    //success
+                    mysocket.setTimeout(0);
+                    callbackSent=true;
+                    mysocket.end();
+                    mysocket.destroy();
+                    callback({working:true,data:"success"});
+                  }else{
+                    callbackSent=true;
+                    mysocket.end();
+                    mysocket.destroy();
+                    callback({working:false,data:"authorize error"});
+                  }
                 }
                 break;
             }
@@ -124,9 +123,15 @@ var self = module.exports = {
     });
 
     mysocket.on('error', function(e) {
-      //console.log("socket error: " + e.message);
+      logger.debug("socket error: " + e.message);
       callbackSent=true;
       callback({working:false,data:"socket error"});
     });
   }
 };
+
+function init() {
+  logger.setLevel(configModule.config.logLevel);
+}
+
+setTimeout(init, 1000);

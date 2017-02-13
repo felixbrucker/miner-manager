@@ -1,10 +1,18 @@
 'use strict';
 
 var path = require('path');
+var log4js = require('log4js');
+var logger = log4js.getLogger('config');
 
 var configModule = require(__basedir + 'api/modules/configModule');
 var miningController = require(__basedir + 'api/controllers/miningController');
 
+function changeLoggerLevel(){
+  log4js.getLogger('system').setLevel(configModule.config.logLevel);
+  log4js.getLogger('config').setLevel(configModule.config.logLevel);
+  log4js.getLogger('mining').setLevel(configModule.config.logLevel);
+  log4js.getLogger('stratumTest').setLevel(configModule.config.logLevel);
+}
 
 function getConfig(req, res, next) {
   var obj=configModule.config;
@@ -16,6 +24,7 @@ function getConfig(req, res, next) {
 }
 function setConfig(req, res, next) {
   configModule.setConfig(req.body);
+  changeLoggerLevel();
   configModule.saveConfig();
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({result: true}));
@@ -26,11 +35,20 @@ function update(req, res, next) {
   if (running)
     miningController.stopAllMiner();
   const spawn = require('cross-spawn');
-  const child = spawn('git',['pull'],{
+  var isWin = /^win/.test(process.platform);
+  if (isWin){
+    const child = spawn('helpers\\update.bat', [], {
       detached: true,
       stdio: 'ignore',
-      shell:true
+      shell: true
     });
+  }else{
+    const child = spawn('helpers/update.sh', [], {
+      detached: true,
+      stdio: 'ignore',
+      shell: true
+    });
+  }
   if (running)
     setTimeout(function(){
       miningController.startAllMiner();
@@ -53,7 +71,7 @@ function updateMiner(req, res, next) {
         shell:true
       });
       child.on('error', function(err) {
-        console.log(err);
+        logger.error(err);
       });
       child.on('exit', function() {
         if (running)
@@ -71,7 +89,7 @@ function updateMiner(req, res, next) {
         shell:true
       });
       child.on('error', function(err) {
-        console.log(err);
+        logger.error(err);
       });
       child.on('exit', function() {
         if (running)
@@ -102,7 +120,7 @@ function rebootSystem(req, res, next) {
         shell:true
       });
       child.on('error', function(err) {
-        console.log(err);
+        logger.error(err);
       });
       child.on('exit', function() {
         res.setHeader('Content-Type', 'application/json');
@@ -116,7 +134,7 @@ function rebootSystem(req, res, next) {
         shell:true
       });
       child.on('error', function(err) {
-        console.log(err);
+        logger.error(err);
       });
       child.on('exit', function() {
         res.setHeader('Content-Type', 'application/json');
@@ -129,9 +147,10 @@ function rebootSystem(req, res, next) {
 
 
 function init() {
+  logger.setLevel(configModule.config.logLevel);
 }
 
-init();
+setTimeout(init, 1000);
 
 exports.getConfig = getConfig;
 exports.setConfig = setConfig;

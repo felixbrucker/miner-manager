@@ -4,7 +4,14 @@ process.title = "miner-manager";
 var express = require('express');
 var bodyParser = require('body-parser');
 var colors = require('colors/safe');
-require('console-stamp')(console, {pattern:'yyyy-mm-dd HH:MM:ss',label:false});
+var log4js = require('log4js');
+log4js.configure({
+  appenders: [
+    { type: 'console' },
+    { type: 'file', filename: 'data/system.log', maxLogSize: 50*1024, backups:1, category: ['system', 'config', 'mining', 'stratumTest'] }
+  ]
+});
+var logger = log4js.getLogger('system');
 var app = express();
 
 app.use(bodyParser.urlencoded({
@@ -27,5 +34,9 @@ app.route('*').get(function(req, res) {
 });
 
 global.listener = app.listen(process.env.PORT || 8082, function(){
-  console.log(colors.green('server running on port '+listener.address().port));
+  logger.info('server running on port '+listener.address().port);
+});
+
+process.on('uncaughtException', function (err) {
+  logger.error(err.stack);
 });

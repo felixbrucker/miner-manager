@@ -27,7 +27,8 @@
             algos:[],
             pools:[],
             autoswitchPools:[],
-            profitabilityServiceUrl:null
+            profitabilityServiceUrl:null,
+            logLevel:null
         };
         vm.waiting = null;
         vm.updating=null;
@@ -357,6 +358,7 @@
                 vm.config.algos=response.data.algos;
                 vm.config.locations=response.data.locations;
                 vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
+                vm.config.logLevel=response.data.logLevel;
                 $rootScope.title = vm.config.rigName + " Miner-Manager Config";
             }, function errorCallback(response) {
                 console.log(response);
