@@ -821,7 +821,7 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        logger.warn("socket error for claymore-eth on port "+port);
+        logger.warn("socket error for claymore-zec on port "+port);
         logger.debug(e.message);
       });
 
@@ -882,7 +882,7 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        logger.warn("socket error for claymore-eth on port "+port);
+        logger.warn("socket error for claymore-cryptonight on port "+port);
         logger.debug(e.message);
       });
 
@@ -927,7 +927,7 @@ function getMinerStats(id,port,type) {
       });
 
       mysocket.on('error', function(e) {
-        logger.warn("socket error for claymore-eth on port "+port);
+        logger.warn("socket error for nheqminer on port "+port);
         logger.debug(e.message);
       });
       mysocket.connect(port, "127.0.0.1");
