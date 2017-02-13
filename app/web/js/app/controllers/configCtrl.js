@@ -15,7 +15,7 @@
         .module('app')
         .controller('configCtrl', configController);
 
-    function configController($scope,$interval,$http,$rootScope) {
+    function configController($scope,$interval,$http,$rootScope,$filter) {
 
         var vm = this;
         vm.config = {
@@ -232,26 +232,42 @@
          */
         function getMatchingPools(group){
             var result=[];
-            for(var k=0;k<vm.config.entries.length;k++){
-                var entry=vm.config.entries[k];
-                if(entry.group===group){
+            var foundAlgo={};
+            for(var k=0;k<vm.config.entries.length;k++) {
+                var entry = vm.config.entries[k];
+                if (entry.group === group) {
+                    foundAlgo[entry.algo] = true;
+                }
+            }
+            //for every algo in pools
+            for (var property in foundAlgo) {
+                if (foundAlgo.hasOwnProperty(property)) {
                     for(var i=0;i<vm.config.pools.length;i++){
-                        if(vm.config.pools[i].algo===entry.algo)
+                        if(vm.config.pools[i].algo===property)
                             result.push(vm.config.pools[i].name);
                     }
+
+                }
+            }
+            //for every algo in autoswitch pools
+            for (var property in foundAlgo) {
+                if (foundAlgo.hasOwnProperty(property)) {
                     for(var i=0;i<vm.config.autoswitchPools.length;i++){
                         var found=false;
                         for(var j=0;j<vm.config.autoswitchPools[i].pools.length;j++){
-                            if(vm.config.autoswitchPools[i].pools[j].algo===entry.algo){
+                            if(vm.config.autoswitchPools[i].pools[j].algo===property){
                                 found=true;
                                 break;
                             }
                         }
-                        if(found)
+                        if(found&&!(result.includes(vm.config.autoswitchPools[i].name)))
                             result.push(vm.config.autoswitchPools[i].name);
                     }
+
                 }
             }
+            //console.log(result);
+
 
             return result;
         }
@@ -359,6 +375,11 @@
                 vm.config.locations=response.data.locations;
                 vm.config.profitabilityServiceUrl=response.data.profitabilityServiceUrl;
                 vm.config.logLevel=response.data.logLevel;
+
+                vm.config.groups = $filter('orderBy')(vm.config.groups, 'name');
+                vm.config.entries = $filter('orderBy')(vm.config.entries, ['group','type']);
+                vm.config.pools = $filter('orderBy')(vm.config.pools, ['name','algo']);
+
                 $rootScope.title = vm.config.rigName + " Miner-Manager Config";
             }, function errorCallback(response) {
                 console.log(response);
