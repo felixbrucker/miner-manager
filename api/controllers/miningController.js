@@ -180,7 +180,7 @@ function checkIfMiningOnCorrectPool(group){
   }
 
   setTimeout(function(){
-    var chosenPool=selectPool(poolArray);
+    var chosenPool=selectPool(poolArray,group);
     if(chosenPool!==null){
       var bestHr=0;
       var pos=0;
@@ -405,12 +405,20 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
   }
 }
 
+function minerForPoolEnabled(pool,group){
+  for(var i=0;i<configModule.config.entries.length;i++){
+     if(configModule.config.entries[i].enabled&&configModule.config.entries[i].algo===pool.algo&&configModule.config.entries[i].group===group.name)
+       return true;
+  }
+  return false;
+}
+
 //get lowest prio working & enabled pool
-function selectPool(pools){
+function selectPool(pools,group){
   var lowest=9999;
   var pos=0;
   for(var i=0;i<pools.length;i++){
-    if(pools[i].prio<lowest&&pools[i].pool.working&&pools[i].pool.enabled){
+    if(pools[i].prio<lowest&&pools[i].pool.working&&pools[i].pool.enabled&&minerForPoolEnabled(pools[i].pool,group)){
       lowest=pools[i].prio;
       pos=i;
     }
