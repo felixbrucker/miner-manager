@@ -40,7 +40,9 @@ var config = module.exports = {
       "x17",
       "yescrypt",
       "timetravel",
-      "pascal"
+      "pascal",
+      "zoin",
+      "zcoin"
     ],
     locations:[
       "eu",
