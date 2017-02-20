@@ -12,7 +12,8 @@
           <th>stratum url</th>
           <th>worker</th>
           <th>password</th>
-          <th>append rig and group name to worker</th>
+          <th>append rig name to worker</th>
+          <th><span title="ignored for stratum tests">append group name to worker</span></th>
           <th>action</th>
         </tr>
         <tr ng-repeat="entry in configVm.config.pools track by $index">
@@ -27,7 +28,7 @@
           <td><input type="text" name="worker-{{entry.id}}" ng-model="entry.worker" placeholder="someone123" size="20" required></td>
           <td><input type="text" name="password-{{entry.id}}" ng-model="entry.pass" placeholder="x" size="4" required></td>
           <td><input type="checkbox" ng-model="entry.appendRigName" ng-click="configVm.setConfig()"></td>
-
+          <td><input type="checkbox" ng-model="entry.appendGroupName" ng-click="configVm.setConfig()"></td>
           <td><button type="button" class="btn btn-warning" ng-click="configVm.delPool(entry.id)">remove Pool</button></td>
         </tr>
         <tr style="border-top: 1px solid lightgrey;">
@@ -41,7 +42,7 @@
           <td><input type="text" name="worker-newPool" ng-model="configVm.newPool.worker" placeholder="someone123" size="20"></td>
           <td><input type="text" name="password-newPool" ng-model="configVm.newPool.pass" placeholder="x" size="4"></td>
           <td><input type="checkbox" ng-model="configVm.newPool.appendRigName"></td>
-
+          <td><input type="checkbox" ng-model="configVm.newPool.appendGroupName"></td>
           <td><button type="button" class="btn btn-success" ng-click="configVm.addPool()">add Pool</button></td>
         </tr>
       </table>

@@ -64,6 +64,7 @@
             isSSL:false,
             isIgnored:false,
             appendRigName:true,
+            appendGroupName:false,
             worker:"",
             pass:"x",
             working:true
@@ -167,6 +168,7 @@
                     isSSL:false,
                     isIgnored:false,
                     appendRigName:true,
+                    appendGroupName:false,
                     worker:"",
                     pass:"x",
                     working:true

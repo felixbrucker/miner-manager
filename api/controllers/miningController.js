@@ -97,7 +97,7 @@ function parseLocation(url,location){
 
 function getStratumStatus(pool,isAS,i,j){
   if(!reloading){
-    stratumTestModule.testStratum(pool,function(result){
+    stratumTestModule.testStratum(pool,configModule.config.rigName,function(result){
       stratumTestLogger.debug(result.data + " from pool: "+pool.name);
       if (result.working){
         if(problemCounter[pool.name]>=2)
@@ -232,28 +232,33 @@ function startAllMiner(){
 
 function parsePoolToMinerString(pool,minerType,rigName,groupName){
   var result="";
+  var worker=pool.worker;
+  if((pool.appendRigName || pool.appendGroupName) && (worker.indexOf('.')=== -1 ? true : false)) //only append dot if no dot already present and at least one string is getting appended
+    worker+=".";
+  worker+=(pool.appendRigName ? rigName : "");
+  worker+=(pool.appendGroupName ? groupName : "");
   switch(minerType){
     case "claymore-eth":
-      result = " -epool " + pool.url + " -ewal " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-epsw "+pool.pass;
+      result = " -epool " + pool.url + " -ewal " + worker + " -epsw "+pool.pass;
       break;
     case "claymore-zec":
-      result = " -zpool " + pool.url + " -zwal " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-zpsw "+pool.pass;
+      result = " -zpool " + pool.url + " -zwal " + worker + " -zpsw "+pool.pass;
       break;
     case "optiminer-zec":
       var arr = pool.url.split("://");
       arr = arr[(arr.length===1 ? 0 : 1)].split(":");
       var hostname = arr[0];
       var port = arr[1];
-      result = " -s " + hostname+":"+ port + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
+      result = " -s " + hostname+":"+ port + " -u " + worker + " -p "+pool.pass;
       break;
     case "sgminer-gm":
     case "claymore-cryptonight":
     case "ccminer":
     case "cpuminer-opt":
-      result = " -o " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
+      result = " -o " + pool.url + " -u " + worker + " -p "+pool.pass;
       break;
     case "nheqminer":
-      result = " -l " + pool.url + " -u " + pool.worker + (pool.appendRigName ? "."+rigName+groupName+" " : " ") + "-p "+pool.pass;
+      result = " -l " + pool.url + " -u " + worker + " -p "+pool.pass;
       break;
     case "other":
       break;
