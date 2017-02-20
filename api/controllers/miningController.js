@@ -387,6 +387,7 @@ function getMostProfitablePool(group,pool,callback){ //expected to be a autoswit
             actualPool.worker=pool.worker;
             actualPool.pass=pool.pass;
             actualPool.appendRigName=pool.appendRigName;
+            actualPool.appendGroupName=pool.appendGroupName;
 
 
             callback(actualPool);

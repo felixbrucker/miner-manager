@@ -83,7 +83,7 @@ var config = module.exports = {
             config.config.pools=[];
           if (config.config.autoswitchPools===undefined)
             config.config.autoswitchPools=[
-              {enabled:false,name:"nicehash-autoswitch",appendRigName:true,worker:"",pass:"",location:"eu",pools:[]}
+              {enabled:false,name:"nicehash-autoswitch",appendRigName:true,appendGroupName:false,worker:"",pass:"",location:"eu",pools:[]}
             ];
           config.config.autoswitchPools[0].pools=[
             {enabled:true,isIgnored:false,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
@@ -106,7 +106,7 @@ var config = module.exports = {
         config.config.autostart=false;
         config.config.rigName="RXX";
         config.config.autoswitchPools=[
-          {enabled:false,name:"nicehash-autoswitch",appendRigName:true,worker:"",pass:"",location:"eu",pools:[
+          {enabled:false,name:"nicehash-autoswitch",appendRigName:true,appendGroupName:false,worker:"",pass:"",location:"eu",pools:[
             {enabled:true,isIgnored:false,name:"nicehash-neoscrypt",algo:"neoscrypt",url:"stratum+tcp://neoscrypt.#APPENDLOCATION#.nicehash.com:3341",isSSL:false,working:true},
             {enabled:true,isIgnored:false,name:"nicehash-lyra2rev2",algo:"lyra2rev2",url:"stratum+tcp://lyra2rev2.#APPENDLOCATION#.nicehash.com:3347",isSSL:false,working:true},
             {enabled:true,isIgnored:false,name:"nicehash-daggerhashimoto",algo:"daggerhashimoto",url:"stratum+tcp://daggerhashimoto.#APPENDLOCATION#.nicehash.com:3353",isSSL:false,working:true},
