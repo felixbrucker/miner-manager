@@ -21,7 +21,7 @@ var config = module.exports = {
     logLevel:null
   },
   configNonPersistent:{
-    types:["cpuminer-opt","claymore-eth","claymore-zec","claymore-cryptonight","optiminer-zec","sgminer-gm","ccminer","nheqminer","other"],
+    types:["ccminer","claymore-eth","claymore-zec","claymore-cryptonight","cpuminer-opt","optiminer-zec","nheqminer","sgminer-gm","other"],
     algos:[
       "cryptonight",
       "daggerhashimoto",
@@ -33,14 +33,14 @@ var config = module.exports = {
       "m7m",
       "myr-gr",
       "neoscrypt",
+      "pascal",
       "sib",
       "skein",
+      "timetravel",
       "veltor",
       "x11evo",
       "x17",
       "yescrypt",
-      "timetravel",
-      "pascal",
       "zoin",
       "zcoin"
     ],
