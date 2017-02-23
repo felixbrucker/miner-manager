@@ -42,7 +42,7 @@
             type:null,
             port:null,
             writeMinerLog:false,
-            shell:true,
+            shell:false,
             hashrate:null,
             group:null,
             algo:null
@@ -296,7 +296,7 @@
                     vm.newCustomMiner.type=null;
                     vm.newCustomMiner.port=null;
                     vm.newCustomMiner.writeMinerLog=false;
-                    vm.newCustomMiner.shell=true;
+                    vm.newCustomMiner.shell=false;
                     vm.newCustomMiner.hashrate=null;
                     vm.newCustomMiner.group=null;
                     vm.newCustomMiner.algo=null;
