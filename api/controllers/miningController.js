@@ -409,7 +409,7 @@ function setupProxy() {
   }
   let connectionUrl = 'https://stratumproxy-felixbrucker.rhcloud.com';
 
-  server = net.createServer((c) => {
+  let server = net.createServer((c) => {
     // 'connection' listener
     c.name = c.remoteAddress + ":" + c.remotePort;
     c.id=getId();
