@@ -20,4 +20,3 @@ if [ ! -d "miner-manager" ]; then
   cd ..
   sleep infinity
 fi
-
