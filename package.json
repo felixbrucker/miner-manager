@@ -11,7 +11,7 @@
     "websocket": "^1.0.23",
     "console-stamp": "^0.2.2",
     "rotating-file-stream":"^1.0.5",
-    "net":"^1.0.2"
+    "socket.io-client":"^1.7.3"
   },
   "scripts": {
     "start": "node main.js"

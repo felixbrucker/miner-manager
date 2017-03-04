@@ -22,7 +22,8 @@
             rigName: null,
             autostart:null,
             entries:[],
-            types:[]
+            types:[],
+            stratumUrl:null
         };
         vm.waiting = null;
         vm.updating=null;
@@ -112,6 +113,7 @@
                 vm.config.autostart = response.data.autostart;
                 vm.config.entries=response.data.entries;
                 vm.config.types=response.data.types;
+                vm.config.stratumUrl=response.data.stratumUrl;
             }, function errorCallback(response) {
                 console.log(response);
             });

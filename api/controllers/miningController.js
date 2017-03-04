@@ -3,10 +3,12 @@
 const https = require('https');
 const http = require('http');
 const wait = require('wait.for');
+const net = require('net');
 var fs = require('fs');
 var colors = require('colors/safe');
 var psTree = require('ps-tree');
 var rfs    = require('rotating-file-stream');
+
 
 var miner_logs = {};
 
@@ -390,6 +392,76 @@ function keepalive(){
   });
 }
 
+function setupProxy() {
+  let clients = [];
+  let sockets = [];
+  let idArr = [];
+
+  function getId(){
+    if(idArr===[])
+      return 0;
+    idArr.sort();
+    for(var i=0;i<idArr.length;i++){
+      if(idArr[i]!==i)
+        return i;
+    }
+    return idArr.length;
+  }
+  let connectionUrl = 'https://stratumproxy-felixbrucker.rhcloud.com';
+
+  server = net.createServer((c) => {
+    // 'connection' listener
+    c.name = c.remoteAddress + ":" + c.remotePort;
+    c.id=getId();
+    idArr.push(c.id);
+    clients.push(c);
+    console.log('client '+c.id+' connected ('+c.name+')');
+
+    c.on('end', () => {
+      console.log('client '+c.id+' disconnected ('+c.name+')');
+      clients.splice(clients.indexOf(c), 1);
+      idArr.splice(idArr.indexOf(c.id), 1);
+      sockets[c.name].destroy();
+      sockets.splice(sockets.indexOf(c.name), 1);
+    });
+    c.on('error', () => {
+      console.log('client '+c.id+' disconnected ('+c.name+')');
+      clients.splice(clients.indexOf(c), 1);
+      idArr.splice(idArr.indexOf(c.id), 1);
+      sockets[c.name].destroy();
+      sockets.splice(sockets.indexOf(c.name), 1);
+    });
+    c.on('data',(data) => {
+      console.log("received data from client "+c.id);
+      if(sockets[c.name]!==undefined){
+        sockets[c.name].emit('data', {data:data});
+      }else{
+        sockets[c.name] = require('socket.io-client')(connectionUrl);
+
+        sockets[c.name].on('connect', () => {
+          console.log("connected via websocket (client "+c.id+")");
+          sockets[c.name].emit('init', configModule.config.stratumUrl);
+          sockets[c.name].emit('data', {data:data});
+        });
+          sockets[c.name].on('disconnect', () => {
+            console.log("disconnected (client "+c.id+")");
+          c.end();
+        });
+          sockets[c.name].on('data', (data) => {
+            console.log("received data via websocket (client "+c.id+")");
+          c.write(data.data);
+        });
+      }
+    });
+  });
+  server.on('error', (err) => {
+    console.log(err.stack)
+  });
+  server.listen(8001, '127.0.0.1', () => {
+    console.log('proxy bound to '+8001);
+  });
+}
+
 function init() {
   if (configModule.config.autostart) {
     console.log(colors.green("autostart enabled, starting miner shortly.."));
@@ -409,6 +481,7 @@ function init() {
     keepalive();
   },1000*60*7);
 
+  setupProxy();
 }
 
 setTimeout(init, 1000);
