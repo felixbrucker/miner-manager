@@ -34,6 +34,7 @@ var config = module.exports = {
       "myr-gr",
       "neoscrypt",
       "pascal",
+      "sha256t",
       "sib",
       "skein",
       "timetravel",
