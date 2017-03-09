@@ -200,7 +200,7 @@ function checkIfMiningOnCorrectPool(group) {
             setTimeout(function () {
               startMiner(configModule.config.entries[pos], chosenPool.pool);
               prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
-            }, 500);
+            }, 2000);
           }
         } else {
           //startup
