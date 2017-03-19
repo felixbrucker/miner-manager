@@ -64,9 +64,7 @@ function updateMiner(req, res, next) {
     miningController.stopAllMiner();
   setTimeout(function(){
     if (req.body.clean) {
-      rimraf.sync('miner', function () {
-        console.log('deleted miner dir');
-      });
+      rimraf.sync('miner');
     }
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
