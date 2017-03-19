@@ -89,6 +89,7 @@
         vm.setConfig=setConfig;
         vm.update=update;
         vm.updateMiner=updateMiner;
+        vm.updateMinerClean=updateMinerClean;
         vm.addCustomMiner=addCustomMiner;
         vm.delCustomMiner=delCustomMiner;
         vm.addGroup=addGroup;
@@ -443,6 +444,27 @@
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8'
                 }
+            }).then(function successCallback(response) {
+                setTimeout(function(){vm.updatingMiner = false;},500);
+            }, function errorCallback(response) {
+                console.log(response);
+            });
+        }
+
+        /**
+         * @name updateMinerClean
+         * @desc cleans the directory and updates the miner from git
+         * @memberOf configCtrl
+         */
+        function updateMinerClean() {
+            vm.updatingMiner=true;
+            return $http({
+                method: 'POST',
+                url: 'api/config/updateMiner',
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                data: {clean: true}
             }).then(function successCallback(response) {
                 setTimeout(function(){vm.updatingMiner = false;},500);
             }, function errorCallback(response) {

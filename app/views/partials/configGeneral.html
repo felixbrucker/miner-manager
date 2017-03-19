@@ -70,6 +70,17 @@
   </div>
 </div>
 
+<div class="row" style="margin-bottom: 40px;">
+  <div class="col-md-12">
+    <button ng-show="!configVm.updatingMiner" type="button" class="btn btn-info" ng-click="configVm.updateMinerClean()"><i class="fa fa-cloud-download" aria-hidden="true"></i> Clean & Update Miner
+    </button>
+    <button ng-show="configVm.updatingMiner" type="button" class="btn btn-success" disabled><i class="fa fa-refresh" aria-hidden="true"></i> update running..
+    </button>
+    <i ng-show="configVm.updatingMiner" class="fa fa-cog fa-spin fa-lg fa-fw"></i>
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
 <div class="row" style="margin-bottom: 10px;">
   <div class="col-md-12">
     <button type="button" class="btn btn-danger" ng-click="configVm.rebootSystem()"><i class="fa fa-repeat" aria-hidden="true"></i> Reboot System

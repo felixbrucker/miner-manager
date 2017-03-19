@@ -2,6 +2,7 @@
 
 var path = require('path');
 var log4js = require('log4js');
+const rimraf = require('rimraf');
 var logger = log4js.getLogger('config');
 
 var configModule = require(__basedir + 'api/modules/configModule');
@@ -62,6 +63,11 @@ function updateMiner(req, res, next) {
   if (running)
     miningController.stopAllMiner();
   setTimeout(function(){
+    if (req.body.clean) {
+      rimraf.sync('miner', function () {
+        console.log('deleted miner dir');
+      });
+    }
     const spawn = require('cross-spawn');
     var isWin = /^win/.test(process.platform);
     if(isWin){
