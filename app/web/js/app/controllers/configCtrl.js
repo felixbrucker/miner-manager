@@ -92,6 +92,7 @@
         vm.updateMinerClean=updateMinerClean;
         vm.addCustomMiner=addCustomMiner;
         vm.delCustomMiner=delCustomMiner;
+        vm.copyCustomMiner=copyCustomMiner;
         vm.addGroup=addGroup;
         vm.delGroup=delGroup;
         vm.rebootSystem=rebootSystem;
@@ -101,6 +102,7 @@
         vm.delPoolFromModal=delPoolFromModal;
         vm.addPool=addPool;
         vm.delPool=delPool;
+        vm.copyPool=copyPool;
 
 
 
@@ -191,6 +193,29 @@
                 }
             });
             vm.setConfig();
+        }
+
+        /**
+         * @name copyPool
+         * @desc copy Pool
+         * @memberOf configCtrl
+         */
+        function copyPool(id) {
+            vm.config.pools.forEach(function (entry,index,array) {
+                if (entry.id===id){
+                    vm.newPool.enabled=entry.enabled;
+                    vm.newPool.name=entry.name;
+                    vm.newPool.algo=entry.algo;
+                    vm.newPool.url=entry.url;
+                    vm.newPool.isSSL=entry.isSSL;
+                    vm.newPool.isIgnored=entry.isIgnored;
+                    vm.newPool.appendRigName=entry.appendRigName;
+                    vm.newPool.appendGroupName=entry.appendGroupName;
+                    vm.newPool.worker=entry.worker;
+                    vm.newPool.pass=entry.pass;
+                    vm.newPool.working=entry.working;
+                }
+            });
         }
 
         function addPoolFromModal(){
@@ -320,6 +345,28 @@
             vm.setConfig();
         }
 
+        /**
+         * @name copyCustomMiner
+         * @desc copy custom miner
+         * @memberOf configCtrl
+         */
+        function copyCustomMiner(id) {
+            vm.config.entries.forEach(function (entry,index,array) {
+                if (entry.id===id){
+                    vm.newCustomMiner.enabled=entry.enabled;
+                    vm.newCustomMiner.binPath=entry.binPath;
+                    vm.newCustomMiner.cmdline=entry.cmdline;
+                    vm.newCustomMiner.type=entry.type;
+                    vm.newCustomMiner.port=entry.port;
+                    vm.newCustomMiner.writeMinerLog=entry.writeMinerLog;
+                    vm.newCustomMiner.shell=entry.shell;
+                    vm.newCustomMiner.hashrate=entry.hashrate;
+                    vm.newCustomMiner.group=entry.group;
+                    vm.newCustomMiner.algo=entry.algo;
+                }
+            });
+        }
+
 
 
         /**
@@ -356,6 +403,7 @@
             });
             vm.setConfig();
         }
+
 
         /**
          * @name getConfig
