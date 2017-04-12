@@ -1119,7 +1119,7 @@ function init() {
   stats.rigName = configModule.config.rigName;
 
   updatePoolStatus();
-  setTimeout(updatePoolStatus, 5 * 60 * 1000);
+  setInterval(updatePoolStatus, 5 * 60 * 1000);
 }
 
 setTimeout(init, 1000);
