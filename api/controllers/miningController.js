@@ -407,7 +407,7 @@ function setupProxy() {
     }
     return idArr.length;
   }
-  let connectionUrl = 'https://stratumproxy-felixbrucker.rhcloud.com';
+  let connectionUrl = 'https://intense-ocean-60928.herokuapp.com';
 
   let server = net.createServer((c) => {
     // 'connection' listener
