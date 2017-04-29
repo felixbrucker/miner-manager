@@ -12,7 +12,8 @@
     "net":"^1.0.2",
     "path":"^0.12.7",
     "log4js":"^1.1.0",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "rx": "^4.1.0"
   },
   "scripts": {
     "start": "node main.js"

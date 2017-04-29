@@ -7,6 +7,7 @@ var path = require('path');
 var colors = require('colors/safe');
 var psTree = require('ps-tree');
 var rfs = require('rotating-file-stream');
+const Rx = require('rx');
 var log4js = require('log4js');
 var logger = log4js.getLogger('mining');
 var stratumTestLogger = log4js.getLogger('stratumTest');
@@ -22,6 +23,7 @@ var stats = {
   rigName: null
 };
 
+const timeEvents = Rx.Observable.interval(5000);
 
 global.miner = {};
 var shouldExit = false;
@@ -215,17 +217,21 @@ function checkIfMiningOnCorrectPool(group) {
 function startAllMiner() {
   if (configModule.config.groups !== undefined) {
     logger.info("starting up miners, please wait..");
+    const groupArr = [];
     for (var i = 0; i < configModule.config.groups.length; i++) {
       var group = configModule.config.groups[i];
-      (function (group) {
         if (group.enabled) {
-          checkIfMiningOnCorrectPool(group);
-          profitTimer[group.id] = setInterval(function () {
-            checkIfMiningOnCorrectPool(group);
-          }, 1000 * 180);
+            groupArr.push(group);
         }
-      })(group);
     }
+    const groupEvents = Rx.Observable.fromArray(groupArr);
+    Rx.Observable.zip(timeEvents, groupEvents, (i, group) => group)
+      .subscribe(group => {
+        checkIfMiningOnCorrectPool(group);
+        profitTimer[group.id] = setInterval(function () {
+            checkIfMiningOnCorrectPool(group);
+        }, 1000 * 180);
+      });
     stats.running = true;
   }
 }
