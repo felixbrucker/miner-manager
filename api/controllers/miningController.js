@@ -384,9 +384,8 @@ function getMinerStats(id,port,type) {
 }
 
 function keepalive(){
-  console.log(`GET ${process.env.HEROKU_APP_NAME}.herokuapp.com`);
   return https.get({
-    host: process.env.HEROKU_APP_NAME + '.herokuapp.com',
+    host: process.env.HOSTNAME + '.herokuapp.com',
     path: '/api/mining/stats',
     headers:{'Cache-Control':'no-cache'}
   }, function (response) {
