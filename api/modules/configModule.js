@@ -36,6 +36,7 @@ var config = module.exports = {
       "pascal",
       "sha256t",
       "sib",
+      "sia",
       "skein",
       "timetravel",
       "veltor",
