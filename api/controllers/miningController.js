@@ -305,6 +305,7 @@ function getPoolObj(poolName) {
       return configModule.config.pools[i];
   }
 }
+
 function getAutoswitchPoolObj(poolName) {
   for (var i = 0; i < configModule.config.autoswitchPools.length; i++) {
     if (configModule.config.autoswitchPools[i].name === poolName)
@@ -660,13 +661,6 @@ function stopMiner(entry) {
     shouldExit = false;
   }, 1000);
 }
-
-function asyncSleep(param, callback) {
-  setTimeout(function () {
-    callback(null);
-  }, param);
-}
-
 
 function getMinerStats(id, port, type) {
   switch (type) {

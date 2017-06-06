@@ -2,8 +2,7 @@
 
 (auto profit switching) mining monitoring software (wrapper)
 
-can use nicehash or zpool api via https://github.com/felixbrucker/profitability-service or run standalone without switching
-will see if using both is useful/possible when i got some spare time
+can use nicehash api via https://github.com/felixbrucker/profitability-service or run standalone without switching
 
 ### Screens
 
@@ -13,7 +12,7 @@ will see if using both is useful/possible when i got some spare time
 
 ### Prerequisites
 
-miner-manager requires nodejs, npm and optionally pm2 to run.
+miner-manager requires nodejs >= 7.6.0, npm and optionally pm2 to run.
 Additionally miner binaries are needed for cpu and gpu mining.
 
 

@@ -50,7 +50,9 @@ var config = module.exports = {
       "eu",
       "usa",
       "hk",
-      "jp"
+      "jp",
+      'in',
+      'br',
     ]
   },
   getConfig: function () {
