@@ -1,14 +1,13 @@
-'use strict';
-
-var path = require('path');
-var log4js = require('log4js');
+const path = require('path');
+const log4js = require('log4js');
 const rimraf = require('rimraf');
-var logger = log4js.getLogger('config');
+const spawn = require('cross-spawn');
+const logger = log4js.getLogger('config');
 
-var configModule = require(__basedir + 'api/modules/configModule');
-var miningController = require(__basedir + 'api/controllers/miningController');
+const configModule = require(`${__basedir}/api/modules/configModule`);
+const miningController = require(`${__basedir}/api/controllers/miningController`);
 
-function changeLoggerLevel(){
+function updateLoggerLevel() {
   log4js.getLogger('system').setLevel(configModule.config.logLevel);
   log4js.getLogger('config').setLevel(configModule.config.logLevel);
   log4js.getLogger('mining').setLevel(configModule.config.logLevel);
@@ -16,138 +15,93 @@ function changeLoggerLevel(){
 }
 
 function getConfig(req, res, next) {
-  var obj=configModule.config;
-  obj.types=configModule.configNonPersistent.types;
-  obj.algos=configModule.configNonPersistent.algos;
-  obj.locations=configModule.configNonPersistent.locations;
+  const obj = configModule.config;
+  obj.types = configModule.configNonPersistent.types;
+  obj.algos = configModule.configNonPersistent.algos;
+  obj.locations = configModule.configNonPersistent.locations;
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(obj));
 }
-function setConfig(req, res, next) {
+async function setConfig(req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
   configModule.setConfig(req.body);
-  changeLoggerLevel();
-  configModule.saveConfig();
+  updateLoggerLevel();
+  try {
+    await configModule.saveConfig();
+    res.send(JSON.stringify({result: true}));
+  } catch (err) {
+    logger.error(err.message);
+    res.send(JSON.stringify({result: false}));
+  }
+}
+
+async function update(req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
+  const running = miningController.isRunning();
+  if (running) {
+    await miningController.stopAllMiner();
+  }
+  const isWin = /^win/.test(process.platform);
+  const path = isWin ? 'helpers\\update.bat' : 'helpers/update.sh';
+  const child = spawn(path, [], {
+    detached: true,
+    stdio: 'ignore',
+    shell: true,
+  });
+  if (running) {
+    child.on('close', () => {
+      const result = miningController.startAllMiner();
+      res.send(JSON.stringify({result}));
+    });
+  } else {
+    res.send(JSON.stringify({result: true}));
+  }
+}
+
+async function updateMiner(req, res, next) {
+  res.setHeader('Content-Type', 'application/json');
+  const running = miningController.isRunning();
+  if (running) {
+    await miningController.stopAllMiner();
+  }
+
+  if (req.body.clean) {
+    rimraf.sync('miner');
+  }
+  const isWin = /^win/.test(process.platform);
+  const path = isWin ? 'helpers\\updateWindowsMiner.bat' : 'helpers/updateLinuxMiner.sh';
+  const child = spawn(path, [], {
+    detached: true,
+    stdio: 'ignore',
+    shell: true,
+  });
+  if (running) {
+    child.on('close', () => {
+      const result = miningController.startAllMiner();
+      res.send(JSON.stringify({result}));
+    });
+  } else {
+    res.send(JSON.stringify({result: true}));
+  }
+}
+
+
+async function rebootSystem(req, res, next) {
+  const running = miningController.isRunning();
+  if (running) {
+    await miningController.stopAllMiner();
+  }
+
+  const isWin = /^win/.test(process.platform);
+  const path = isWin ? 'helpers\\rebootWindows.bat' : 'helpers/rebootLinux.sh';
+  const child = spawn(path, [], {
+    detached: true,
+    stdio: 'ignore',
+    shell: true,
+  });
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify({result: true}));
 }
-
-function update(req, res, next) {
-  var running=miningController.isRunning();
-  if (running)
-    miningController.stopAllMiner();
-  const spawn = require('cross-spawn');
-  var isWin = /^win/.test(process.platform);
-  if (isWin){
-    const child = spawn('helpers\\update.bat', [], {
-      detached: true,
-      stdio: 'ignore',
-      shell: true
-    });
-  }else{
-    const child = spawn('helpers/update.sh', [], {
-      detached: true,
-      stdio: 'ignore',
-      shell: true
-    });
-  }
-  if (running)
-    setTimeout(function(){
-      miningController.startAllMiner();
-    },4000);
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({result:true}));
-}
-
-function updateMiner(req, res, next) {
-  var running=miningController.isRunning();
-  if (running)
-    miningController.stopAllMiner();
-  setTimeout(function(){
-    if (req.body.clean) {
-      rimraf.sync('miner');
-    }
-    const spawn = require('cross-spawn');
-    var isWin = /^win/.test(process.platform);
-    if(isWin){
-      const child = spawn('helpers\\updateWindowsMiner.bat',[],{
-        detached: true,
-        stdio: 'ignore',
-        shell:true
-      });
-      child.on('error', function(err) {
-        logger.error(err);
-      });
-      child.on('exit', function() {
-        if (running)
-          setTimeout(function(){
-            miningController.startAllMiner();
-          },2000);
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({result:true}));
-      });
-    }
-    else{
-      const child = spawn('helpers/updateLinuxMiner.sh',[],{
-        detached: true,
-        stdio: 'ignore',
-        shell:true
-      });
-      child.on('error', function(err) {
-        logger.error(err);
-      });
-      child.on('exit', function() {
-        if (running)
-          setTimeout(function(){
-            miningController.startAllMiner();
-          },2000);
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({result:true}));
-      });
-    }
-
-
-  },1000);
-}
-
-
-function rebootSystem(req, res, next) {
-  var running=miningController.isRunning();
-  if (running)
-    miningController.stopAllMiner();
-  setTimeout(function(){
-    const spawn = require('cross-spawn');
-    var isWin = /^win/.test(process.platform);
-    if(isWin){
-      const child = spawn('helpers\\rebootWindows.bat',[],{
-        detached: true,
-        stdio: 'ignore',
-        shell:true
-      });
-      child.on('error', function(err) {
-        logger.error(err);
-      });
-      child.on('exit', function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({result:true}));
-      });
-    }
-    else{
-      const child = spawn('helpers/rebootLinux.sh',[],{
-        detached: true,
-        stdio: 'ignore',
-        shell:true
-      });
-      child.on('error', function(err) {
-        logger.error(err);
-      });
-      child.on('exit', function() {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({result:true}));
-      });
-    }
-  },1000);
-}
-
 
 
 function init() {

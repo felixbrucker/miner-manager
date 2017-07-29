@@ -1,12 +1,12 @@
 'use strict';
 
-var express = require('express');
+const express = require('express');
 
 module.exports = function(app) {
-  var router = express.Router();
+  const router = express.Router();
 
-  var configController = require(__basedir + 'api/controllers/configController');
-  var miningController = require(__basedir + 'api/controllers/miningController');
+  const configController = require(`${__basedir}/api/controllers/configController`);
+  const miningController = require(`${__basedir}/api/controllers/miningController`);
 
   router.get('/config', configController.getConfig);
   router.post('/config', configController.setConfig);
