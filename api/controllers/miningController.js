@@ -1,5 +1,4 @@
-const https = require('https');
-const http = require('http');
+const net = require('net');
 const fs = require('fs');
 const path = require('path');
 const colors = require('colors/safe');
