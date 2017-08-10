@@ -162,13 +162,20 @@ async function checkIfMiningOnCorrectPool(group) {
       bestHr = entry.hashrate;
     }
   });
-  // different?
-  if (prevEntries[group.name] !== undefined && (prevEntries[group.name].pool.name !== chosenPool.pool.name || prevEntries[group.name].miner.id !== configModule.config.entries[pos].id)) {
-    //switch
-    await stopMiner(prevEntries[group.name].miner);
+
+  if (prevEntries[group.name] !== undefined) {
+    // different?
+    if (prevEntries[group.name].pool.name !== chosenPool.pool.name || prevEntries[group.name].miner.id !== configModule.config.entries[pos].id) {
+      //switch
+      await stopMiner(prevEntries[group.name].miner);
+      await startMiner(configModule.config.entries[pos], chosenPool.pool);
+      prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
+    }
+  } else {
+    // init
+    await startMiner(configModule.config.entries[pos], chosenPool.pool);
+    prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
   }
-  await startMiner(configModule.config.entries[pos], chosenPool.pool);
-  prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
 }
 
 function startAllMiner() {
