@@ -167,7 +167,9 @@ async function checkIfMiningOnCorrectPool(group) {
     // different?
     if (prevEntries[group.name].pool.name !== chosenPool.pool.name || prevEntries[group.name].miner.id !== configModule.config.entries[pos].id) {
       //switch
+      logger.info(`[${group.name}] switching from ${prevEntries[group.name].pool.name} to ${chosenPool.pool.name}`);
       await stopMiner(prevEntries[group.name].miner);
+      await new Promise((resolve) => setTimeout(() => resolve(), 1100));
       await startMiner(configModule.config.entries[pos], chosenPool.pool);
       prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
     }
@@ -395,7 +397,9 @@ async function stopMiner(entry) {
   logger.info(colors.cyan(`[${entry.type}]`) + ' miner stopped');
   miner[entry.id] = null;
   delete miner[entry.id];
-  shouldExit = false;
+  setTimeout(()=> {
+    shouldExit = false;
+  }, 1000);
 }
 
 async function updateMinerStats(id, port, type) {
