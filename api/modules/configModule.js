@@ -119,6 +119,15 @@ const nhPools = [
   {
     enabled: true,
     isIgnored: false,
+    name: 'nicehash-skunk',
+    algo: 'skunk',
+    url: 'stratum+tcp://skunk.#APPENDLOCATION#.nicehash.com:3362',
+    isSSL: false,
+    working: true
+  },
+  {
+    enabled: true,
+    isIgnored: false,
     name: 'nicehash-blake2s',
     algo: 'blake2s',
     url: 'stratum+tcp://blake2s.#APPENDLOCATION#.nicehash.com:3361',
@@ -179,6 +188,7 @@ const config = module.exports = {
       'sib',
       'sia',
       'skein',
+      'skunk',
       'timetravel',
       'veltor',
       'x11evo',
