@@ -48,6 +48,7 @@ var config = module.exports = {
         config.config.entries.push({id:Date.now(),enabled:false,binPath:"bin/cpuminer",cmdline:"-a zoin -o stratum+tcp://hexx.suprnova.cc:2876 -u someone123."+process.env.WNAME+" -p x -t 2",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.config.entries.push({id:Date.now(),enabled:true,binPath:"bin/cpuminer",cmdline:"-a cryptonight -o stratum+tcp://cryptonight.usa.nicehash.com:3355 -u 3BvYjGVGKCrsqkm1NaNeUvvgkgPAgfo1bn."+process.env.WNAME+" -p x -t 2",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.config.entries.push({id:Date.now(),enabled:false,binPath:"bin/cpuminer",cmdline:"-a cryptonight -o stratum+tcp://127.0.0.1:8001 -u 3BvYjGVGKCrsqkm1NaNeUvvgkgPAgfo1bn."+process.env.WNAME+" -p x -t 2",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
+        config.config.entries.push({id:Date.now(),enabled:false,binPath:"bin/cpuminer",cmdline:"-a cryptonight -o stratum+tcp://us-east.monero.miningpoolhub.com:20580 -u someone123."+process.env.WNAME+" -p x -t 2",type:"cpuminer-opt",port:10001,writeMinerLog:true,shell:false});
         config.saveConfig();
         setTimeout(function(){
           config.loadConfig();
