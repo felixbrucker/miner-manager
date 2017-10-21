@@ -22,7 +22,7 @@ module.exports = class claymoreXmr extends baseMiner {
       mysocket.on('timeout', () => {
         mysocket.end();
         mysocket.destroy();
-        this.logger.warn(`timeout connecting to claymore-zec on port ${port}`);
+        this.logger.warn(`timeout connecting to claymore-xmr on port ${this.port}`);
         result.uptime = null;
         result['xmr-hashrate'] = null;
         result['xmr-accepted'] = null;
@@ -45,7 +45,7 @@ module.exports = class claymoreXmr extends baseMiner {
         result.temps = [];
         result.fans = [];
         for (let i = 0; i < properties.length; i += 2) {
-          if (properties[i] !== "" && properties[i] !== null) {
+          if (properties[i] !== '' && properties[i] !== null) {
             result.temps.push(properties[i]);
             result.fans.push(properties[i + 1]);
           }
@@ -66,7 +66,7 @@ module.exports = class claymoreXmr extends baseMiner {
         resolve();
       });
 
-      mysocket.connect(port, '127.0.0.1');
+      mysocket.connect(this.port, '127.0.0.1');
     });
     super.updateStats();
     this.stats.data = data;

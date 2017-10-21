@@ -52,7 +52,7 @@ module.exports = class claymoreEth extends baseMiner {
         result.temps = [];
         result.fans = [];
         for (let i = 0; i < properties.length; i += 2) {
-          if (properties[i] !== "" && properties[i] !== null) {
+          if (properties[i] !== '' && properties[i] !== null) {
             result.temps.push(properties[i]);
             result.fans.push(properties[i + 1]);
           }
