@@ -31,7 +31,7 @@ module.exports = class claymoreXmr extends baseMiner {
         result.fans = null;
         result.pools = null;
         result.version = null;
-        resolve();
+        resolve(result);
       });
 
       mysocket.on('data', (data) => {
@@ -54,7 +54,7 @@ module.exports = class claymoreXmr extends baseMiner {
         result.version = d.result[0].replace(' - XMR', '');
         mysocket.end();
         mysocket.destroy();
-        resolve();
+        resolve(result);
       });
 
       mysocket.on('close', () => {});
@@ -63,7 +63,7 @@ module.exports = class claymoreXmr extends baseMiner {
         this.logger.warn(`socket error for claymore-xmr on port ${this.port}`);
         this.logger.debug(err.message);
         mysocket.destroy();
-        resolve();
+        resolve(result);
       });
 
       mysocket.connect(this.port, '127.0.0.1');

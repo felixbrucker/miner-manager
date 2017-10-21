@@ -15,18 +15,18 @@ module.exports = class ccminer extends baseMiner {
       client.on('connectFailed', (error) => {
         this.logger.error(`Connect failed for ccminer on port ${this.port}`);
         this.logger.debug(error.toString());
-        resolve(false);
+        resolve({});
       });
 
       client.on('connect', (connection) => {
         connection.on('error', (error) => {
           this.logger.error(`Connection Error for ccminer on port ${this.port}`);
           this.logger.debug(error.toString());
-          resolve(false);
+          resolve({});
         });
         connection.on('message', (message) => {
           if (message.type !== 'utf8') {
-            return resolve(false);
+            return resolve({});
           }
           let properties = message.utf8Data.split('|');
           properties = properties[0].split(';');
