@@ -32,7 +32,7 @@ module.exports = class baseMiner {
     this.statsInterval = null;
     this.stats = {
       running: this.running,
-      text: this.fullPath,
+      text: `${this.fullPath} ${this.minerString}`,
       type: this.type,
       expectedHr: this.expectedHr,
     };
@@ -165,7 +165,7 @@ module.exports = class baseMiner {
   async updateStats() {
     this.stats = {
       running: this.running,
-      text: this.fullPath,
+      text: `${this.fullPath} ${this.minerString}`,
       type: this.type,
       expectedHr: this.expectedHr,
     };
