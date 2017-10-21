@@ -233,8 +233,8 @@ async function stopMiner(entry) {
   miner[entry.id] = null;
   delete miner[entry.id];
 
-  stats.entries[key] = null;
-  delete stats.entries[key];
+  stats.entries[entry.id] = null;
+  delete stats.entries[entry.id];
 
   logger.info(colors.cyan(`[${entry.type}]`) + ' miner stopped');
 }
