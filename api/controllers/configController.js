@@ -49,8 +49,8 @@ async function update(req, res, next) {
     shell: true,
   });
   if (running) {
-    child.on('close', () => {
-      const result = miningController.startAllMiner();
+    child.on('close', async () => {
+      const result = await miningController.startAllMiner();
       res.send(JSON.stringify({result}));
     });
   } else {
@@ -76,8 +76,8 @@ async function updateMiner(req, res, next) {
     shell: true,
   });
   if (running) {
-    child.on('close', () => {
-      const result = miningController.startAllMiner();
+    child.on('close', async () => {
+      const result = await miningController.startAllMiner();
       res.send(JSON.stringify({result}));
     });
   } else {
