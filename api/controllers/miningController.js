@@ -275,22 +275,19 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
   const bestMiner = configModule.config.entries[pos];
   let preferSSL = false;
   //check if miner supports ssl connection
-  if (bestMiner.type === 'claymore-zec' || bestMiner.type === 'claymore-cryptonight')
+  if (bestMiner.type === 'claymore-zec' || bestMiner.type === 'claymore-cryptonight') {
     preferSSL = true;
-  let actualPool;
+  }
+  let actualPool = null;
   //get the right pool (depending on ssl above)
   for (let j = 0; j < chosenPools.length; j++) {
-    if (preferSSL) {
-      if (chosenPools[j].isSSL) {
-        actualPool = chosenPools[j];
-        break;
-      } else {
-        actualPool = chosenPools[j];
-      }
-    } else {
-      if (!chosenPools[j].isSSL) {
-        actualPool = chosenPools[j];
-      }
+    if (!preferSSL && chosenPools[j].isSSL) {
+      continue;
+    }
+    actualPool = JSON.parse(JSON.stringify(chosenPools[j]));
+    if (preferSSL && chosenPools[j].isSSL) {
+      // take it and leave
+      break;
     }
   }
   actualPool.url = poolUtil.parseLocation(actualPool.url, asPool.location);
