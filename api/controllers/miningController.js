@@ -275,7 +275,7 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
   const bestMiner = configModule.config.entries[pos];
   let preferSSL = false;
   //check if miner supports ssl connection
-  if (bestMiner.type === 'claymore-zec' || bestMiner.type === 'claymore-cryptonight') {
+  if (bestMiner.type === 'claymore-zec' || bestMiner.type === 'claymore-xmr') {
     preferSSL = true;
   }
   let actualPool = null;
