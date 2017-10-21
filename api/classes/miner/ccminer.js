@@ -13,14 +13,14 @@ module.exports = class ccminer extends baseMiner {
       const client = new WebSocketClient();
 
       client.on('connectFailed', (error) => {
-        this.logger.error(`Connect failed for cpuminer-opt on port ${this.port}`);
+        this.logger.error(`Connect failed for ccminer on port ${this.port}`);
         this.logger.debug(error.toString());
         resolve(false);
       });
 
       client.on('connect', (connection) => {
         connection.on('error', (error) => {
-          this.logger.error(`Connection Error for cpuminer-opt on port ${this.port}`);
+          this.logger.error(`Connection Error for ccminer on port ${this.port}`);
           this.logger.debug(error.toString());
           resolve(false);
         });
