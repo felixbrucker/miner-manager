@@ -46,8 +46,8 @@ module.exports = class claymoreZec extends baseMiner {
         result.fans = [];
         for (let i = 0; i < properties.length; i += 2) {
           if (properties[i] !== '' && properties[i] !== null) {
-            result.temps.push(properties[i]);
-            result.fans.push(properties[i + 1]);
+            result.temps.push(parseInt(properties[i], 10));
+            result.fans.push(parseInt(properties[i + 1], 10));
           }
         }
         result.pools = d.result[7].split(';');
