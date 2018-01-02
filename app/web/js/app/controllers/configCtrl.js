@@ -281,21 +281,11 @@
             for (var property in foundAlgo) {
                 if (foundAlgo.hasOwnProperty(property)) {
                     for(var i=0;i<vm.config.autoswitchPools.length;i++){
-                        var found=false;
-                        for(var j=0;j<vm.config.autoswitchPools[i].pools.length;j++){
-                            if(vm.config.autoswitchPools[i].pools[j].algo===property){
-                                found=true;
-                                break;
-                            }
-                        }
-                        if(found&&!(result.includes(vm.config.autoswitchPools[i].name)))
-                            result.push(vm.config.autoswitchPools[i].name);
+                        // always add autoswitch pools
+                        result.push(vm.config.autoswitchPools[i].name);
                     }
-
                 }
             }
-            //console.log(result);
-
 
             return result;
         }

@@ -51,67 +51,6 @@ async function stopMining(req, res, next) {
   }
 }
 
-async function updateStratumStatus(pool, origPool) {
-  if (reloading) {
-    return false;
-  }
-  let result = {};
-  try {
-    result = await stratumTestModule.testStratum(pool, configModule.config.rigName);
-    stratumTestLogger.debug(`${result.data} from pool: ${pool.name}`);
-  } catch (err) {
-    logger.error(err);
-  }
-  if (result.working) {
-    if (problemCounter[pool.name] >= 2) {
-      stratumTestLogger.info(`${pool.name} is working again`);
-    }
-    problemCounter[pool.name] = 0;
-    origPool.working = true;
-  } else {
-    if (problemCounter[pool.name] === 1000) {
-      problemCounter[pool.name] = 3;
-    } else {
-      problemCounter[pool.name] += 1;
-    }
-    if (problemCounter[pool.name] === 2) {
-      origPool.working = false;
-      stratumTestLogger.info(`${pool.name} is not working anymore: ${result.data}`);
-    }
-  }
-}
-
-function updatePoolStatus() {
-  //only check mineable algos/pools
-  let minerAlgos = {};
-  configModule.config.entries.forEach((entry) => {
-    if (entry.enabled) {
-      minerAlgos[entry.algo] = true;
-    }
-  });
-  configModule.config.pools.forEach((pool) => {
-    if (pool.enabled && (!pool.isIgnored) && minerAlgos[pool.algo]) {
-      if (problemCounter[pool.name] === undefined) {
-        problemCounter[pool.name] = 0;
-      }
-      updateStratumStatus(pool, pool);
-    }
-  });
-  configModule.config.autoswitchPools.forEach((asPool) => {
-    asPool.pools.forEach((pool) => {
-      if (pool.enabled && (!pool.isIgnored) && minerAlgos[pool.algo]) {
-        const obj = JSON.parse(JSON.stringify(pool));
-        obj.url = poolUtil.parseLocation(pool.url, asPool.location);
-        obj.worker = asPool.worker;
-        obj.pass = asPool.pass;
-        if (problemCounter[pool.name] === undefined) {
-          problemCounter[pool.name] = 0;
-        }
-        updateStratumStatus(obj, pool);
-      }
-    });
-  });
-}
 
 async function checkIfMiningOnCorrectPool(group) {
   if (!group.pools) {
@@ -247,12 +186,35 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
     algos: {},
     region: asPool.location,
     name: configModule.config.rigName + group.name,
+    provider: asPool.provider,
   };
-  configModule.config.entries.forEach((entry) => {
-    if (entry.group === group.name && entry.enabled) {
-      query.algos[entry.algo] = {hashrate: entry.hashrate};
-    }
+
+  const minerForAlgos = {};
+  configModule.config.entries
+    .filter(entry => entry.group === group.name)
+    .filter(entry => entry.enabled)
+    .map((entry) => {
+      if (!minerForAlgos[entry.algo]) {
+        minerForAlgos[entry.algo] = [];
+      }
+      minerForAlgos[entry.algo].push(entry);
+    });
+  Object.keys(minerForAlgos).map((key) => {
+    minerForAlgos[key].sort((a, b) => {
+      if (a.hashrate < b.hashrate) {
+        return 1;
+      }
+      if (a.hashrate > b.hashrate) {
+        return -1;
+      }
+      return 0;
+    });
+    minerForAlgos[key] = minerForAlgos[key][0];
+    const bestMiner = minerForAlgos[key];
+    const supportsSSL = (bestMiner.type === 'claymore-xmr' || bestMiner.type === 'claymore-zec');
+    query.algos[bestMiner.algo] = {hashrate: bestMiner.hashrate, supportsSSL};
   });
+
   let requestUrl = configModule.config.profitabilityServiceUrl;
   if (requestUrl.indexOf('http') === -1) { // default to http
     requestUrl = `http://${requestUrl}`;
@@ -262,41 +224,25 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
   if (!result.result) {
     return false;
   }
-  const chosenPools = asPool.pools.filter((currPool) => currPool.algo === result.result.algo);
-  let bestHr = 0;
-  let pos = 0;
-  //get the best miner for selected algo, allows multiple miners for same algo to be enabled
-  configModule.config.entries.forEach((entry, index) => {
-    if (entry.group === group.name && entry.enabled && entry.algo === result.result.algo && entry.hashrate > bestHr) {
-      pos = index;
-      bestHr = entry.hashrate;
-    }
-  });
-  const bestMiner = configModule.config.entries[pos];
-  let preferSSL = false;
-  //check if miner supports ssl connection
-  if (bestMiner.type === 'claymore-zec' || bestMiner.type === 'claymore-xmr') {
-    preferSSL = true;
-  }
-  let actualPool = null;
-  //get the right pool (depending on ssl above)
-  for (let j = 0; j < chosenPools.length; j++) {
-    if (!preferSSL && chosenPools[j].isSSL) {
-      continue;
-    }
-    actualPool = JSON.parse(JSON.stringify(chosenPools[j]));
-    if (preferSSL && chosenPools[j].isSSL) {
-      // take it and leave
-      break;
-    }
-  }
-  actualPool.url = poolUtil.parseLocation(actualPool.url, asPool.location);
-  actualPool.worker = asPool.worker;
-  actualPool.pass = asPool.pass;
-  actualPool.appendRigName = asPool.appendRigName;
-  actualPool.appendGroupName = asPool.appendGroupName;
 
-  return actualPool;
+  if (result.result.length === 0) {
+    return false;
+  }
+  const bestPool = result.result[0];
+
+  return {
+    enabled: true,
+    isIgnored: false,
+    name: `${asPool.provider}-${bestPool.algorithm}`,
+    algo: bestPool.algorithm,
+    isSSL: bestPool.isSSL,
+    working: true,
+    url: bestPool.stratum,
+    worker: asPool.worker,
+    pass: asPool.pass,
+    appendRigName: asPool.appendRigName,
+    appendGroupName: asPool.appendGroupName,
+  };
 }
 
 function isRunning() {
@@ -313,10 +259,6 @@ function init() {
     }, 10000);
   }
   stats.rigName = configModule.config.rigName;
-
-  // disabled for now because of poolside blocking
-  //updatePoolStatus();
-  //setInterval(updatePoolStatus, 5 * 60 * 1000);
 }
 
 setTimeout(init, 1000);

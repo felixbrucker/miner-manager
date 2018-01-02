@@ -1,31 +1,25 @@
 <form name="config">
-  <div class="row" style="margin-bottom: 10px;" ng-repeat="asPool in configVm.config.autoswitchPools track by $index">
-    <div class="col-md-12">
-      <input type="checkbox" ng-model="asPool.enabled"> <b>{{asPool.name}}:</b> worker: <input type="text" ng-model="asPool.worker" size="42">, pass: <input type="text" ng-model="asPool.pass">, location: <select ng-options="location for location in configVm.config.locations" ng-model="asPool.location"></select>, append rig name: <input type="checkbox" ng-model="asPool.appendRigName">, append group name: <input type="checkbox" ng-model="asPool.appendGroupName">
-    </div>
-    <div class="col-md-12">
-      <table class='table table-borderless table-condensed'>
-        <tr>
-          <th>working</th>
-          <th>enabled</th>
-          <th>name</th>
-          <th>algorithm</th>
-          <th>SSL</th>
-          <th><span title="assumed always online, no stratum checks">is ignored</span></th>
-          <th>stratum url</th>
-        </tr>
-        <tr ng-repeat="entry in asPool.pools track by $index">
-          <td ng-if="entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:green"></i></td>
-          <td ng-if="!entry.working"><i class="fa fa-circle" aria-hidden="true" style="color:red"></i></td>
-          <td><input type="checkbox" ng-model="entry.enabled"></td>
-          <td><input type="text" ng-model="entry.name" disabled></td>
-          <td><select ng-options="algo for algo in configVm.config.algos" ng-model="entry.algo" disabled></select></td>
-          <td><input type="checkbox" ng-model="entry.isSSL" disabled></td>
-          <td><input type="checkbox" ng-model="entry.isIgnored"></td>
-          <td><input type="text" name="stratum-{{entry.id}}" ng-model="entry.url" placeholder="stratum+tcp://domain.tld:1234" size="42" disabled></td>
-        </tr>
-      </table>
-    </div>
+  <div class="col-md-8 col-md-offset-1">
+    <table class='table table-borderless table-condensed'>
+      <tr>
+        <th>enabled</th>
+        <th>name</th>
+        <th>worker</th>
+        <th>pass</th>
+        <th>location</th>
+        <th>append rig name</th>
+        <th>append group name</th>
+      </tr>
+      <tr ng-repeat="asPool in configVm.config.autoswitchPools track by $index">
+        <td><input type="checkbox" ng-model="asPool.enabled"></td>
+        <td>{{asPool.name}}</td>
+        <td><input type="text" ng-model="asPool.worker" size="42"></td>
+        <td><input type="text" ng-model="asPool.pass"></td>
+        <td><select ng-options="location for location in configVm.config.locations" ng-model="asPool.location"></select></td>
+        <td><input type="checkbox" ng-model="asPool.appendRigName"></td>
+        <td><input type="checkbox" ng-model="asPool.appendGroupName"></td>
+      </tr>
+    </table>
   </div>
 </form>
 
