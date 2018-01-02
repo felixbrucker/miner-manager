@@ -277,14 +277,9 @@
 
                 }
             }
-            //for every algo in autoswitch pools
-            for (var property in foundAlgo) {
-                if (foundAlgo.hasOwnProperty(property)) {
-                    for(var i=0;i<vm.config.autoswitchPools.length;i++){
-                        // always add autoswitch pools
-                        result.push(vm.config.autoswitchPools[i].name);
-                    }
-                }
+            for(var i=0;i<vm.config.autoswitchPools.length;i++){
+              // always add autoswitch pools
+              result.push(vm.config.autoswitchPools[i].name);
             }
 
             return result;
