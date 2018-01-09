@@ -44,7 +44,7 @@ module.exports = class cpuminerOpt extends baseMiner {
           result.hashrate = null;
           result.miner = null;
           result.uptime = null;
-          this.logger.warn(`Error: Unable to get stats data for sgminer on port ${port}`);
+          this.logger.warn(`Error: Unable to get stats data for sgminer on port ${this.port}`);
           this.logger.debug(error);
         }
         if (parsed !== null) {
@@ -75,7 +75,7 @@ module.exports = class cpuminerOpt extends baseMiner {
         resolve(result);
       });
 
-      mysocket.connect(port, '127.0.0.1');
+      mysocket.connect(this.port, '127.0.0.1');
     });
     super.updateStats();
     this.stats.data = data;
