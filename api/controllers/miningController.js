@@ -230,7 +230,7 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
   }
   const bestPool = result.result[0];
 
-  return {
+  const mostProfitablePool = {
     enabled: true,
     isIgnored: false,
     name: `${asPool.provider}-${bestPool.algorithm}`,
@@ -243,6 +243,17 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
     appendRigName: asPool.appendRigName,
     appendGroupName: asPool.appendGroupName,
   };
+
+  // specific overrides to make it work
+  if (asPool.provider === 'minecryptonight') {
+    mostProfitablePool.worker = bestPool.user;
+    mostProfitablePool.pass = bestPool.pass;
+    mostProfitablePool.appendRigName = false;
+    mostProfitablePool.appendGroupName = false;
+    mostProfitablePool.name = `${asPool.provider}-${bestPool.symbol}`;
+  }
+
+  return mostProfitablePool;
 }
 
 function isRunning() {

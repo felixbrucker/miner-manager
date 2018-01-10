@@ -38,7 +38,17 @@ const config = module.exports = {
         pass: '',
         location: 'eu',
         provider: 'miningpoolhub',
-      }
+      },
+      {
+        enabled: false,
+        name: 'minecryptonight-autoswitch',
+        appendRigName: false,
+        appendGroupName: false,
+        worker: '',
+        pass: '',
+        location: 'eu',
+        provider: 'minecryptonight',
+      },
     ],
     logLevel: 'INFO',
   },
@@ -155,6 +165,18 @@ const config = module.exports = {
     delete config.config.autoswitchPools[0].pools;
     if (!config.config.autoswitchPools[0].provider) {
       config.config.autoswitchPools[0].provider = 'nicehash';
+    }
+    if (config.config.autoswitchPools.length === 2) {
+      config.config.autoswitchPools.push({
+        enabled: false,
+        name: 'minecryptonight-autoswitch',
+        appendRigName: false,
+        appendGroupName: false,
+        worker: '',
+        pass: '',
+        location: 'eu',
+        provider: 'minecryptonight',
+      });
     }
     if (config.config.logLevel === undefined) {
       config.config.logLevel = 'INFO';
