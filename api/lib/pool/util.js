@@ -10,7 +10,7 @@ const util = {
     let lowest = 9999;
     let pos = 0;
     pools.forEach((pool, index) => {
-      if (pool.prio < lowest && pool.pool.working && pool.pool.enabled && util.minerForPoolEnabled(pool.pool, group)) {
+      if (pool.prio < lowest && pool.pool && pool.pool.working && pool.pool.enabled && util.minerForPoolEnabled(pool.pool, group)) {
         lowest = pool.prio;
         pos = index;
       }
