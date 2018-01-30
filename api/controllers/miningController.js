@@ -120,6 +120,9 @@ async function startAllMiner() {
 }
 
 async function stopAllMiner() {
+  if (!stats.running) {
+    return;
+  }
   stats.running = false;
   configModule.config.groups.forEach((group) => {
     if (profitTimer[group.id] !== undefined && profitTimer[group.id] !== null) {
