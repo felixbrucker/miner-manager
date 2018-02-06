@@ -181,6 +181,11 @@ const config = module.exports = {
     if (config.config.logLevel === undefined) {
       config.config.logLevel = 'INFO';
     }
+    config.config.groups.map(group => group.pools.map(pool => {
+      if (!Array.isArray(pool.name)) {
+        pool.name = [ pool.name ];
+      }
+    }));
   },
 };
 

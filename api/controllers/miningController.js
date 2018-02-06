@@ -58,14 +58,14 @@ async function checkIfMiningOnCorrectPool(group) {
   }
   const poolArray = await Promise.all(group.pools.map(async (pool) => {
     let result = false;
-    if (pool.name.includes('autoswitch')) {
+    if (pool.name.some(name => name.includes('autoswitch'))) {
       try {
-        result = await getMostProfitablePool(group, poolUtil.getAutoswitchPoolObj(pool.name));
+        result = await getMostProfitablePool(group, pool.name);
       } catch(err) {
         logger.error(err.message);
       }
     } else {
-      result = poolUtil.getPoolObj(pool.name);
+      result = poolUtil.getPoolObj(pool.name[0]); // always use first, regular pools do not support merging
     }
     return {
       prio: pool.prio,
@@ -181,15 +181,19 @@ async function stopMiner(entry) {
   logger.info(colors.cyan(`[${entry.type}]`) + ' miner stopped');
 }
 
-async function getMostProfitablePool(group, asPool) { //expected to be an autoswitch pool obj
-  if (!configModule.config.profitabilityServiceUrl || !asPool.enabled) {
+async function getMostProfitablePool(group, asPoolNames) { //expected to be an autoswitch pool obj
+  const asPools = asPoolNames
+    .map(name => poolUtil.getAutoswitchPoolObj(name))
+    .filter(pool => pool.enabled);
+  if (!configModule.config.profitabilityServiceUrl || asPools.length === 0) {
     return false;
   }
+
   const query = {
     algos: {},
-    region: asPool.location,
+    region: asPools[0].location, // use location of first asPool for now
     name: configModule.config.rigName + group.name,
-    provider: asPool.provider,
+    provider: asPools.map(pool => pool.provider),
   };
 
   const minerForAlgos = {};
@@ -203,15 +207,7 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
       minerForAlgos[entry.algo].push(entry);
     });
   Object.keys(minerForAlgos).map((key) => {
-    minerForAlgos[key].sort((a, b) => {
-      if (a.hashrate < b.hashrate) {
-        return 1;
-      }
-      if (a.hashrate > b.hashrate) {
-        return -1;
-      }
-      return 0;
-    });
+    minerForAlgos[key].sort((a, b) => b.hashrate - a.hashrate);
     minerForAlgos[key] = minerForAlgos[key][0];
     const bestMiner = minerForAlgos[key];
     const supportsSSL = (bestMiner.type === 'claymore-xmr' || bestMiner.type === 'claymore-zec');
@@ -232,11 +228,12 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
     return false;
   }
   const bestPool = result.result[0];
+  const asPool = asPools.find(pool => pool.provider === bestPool.provider);
 
   const mostProfitablePool = {
     enabled: true,
     isIgnored: false,
-    name: `${asPool.provider}-${bestPool.algorithm}`,
+    name: `${bestPool.provider}-${bestPool.algorithm}`,
     algo: bestPool.algorithm,
     isSSL: bestPool.isSSL,
     working: true,
@@ -253,7 +250,7 @@ async function getMostProfitablePool(group, asPool) { //expected to be an autosw
     mostProfitablePool.pass = bestPool.pass;
     mostProfitablePool.appendRigName = false;
     mostProfitablePool.appendGroupName = false;
-    mostProfitablePool.name = `${asPool.provider}-${bestPool.symbol}`;
+    mostProfitablePool.name = `${bestPool.provider}-${bestPool.symbol}`;
   }
 
   return mostProfitablePool;
