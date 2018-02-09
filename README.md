@@ -65,6 +65,7 @@ run ``` git pull ```
 - Selecting multiple regular pools for a single pool entry in group config will only use the first pool, only autoswitch pools can be combined to use the most profitable
 - Currently there is no strong support for linux (miner binaries), but it should be possible out of the box ™
 - Currently pool availability monitoring and automatic failover have been disabled because most pools bock your ip if you do not send actual mining data over the stratum conenction made to check their availability. I'll probably include this again with regular pings or tcp port checks.
+- Currently there are no releases and versioning but this is planned as well
 
 ### Todos
 
