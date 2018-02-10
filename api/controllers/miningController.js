@@ -267,12 +267,12 @@ function init() {
     logger.info('autostart enabled, starting miner shortly..');
     setTimeout(async () => {
       await startAllMiner();
-    }, 10000);
+    }, 2000);
   }
   stats.rigName = configModule.config.rigName;
 }
 
-setTimeout(init, 1000);
+setTimeout(init, 5000);
 
 exports.getStats = getStats;
 exports.startMining = startMining;
