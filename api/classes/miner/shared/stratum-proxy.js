@@ -59,12 +59,10 @@ module.exports = class StratumProxy {
     await new Promise(resolve => {
       this.server.listen(0, '127.0.0.1', () => resolve());
     });
-    console.log('setup done');
   }
 
   handleConnection(connection) {
     this.connection = connection;
-    console.log('conn created');
     if (this.isSSL) {
       this.client = new tls.connect({
         host: this.poolHost,
@@ -75,19 +73,16 @@ module.exports = class StratumProxy {
       this.client = new net.Socket().connect(this.poolPort, this.poolHost);
     }
     connection.on('end', () => {
-      console.log('conn end');
       this.client.destroy();
       this.client = null;
       this.connection = null;
     });
     connection.on('error', () => {
-      console.log('conn err');
       this.client.destroy();
       this.client = null;
       this.connection = null;
     });
     connection.on('data', (data) => {
-      console.log('conn data');
       const lines = data.toString('utf8')
         .split('\n')
         .filter(line => line !== '')
@@ -95,7 +90,6 @@ module.exports = class StratumProxy {
         .map(line => {
           switch(line.method) {
             case 'mining.authorize':
-              console.log('auth');
               line.params[0] = this.poolWorker;
               line.params[1] = this.poolPass;
               break;
@@ -124,15 +118,12 @@ module.exports = class StratumProxy {
       this.client.write(`${lines}\n`);
     });
     this.client.on('data', (data) => {
-      console.log('client data');
       connection.write(data);
     });
     this.client.on('close', () => {
-      console.log('client close');
       connection.end();
     });
     this.client.on('error', () => {
-      console.log('client err');
       connection.end();
     });
   }
