@@ -2,7 +2,19 @@
 
 (auto profit switching) mining monitoring software (wrapper)
 
-can use nicehash api via https://github.com/felixbrucker/profitability-service or run standalone without switching
+can use nicehash, miningpoolhub and minecryptonight api via https://github.com/felixbrucker/profitability-service or run standalone without switching
+
+currently supports the following miners:
+
+- ccminer
+- claymore-eth
+- claymore-xmr
+- claymore-zec
+- optiminer-zec
+- cpuminer-opt
+- sgminer
+
+If you want your favourite miner to be supported as well create an issue
 
 ### Screens
 
@@ -66,6 +78,7 @@ run ``` git pull ```
 - Currently there is no strong support for linux (miner binaries), but it should be possible out of the box ™
 - Currently pool availability monitoring and automatic failover have been disabled because most pools bock your ip if you do not send actual mining data over the stratum conenction made to check their availability. I'll probably include this again with regular pings or tcp port checks.
 - Currently there are no releases and versioning but this is planned as well
+- Selecting `use stratum proxy` for a miner enables a MITM-Stratum-Proxy which supports switching to other pools of the same algo without restarting your miner each time. It can also be used to connect to non-SSL pools as if they supported SSL (reduces dev fee for claymore). On startup of the miner a random port is chosen by the system and assigned to the proxy. For claymore miners it is advised to configure `-retrydelay 1` to allow fast switching.
 
 ### Todos
 

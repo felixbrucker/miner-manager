@@ -41,6 +41,7 @@
             cmdline:"",
             type:null,
             port:null,
+            useStratumProxy: false,
             writeMinerLog:false,
             shell:false,
             hashrate:null,
@@ -103,7 +104,6 @@
         vm.addPool=addPool;
         vm.delPool=delPool;
         vm.copyPool=copyPool;
-
 
 
         /**
@@ -306,6 +306,7 @@
                     vm.newCustomMiner.cmdline="";
                     vm.newCustomMiner.type=null;
                     vm.newCustomMiner.port=null;
+                    vm.newCustomMiner.useStratumProxy=false;
                     vm.newCustomMiner.writeMinerLog=false;
                     vm.newCustomMiner.shell=false;
                     vm.newCustomMiner.hashrate=null;
@@ -343,6 +344,7 @@
                     vm.newCustomMiner.cmdline=entry.cmdline;
                     vm.newCustomMiner.type=entry.type;
                     vm.newCustomMiner.port=entry.port;
+                    vm.newCustomMiner.useStratumProxy=entry.useStratumProxy;
                     vm.newCustomMiner.writeMinerLog=entry.writeMinerLog;
                     vm.newCustomMiner.shell=entry.shell;
                     vm.newCustomMiner.hashrate=entry.hashrate;

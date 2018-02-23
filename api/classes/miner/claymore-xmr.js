@@ -1,11 +1,12 @@
 const net = require('net');
 const colors = require('colors/safe');
-const baseMiner = require('./baseMiner');
+const baseMiner = require('./shared/baseMiner');
 
 module.exports = class claymoreXmr extends baseMiner {
 
   constructor(binPath, minerString, options) {
     super(binPath, minerString, options);
+    this.supportsSSL = true;
   }
 
   async updateStats() {

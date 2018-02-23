@@ -91,9 +91,14 @@ async function checkIfMiningOnCorrectPool(group) {
     if (prevEntries[group.name].pool.name !== chosenPool.pool.name || prevEntries[group.name].miner.id !== configModule.config.entries[pos].id) {
       //switch
       logger.info(`[${group.name}] switching from ${prevEntries[group.name].pool.name} to ${chosenPool.pool.name}`);
-      await stopMiner(prevEntries[group.name].miner);
-      await new Promise((resolve) => setTimeout(() => resolve(), 1100));
-      await startMiner(configModule.config.entries[pos], chosenPool.pool);
+      // same miner? switch with proxy if enabled
+      if (prevEntries[group.name].miner.id === configModule.config.entries[pos].id && miner[prevEntries[group.name].miner.id].supportsPoolSwitching()) {
+        miner[prevEntries[group.name].miner.id].switchPool(chosenPool.pool);
+      } else {
+        await stopMiner(prevEntries[group.name].miner);
+        await new Promise((resolve) => setTimeout(() => resolve(), 1100));
+        await startMiner(configModule.config.entries[pos], chosenPool.pool);
+      }
       prevEntries[group.name] = {pool: chosenPool.pool, miner: configModule.config.entries[pos]};
     }
   } else {
@@ -162,7 +167,7 @@ async function startMiner(entry, pool) {
     logger,
     logDir: 'data',
   });
-  const running = miner[entry.id].start();
+  const running = await miner[entry.id].start();
   if (running) {
     logger.info(colors.cyan(`[${entry.type}]`) + ' miner started');
   }

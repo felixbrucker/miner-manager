@@ -140,6 +140,9 @@ const config = module.exports = {
       if (entry.shell === undefined) {
         entry.shell = false;
       }
+      if (entry.useStratumProxy === undefined) {
+        entry.useStratumProxy = false;
+      }
     });
     if (config.config.groups === undefined) {
       config.config.groups = [];

@@ -3,20 +3,23 @@ const fs = require('fs');
 const spawn = require('cross-spawn');
 const psTree = require('ps-tree');
 const rfs = require('rotating-file-stream');
-
+const StratumProxy = require('./stratum-proxy');
 
 module.exports = class baseMiner {
 
   constructor(entry, pool, options) {
+    this.currentPool = pool;
     this.isWin = /^win/.test(process.platform);
     this.dirPath = path.dirname(entry.binPath);
     this.fileName = path.basename(entry.binPath);
     this.fullPath = entry.binPath;
-    this.minerString = this.constructMinerString(entry, options.rigName, pool);
+    this.rigName = options.rigName;
     this.port = entry.port;
     this.id = entry.id;
     this.expectedHr = entry.hashrate;
     this.type = entry.type;
+
+    this.entry = entry;
 
     this.logger = options.logger;
     this.startShell = entry.shell;
@@ -26,6 +29,8 @@ module.exports = class baseMiner {
     if (this.writeMinerLog) {
       this.setupFileLogging(options.logDir);
     }
+
+    this.supportsSSL = false;
 
     this.running = false;
     this.miner = null;
@@ -38,10 +43,47 @@ module.exports = class baseMiner {
     };
   }
 
-  start() {
+  async setupStratumProxy() {
+    if (this.stratumProxy) {
+      return;
+    }
+    this.stratumProxy = new StratumProxy({
+      supportsSSL: this.supportsSSL,
+      rigName: this.rigName,
+      groupName: this.entry.group,
+    });
+    return this.stratumProxy.setupLocalServer();
+  }
+
+  async switchPool(pool) {
+    this.currentPool = pool;
+    if (!this.stratumProxy) {
+      return false;
+    }
+    await this.stratumProxy.switchPool(this.currentPool);
+  }
+
+  supportsPoolSwitching() {
+    return this.entry.useStratumProxy;
+  }
+
+  async start() {
     if (this.running) {
       throw new Error(`Miner ${this.id} already running`);
     }
+
+    if (this.supportsPoolSwitching()) {
+      await this.setupStratumProxy();
+      await this.stratumProxy.switchPool(this.currentPool);
+      this.minerString = this.constructMinerString(this.entry, this.rigName, {
+        worker: 'worker1',
+        pass: 'x',
+        url: `stratum+${this.supportsSSL ? 'ssl' : 'tcp'}://127.0.0.1:${this.stratumProxy.getPort()}`,
+      });
+    } else {
+      this.minerString = this.constructMinerString(this.entry, this.rigName, this.currentPool);
+    }
+
     let binPath = this.fullPath;
     const startOptions = {};
     if (this.startShell) {
@@ -103,7 +145,7 @@ module.exports = class baseMiner {
   async handleMinerCrash() {
     if (this.running) {
       await this.stop();
-      this.start();
+      await this.start();
     }
   }
 
