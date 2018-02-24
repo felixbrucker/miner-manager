@@ -42,6 +42,7 @@ module.exports = class cpuminerOpt extends baseMiner {
             {key: 'MH/s', factor: 2},
             {key: 'KH/s', factor: 1},
             {key: 'H/s', factor: 0},
+            {key: 'KHS', factor: 1},
           ];
           let hashrate = 0;
           for (let unit of units) {
