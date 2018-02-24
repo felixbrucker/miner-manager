@@ -28,7 +28,7 @@
                   <table class='table table-borderless'>
                     <tr>
                       <td>Hashrate</td>
-                      <td><span class="label label-primary">{{entry.data.hashrate | hashrate}}</span></td>
+                      <td><span class="label label-primary">{{entry.data.hashrate | hashrate:null:0}}</span></td>
                     </tr>
                     <tr>
                       <td>Algorithm</td>
@@ -36,7 +36,7 @@
                     </tr>
                     <tr>
                       <td>Cores</td>
-                      <td><span class="label label-info">{{entry.data.cores}}</span></td>
+                      <td><span class="label label-info">{{entry.data.cpus}}</span></td>
                     </tr>
                   </table>
                 </div>

@@ -65,11 +65,11 @@
     }
   });
   app.filter('hashrate', function () {
-    return function (hashrate, precision) {
+    return function (hashrate, precision, start = 1) {
       if (isNaN(parseFloat(hashrate)) || !isFinite(hashrate)) return '';
       if (parseFloat(hashrate) === 0) return '0 H/s';
       if (typeof precision === 'undefined') precision = 1;
-      hashrate = hashrate * 1000;
+      hashrate = hashrate * Math.pow(1000, start);
       var units = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s'],
         number = Math.floor(Math.log(hashrate) / Math.log(1000));
       if (number<0)
