@@ -35,26 +35,12 @@ module.exports = class cpuminerOpt extends baseMiner {
             let tup = property.split('=');
             obj[tup[0]] = tup[1];
           });
-          const units = [
-            {key: 'PH/s', factor: 5},
-            {key: 'TH/s', factor: 4},
-            {key: 'GH/s', factor: 3},
-            {key: 'MH/s', factor: 2},
-            {key: 'KH/s', factor: 1},
-            {key: 'H/s', factor: 0},
-            {key: 'KHS', factor: 1},
-          ];
-          const unit = units.find(currUnit => obj[currUnit.key]);
-          let hashrate = 0;
-          if (unit) {
-            hashrate = parseFloat(obj[unit.key]) * (Math.pow(1000, unit.factor));
-          }
           const result = {
             accepted: parseInt(obj.ACC, 10),
             acceptedPerMinute: parseFloat(obj.ACCMN),
             algorithm: obj.ALGO,
             difficulty: parseFloat(obj.DIFF),
-            hashrate,
+            hashrate: obj.HS ? parseFloat(obj.HS) : (parseFloat(obj.KHS) * 1000),
             miner: `${obj.NAME} ${obj.VER}`,
             rejected: parseInt(obj.REJ, 10),
             uptime: obj.UPTIME,
