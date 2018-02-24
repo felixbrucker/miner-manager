@@ -72,7 +72,7 @@ module.exports = class baseMiner {
       throw new Error(`Miner ${this.id} already running`);
     }
 
-    if (this.supportsPoolSwitching()) {
+    if (this.entry.useStratumProxy) {
       await this.setupStratumProxy();
       await this.stratumProxy.switchPool(this.currentPool);
       this.minerString = this.constructMinerString(this.entry, this.rigName, {

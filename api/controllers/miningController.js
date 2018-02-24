@@ -91,7 +91,7 @@ async function checkIfMiningOnCorrectPool(group) {
     if (prevEntries[group.name].pool.name !== chosenPool.pool.name || prevEntries[group.name].miner.id !== configModule.config.entries[pos].id) {
       //switch
       logger.info(`[${group.name}] switching from ${prevEntries[group.name].pool.name} to ${chosenPool.pool.name}`);
-      // same miner? switch with proxy if enabled
+      // same miner? switch if supported by miner
       if (prevEntries[group.name].miner.id === configModule.config.entries[pos].id && miner[prevEntries[group.name].miner.id].supportsPoolSwitching()) {
         miner[prevEntries[group.name].miner.id].switchPool(chosenPool.pool);
       } else {
