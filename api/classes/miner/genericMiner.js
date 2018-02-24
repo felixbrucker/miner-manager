@@ -1,5 +1,5 @@
 const colors = require('colors/safe');
-const baseMiner = require('./baseMiner');
+const baseMiner = require('./shared/baseMiner');
 
 module.exports = class genericMiner extends baseMiner {
 
