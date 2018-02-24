@@ -78,7 +78,7 @@ module.exports = class baseMiner {
       this.minerString = this.constructMinerString(this.entry, this.rigName, {
         worker: 'worker1',
         pass: 'x',
-        url: `stratum+${this.supportsSSL ? 'ssl' : 'tcp'}://localhost:${this.stratumProxy.getPort()}`,
+        url: `stratum+${this.supportsSSL ? 'ssl' : 'tcp'}://127.0.0.1:${this.stratumProxy.getPort()}`,
       });
     } else {
       this.minerString = this.constructMinerString(this.entry, this.rigName, this.currentPool);
