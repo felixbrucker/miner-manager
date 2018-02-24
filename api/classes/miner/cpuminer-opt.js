@@ -44,12 +44,10 @@ module.exports = class cpuminerOpt extends baseMiner {
             {key: 'H/s', factor: 0},
             {key: 'KHS', factor: 1},
           ];
+          const unit = units.find(currUnit => obj[currUnit.key]);
           let hashrate = 0;
-          for (let unit of units) {
-            if (obj[unit.key]) {
-              hashrate = parseFloat(obj[unit.key]) * (Math.pow(1000, unit.factor));
-              break;
-            }
+          if (unit) {
+            hashrate = parseFloat(obj[unit.key]) * (Math.pow(1000, unit.factor));
           }
           const result = {
             accepted: parseInt(obj.ACC, 10),
